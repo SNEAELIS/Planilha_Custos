@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Precificação de Emendas - Ministério do Esporte</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .header {
+            background-color: #003366;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            height: 50px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #003366;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .valor-emenda {
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #003366;
+        }
+
+        .input-currency {
+            position: relative;
+        }
+
+        .input-currency span {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: bold;
+        }
+
+        .input-currency input {
+            width: 100%;
+            padding: 12px 12px 12px 40px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .btn {
+            background-color: #003366;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #002244;
+        }
+
+        .resumo-valores {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+            border-left: 4px solid #003366;
+        }
+
+        .resumo-valores p {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .resumo-valores strong {
+            color: #003366;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 15px;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <img src="logo-ministerio-esporte.png" alt="Ministério do Esporte" class="logo">
+        <h2>Sistema de Precificação de Emendas</h2>
+    </header>
+
+    <div class="container">
+        <h1>Definição do Valor da Emenda</h1>
+        
+        <div class="valor-emenda">
+            <div class="input-group">
+                <label for="valor-total">Valor Total da Emenda</label>
+                <div class="input-currency">
+                    <span>R$</span>
+                    <input type="text" id="valor-total" placeholder="0,00" inputmode="numeric">
+                </div>
+            </div>
+
+            <div class="resumo-valores">
+                <p>
+                    <span>Valor Total da Emenda:</span>
+                    <strong id="display-valor-total">R$ 0,00</strong>
+                </p>
+                <p>
+                    <span>Valor Gasto:</span>
+                    <strong id="display-valor-gasto">R$ 0,00</strong>
+                </p>
+                <p>
+                    <span>Valor Restante:</span>
+                    <strong id="display-valor-restante">R$ 0,00</strong>
+                </p>
+            </div>
+
+            <button class="btn" id="btn-continuar">Continuar para Precificação</button>
+        </div>
+    </div>
+
+    <footer class="footer">
+        © 2024 Ministério do Esporte - Todos os direitos reservados
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const valorTotalInput = document.getElementById('valor-total');
+            const displayValorTotal = document.getElementById('display-valor-total');
+            const btnContinuar = document.getElementById('btn-continuar');
+
+            // Formatação monetária
+            valorTotalInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                value = (value / 100).toLocaleString('pt-BR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+                e.target.value = value;
+                displayValorTotal.textContent = `R$ ${value}`;
+                document.getElementById('display-valor-restante').textContent = `R$ ${value}`;
+            });
+
+            // Validação e redirecionamento
+            btnContinuar.addEventListener('click', function() {
+                const valor = valorTotalInput.value.replace(/[^\d,]/g, '').replace(',', '.');
+                const valorNumerico = parseFloat(valor);
+                
+                if (isNaN(valorNumerico) || valorNumerico <= 0) {
+                    alert('Por favor, insira um valor válido para a emenda.');
+                    return;
+                }
+
+                // Armazena o valor na sessionStorage para usar na próxima página
+                sessionStorage.setItem('valorEmenda', valorNumerico);
+                
+                // Redireciona para a página de precificação
+                window.location.href = 'precificacao';
+            });
+        });
+    </script>
+</body>
+</html>

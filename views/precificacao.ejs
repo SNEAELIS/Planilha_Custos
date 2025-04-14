@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Precificação de Emendas - Ministério do Esporte</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .header {
+            background-color: #003366;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            height: 50px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h1, h2 {
+            color: #003366;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .resumo-valores {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            border-left: 4px solid #003366;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .resumo-valores p {
+            margin: 5px 0;
+            min-width: 200px;
+        }
+
+        .resumo-valores strong {
+            color: #003366;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+            margin-right: 5px;
+            background-color: #f1f1f1;
+        }
+
+        .tab.active {
+            background-color: white;
+            border-color: #ddd;
+            border-bottom-color: white;
+            color: #003366;
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .formulario-item {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #003366;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .empresas-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .empresa {
+            background-color: white;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .empresa h4 {
+            margin-bottom: 10px;
+            color: #003366;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        .btn {
+            background-color: #003366;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background-color: #002244;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+
+        .carrinho {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+
+        .carrinho h3 {
+            color: #003366;
+            margin-bottom: 15px;
+        }
+
+        .carrinho-vazio {
+            text-align: center;
+            color: #666;
+            padding: 20px;
+        }
+
+        .item-carrinho {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            align-items: center;
+        }
+
+        .item-carrinho-info {
+            flex: 1;
+        }
+
+        .item-carrinho-acoes button {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .total-carrinho {
+            text-align: right;
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .acoes-carrinho {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+            gap: 10px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 15px;
+                padding: 15px;
+            }
+            
+            .empresas-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .resumo-valores {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <img src="logo-ministerio-esporte.png" alt="Ministério do Esporte" class="logo">
+        <h2>Sistema de Precificação de Emendas</h2>
+    </header>
+
+    <div class="container">
+        <h1>Precificação de Itens</h1>
+        
+        <div class="resumo-valores">
+            <p><span>Valor Total da Emenda:</span> <strong id="valor-total">R$ 0,00</strong></p>
+            <p><span>Valor Gasto:</span> <strong id="valor-gasto">R$ 0,00</strong></p>
+            <p><span>Valor Restante:</span> <strong id="valor-restante">R$ 0,00</strong></p>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" data-tab="recursos-humanos">Recursos Humanos</div>
+            <div class="tab" data-tab="material-esportivo">Material Esportivo</div>
+            <div class="tab" data-tab="uniformes">Uniformes</div>
+        </div>
+
+        <!-- Formulário Recursos Humanos -->
+        <div id="recursos-humanos" class="tab-content active">
+            <div class="formulario-item">
+                <h2>Adicionar Item - Recursos Humanos</h2>
+                
+                <div class="form-group">
+                    <label for="rh-descricao">Descrição do Item/Método de Cálculo</label>
+                    <textarea id="rh-descricao" placeholder="Ex: PROFESSOR - Responsável pela preparação e execução das aulas"></textarea>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                    <div class="form-group">
+                        <label for="rh-quantidade">Quantidade</label>
+                        <input type="number" id="rh-quantidade" min="1" value="1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="rh-periodo">Diárias/Meses</label>
+                        <input type="number" id="rh-periodo" min="1" value="1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="rh-total">Total</label>
+                        <input type="text" id="rh-total" readonly>
+                    </div>
+                </div>
+                
+                <h3 style="margin-top: 20px;">Empresas Cotadas</h3>
+                <div class="empresas-container">
+                    <!-- Empresa 1 -->
+                    <div class="empresa">
+                        <h4>Empresa 1</h4>
+                        <div class="form-group">
+                            <label for="rh-empresa1-nome">Nome</label>
+                            <input type="text" id="rh-empresa1-nome" placeholder="Nome da empresa">
+                        </div>
+                        <div class="form-group">
+                            <label for="rh-empresa1-link">Link (opcional)</label>
+                            <input type="url" id="rh-empresa1-link" placeholder="https://...">
+                        </div>
+                        <div class="form-group">
+                            <label for="rh-empresa1-unitario">Valor Unitário (R$)</label>
+                            <input type="text" id="rh-empresa1-unitario" class="valor-monetario" placeholder="0,00">
+                        </div>
+                        <div class="form-group">
+                            <label for="rh-empresa1-total">Valor Total (R$)</label>
+                            <input type="text" id="rh-empresa1-total" readonly>
+                        </div>
+                    </div>
+                    
+                    <!-- Empresa 2 -->
+                    <div class="empresa">
+                        <h4>Empresa 2</h4>
+                        <div class="form-group">
+                            <label for="rh-empresa2-nome">Nome</label>
+                            <input type="text" id="rh-empresa2-nome" placeholder="Nome da empresa">
+                        </div>
+                        <div class="form-group">
+                            <label for="rh-empresa2-link">Link (opcional)</label>
+                            <input type="url" id="rh-empresa2-link" placeholder="https://...">
+                        </div>
+                        <div class="form-group">
+                            <label for="rh-empresa2-unitario">Valor Unitário (R$)</label>
+                            <input type="text" id="rh-empresa2-unitario" class="valor-monetario" placeholder="0,00">
+                        </div>
+                        <div class="form-group">
+                            <label for="rh-empresa2-total">Valor Total (R$)</label>
+                            <input type="text" id="rh-empresa2-total" readonly>
+                        </div>
+                    </div>
+                    
+                    <!-- Empresa 3 -->
+                    <div class="empresa">
+                        <h4>Empresa 3</h4>
+                        <div class="form-group">
+                            <label for="rh-empresa3-nome">Nome</label>
+                            <input type="text" id="rh-empresa3-nome" placeholder="Nome da empresa">
+                        </div>
+                        <div class="form-group">
+                            <label for="rh-empresa3-link">Link (opcional)</label>
+                            <input type="url" id="rh-empresa3-link" placeholder="https://...">
+                        </div>
+                        <div class="form-group">
+                            <label for="rh-empresa3-unitario">Valor Unitário (R$)</label>
+                            <input type="text" id="rh-empresa3-unitario" class="valor-monetario" placeholder="0,00">
+                        </div>
+                        <div class="form-group">
+                            <label for="rh-empresa3-total">Valor Total (R$)</label>
+                            <input type="text" id="rh-empresa3-total" readonly>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group" style="margin-top: 20px;">
+                    <label for="rh-menor-valor">Menor Valor Cotado (R$)</label>
+                    <input type="text" id="rh-menor-valor" readonly>
+                </div>
+                
+                <button class="btn btn-success" id="rh-adicionar-carrinho">Adicionar ao Carrinho</button>
+            </div>
+        </div>
+
+        <!-- Formulário Material Esportivo -->
+        <div id="material-esportivo" class="tab-content">
+            <div class="formulario-item">
+                <h2>Adicionar Item - Material Esportivo</h2>
+                
+                <!-- Estrutura similar ao de Recursos Humanos -->
+                <!-- Implementação omitida por brevidade, mas seguiria o mesmo padrão -->
+                
+                <button class="btn btn-secondary" id="me-adicionar-carrinho">Adicionar ao Carrinho</button>
+            </div>
+        </div>
+
+        <!-- Formulário Uniformes -->
+        <div id="uniformes" class="tab-content">
+            <div class="formulario-item">
+                <h2>Adicionar Item - Uniformes</h2>
+                
+                <!-- Estrutura similar ao de Recursos Humanos -->
+                <!-- Implementação omitida por brevidade, mas seguiria o mesmo padrão -->
+                
+                <button class="btn btn-secondary" id="uniformes-adicionar-carrinho">Adicionar ao Carrinho</button>
+            </div>
+        </div>
+
+        <!-- Carrinho de Compras -->
+        <div class="carrinho">
+            <h3>Carrinho de Compras</h3>
+            <div id="lista-carrinho" class="carrinho-vazio">
+                Nenhum item adicionado ao carrinho
+            </div>
+            <div id="total-carrinho" class="total-carrinho">
+                Total no Carrinho: R$ 0,00
+            </div>
+            <div class="acoes-carrinho">
+                <button class="btn" id="btn-exportar-excel">Gerar Excel</button>
+                <button class="btn btn-success" id="btn-finalizar">Finalizar Precificação</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        © 2024 Ministério do Esporte - Todos os direitos reservados
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Recupera o valor da emenda da sessionStorage
+            const valorEmenda = parseFloat(sessionStorage.getItem('valorEmenda')) || 0;
+            document.getElementById('valor-total').textContent = formatarMoeda(valorEmenda);
+            document.getElementById('valor-restante').textContent = formatarMoeda(valorEmenda);
+            
+            // Variáveis do carrinho
+            let carrinho = [];
+            let valorGasto = 0;
+            
+            // Sistema de abas
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const tabId = this.getAttribute('data-tab');
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+            
+            // Cálculos para Recursos Humanos
+            const rhQuantidade = document.getElementById('rh-quantidade');
+            const rhPeriodo = document.getElementById('rh-periodo');
+            const rhTotal = document.getElementById('rh-total');
+            
+            function calcularTotalRH() {
+                const quantidade = parseInt(rhQuantidade.value) || 0;
+                const periodo = parseInt(rhPeriodo.value) || 0;
+                const total = quantidade * periodo;
+                rhTotal.value = total;
+                
+                // Recalcular totais das empresas
+                calcularTotaisEmpresas('rh');
+                return total;
+            }
+            
+            rhQuantidade.addEventListener('change', calcularTotalRH);
+            rhPeriodo.addEventListener('change', calcularTotalRH);
+            
+            // Função para calcular totais das empresas
+            function calcularTotaisEmpresas(prefixo) {
+                const total = parseInt(document.getElementById(`${prefixo}-total`).value) || 0;
+                let menorValor = Infinity;
+                
+                for (let i = 1; i <= 3; i++) {
+                    const unitario = parseFloat(
+                        document.getElementById(`${prefixo}-empresa${i}-unitario`).value.replace('.', '').replace(',', '.')
+                    ) || 0;
+                    
+                    const valorTotal = unitario * total;
+                    const valorTotalFormatado = formatarMoeda(valorTotal);
+                    
+                    document.getElementById(`${prefixo}-empresa${i}-total`).value = valorTotalFormatado;
+                    
+                    if (valorTotal < menorValor && valorTotal > 0) {
+                        menorValor = valorTotal;
+                    }
+                }
+                
+                document.getElementById(`${prefixo}-menor-valor`).value = 
+                    menorValor !== Infinity ? formatarMoeda(menorValor) : 'R$ 0,00';
+                
+                return menorValor !== Infinity ? menorValor : 0;
+            }
+            
+            // Configurar máscara monetária
+            document.querySelectorAll('.valor-monetario').forEach(input => {
+                input.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, '');
+                    value = (value / 100).toLocaleString('pt-BR', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+                    e.target.value = value;
+                    
+                    // Recalcular totais quando o valor unitário muda
+                    const id = e.target.id;
+                    if (id.includes('unitario')) {
+                        const prefixo = id.split('-')[0];
+                        calcularTotaisEmpresas(prefixo);
+                    }
+                });
+            });
+            
+            // Adicionar item ao carrinho (Recursos Humanos)
+            document.getElementById('rh-adicionar-carrinho').addEventListener('click', function() {
+                const descricao = document.getElementById('rh-descricao').value;
+                const quantidade = parseInt(rhQuantidade.value) || 0;
+                const periodo = parseInt(rhPeriodo.value) || 0;
+                const total = quantidade * periodo;
+                
+                if (!descricao || quantidade <= 0 || periodo <= 0) {
+                    alert('Preencha todos os campos obrigatórios!');
+                    return;
+                }
+                
+                const empresas = [];
+                let menorValor = Infinity;
+                
+                for (let i = 1; i <= 3; i++) {
+                    const nome = document.getElementById(`rh-empresa${i}-nome`).value;
+                    const link = document.getElementById(`rh-empresa${i}-link`).value;
+                    const unitario = parseFloat(
+                        document.getElementById(`rh-empresa${i}-unitario`).value.replace('.', '').replace(',', '.')
+                    ) || 0;
+                    const valorTotal = unitario * total;
+                    
+                    if (nome && valorTotal > 0) {
+                        empresas.push({
+                            nome,
+                            link,
+                            unitario,
+                            total: valorTotal
+                        });
+                        
+                        if (valorTotal < menorValor) {
+                            menorValor = valorTotal;
+                        }
+                    }
+                }
+                
+                if (empresas.length === 0) {
+                    alert('Informe pelo menos uma empresa válida!');
+                    return;
+                }
+                
+                if (valorGasto + menorValor > valorEmenda) {
+                    alert('Valor excede o saldo disponível na emenda!');
+                    return;
+                }
+                
+                // Adiciona ao carrinho
+                const novoItem = {
+                    id: Date.now(),
+                    tipo: 'recursos-humanos',
+                    descricao,
+                    quantidade,
+                    periodo,
+                    total,
+                    empresas,
+                    valor: menorValor,
+                    data: new Date()
+                };
+                
+                carrinho.push(novoItem);
+                valorGasto += menorValor;
+                
+                // Atualiza a interface
+                atualizarCarrinho();
+                atualizarResumoValores();
+                
+                // Limpa o formulário
+                document.getElementById('rh-descricao').value = '';
+                rhQuantidade.value = '1';
+                rhPeriodo.value = '1';
+                rhTotal.value = '';
+                
+                for (let i = 1; i <= 3; i++) {
+                    document.getElementById(`rh-empresa${i}-nome`).value = '';
+                    document.getElementById(`rh-empresa${i}-link`).value = '';
+                    document.getElementById(`rh-empresa${i}-unitario`).value = '';
+                    document.getElementById(`rh-empresa${i}-total`).value = '';
+                }
+                
+                document.getElementById('rh-menor-valor').value = '';
+            });
+            
+            // Função para atualizar o carrinho
+            function atualizarCarrinho() {
+                const listaCarrinho = document.getElementById('lista-carrinho');
+                
+                if (carrinho.length === 0) {
+                    listaCarrinho.innerHTML = 'Nenhum item adicionado ao carrinho';
+                    listaCarrinho.className = 'carrinho-vazio';
+                } else {
+                    listaCarrinho.className = '';
+                    listaCarrinho.innerHTML = carrinho.map(item => `
+                        <div class="item-carrinho" data-id="${item.id}">
+                            <div class="item-carrinho-info">
+                                <strong>${item.descricao}</strong><br>
+                                <small>${item.quantidade} x ${item.periodo} = ${item.total} | Menor valor: ${formatarMoeda(item.valor)}</small>
+                            </div>
+                            <div class="item-carrinho-acoes">
+                                <button class="remover-item">Remover</button>
+                            </div>
+                        </div>
+                    `).join('');
+                    
+                    // Adiciona eventos aos botões de remover
+                    document.querySelectorAll('.remover-item').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            const itemId = parseInt(this.closest('.item-carrinho').getAttribute('data-id'));
+                            removerItemCarrinho(itemId);
+                        });
+                    });
+                }
+                
+                document.getElementById('total-carrinho').textContent = `Total no Carrinho: ${formatarMoeda(valorGasto)}`;
+            }
+            
+            // Função para remover item do carrinho
+            function removerItemCarrinho(itemId) {
+                const itemIndex = carrinho.findIndex(item => item.id === itemId);
+                if (itemIndex !== -1) {
+                    const itemRemovido = carrinho[itemIndex];
+                    valorGasto -= itemRemovido.valor;
+                    carrinho.splice(itemIndex, 1);
+                    
+                    atualizarCarrinho();
+                    atualizarResumoValores();
+                }
+            }
+            
+            // Função para atualizar os valores resumidos
+            function atualizarResumoValores() {
+                document.getElementById('valor-gasto').textContent = formatarMoeda(valorGasto);
+                document.getElementById('valor-restante').textContent = formatarMoeda(valorEmenda - valorGasto);
+            }
+            
+            // Função para formatar valores monetários
+            function formatarMoeda(valor) {
+                return 'R$ ' + (typeof valor === 'number' ? valor : 0).toLocaleString('pt-BR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            }
+            
+            // Exportar para Excel
+            document.getElementById('btn-exportar-excel').addEventListener('click', function() {
+                if (carrinho.length === 0) {
+                    alert('O carrinho está vazio!');
+                    return;
+                }
+                
+                // Criar uma planilha Excel estruturada para fácil leitura por Python
+                const dados = [
+                    ['MINISTERIO_DO_ESPORTE', 'PRECIFICACAO_DE_EMENDAS', 'DATA', new Date().toISOString().split('T')[0]],
+                    ['VALOR_TOTAL_EMENDA', valorEmenda],
+                    ['VALOR_GASTO', valorGasto],
+                    ['VALOR_RESTANTE', valorEmenda - valorGasto],
+                    [],
+                    ['TIPO', 'DESCRICAO', 'QUANTIDADE', 'PERIODO', 'TOTAL', 'EMPRESA', 'VALOR_UNITARIO', 'VALOR_TOTAL', 'LINK']
+                ];
+                
+                carrinho.forEach(item => {
+                    item.empresas.forEach(empresa => {
+                        dados.push([
+                            item.tipo.toUpperCase().replace('-', '_'),
+                            item.descricao,
+                            item.quantidade,
+                            item.periodo,
+                            item.total,
+                            empresa.nome,
+                            empresa.unitario,
+                            empresa.total,
+                            empresa.link || ''
+                        ]);
+                    });
+                });
+                
+                // Converter para CSV (formato mais fácil para Python)
+                const csvContent = dados.map(row => 
+                    row.map(cell => 
+                        typeof cell === 'string' ? `"${cell.replace(/"/g, '""')}"` : cell
+                    ).join(',')
+                ).join('\n');
+                
+                // Criar link de download
+                const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.setAttribute('href', url);
+                link.setAttribute('download', `precificacao_emenda_${new Date().toISOString().slice(0,10)}.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+            
+            // Finalizar precificação
+            document.getElementById('btn-finalizar').addEventListener('click', function() {
+                if (carrinho.length === 0) {
+                    alert('Adicione itens ao carrinho antes de finalizar!');
+                    return;
+                }
+                
+                if (confirm('Deseja finalizar a precificação? Após confirmar, não será possível alterar os itens.')) {
+                    // Bloquear edição
+                    document.querySelectorAll('input, textarea, button').forEach(element => {
+                        if (element.id !== 'btn-exportar-excel') {
+                            element.disabled = true;
+                        }
+                    });
+                    
+                    // Mostrar mensagem de sucesso
+                    alert('Precificação finalizada com sucesso!');
+                    
+                    // Desabilitar botão de finalizar
+                    this.disabled = true;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
