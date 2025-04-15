@@ -667,49 +667,66 @@
                     return;
                 }
                 
-                // Criar uma planilha Excel estruturada para fácil leitura por Python
-                const dados = [
-                    ['MINISTERIO_DO_ESPORTE', 'PRECIFICACAO_DE_EMENDAS', 'DATA', new Date().toISOString().split('T')[0]],
-                    ['VALOR_TOTAL_EMENDA', valorEmenda],
-                    ['VALOR_GASTO', valorGasto],
-                    ['VALOR_RESTANTE', valorEmenda - valorGasto],
-                    [],
-                    ['TIPO', 'DESCRICAO', 'QUANTIDADE', 'PERIODO', 'TOTAL', 'EMPRESA', 'VALOR_UNITARIO', 'VALOR_TOTAL', 'LINK']
-                ];
-                
-                carrinho.forEach(item => {
-                    item.empresas.forEach(empresa => {
-                        dados.push([
-                            item.tipo.toUpperCase().replace('-', '_'),
-                            item.descricao,
-                            item.quantidade,
-                            item.periodo,
-                            item.total,
-                            empresa.nome,
-                            empresa.unitario,
-                            empresa.total,
-                            empresa.link || ''
-                        ]);
+                // Carrega a biblioteca xlsx
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
+                script.onload = function(){
+                    // Cria a planilha
+                    const work_book = XLSX.utils.book_new();
+                    
+                    // Planilha 1 Dados gerais da propsota
+                    const meta_data = [
+                        ['MINISTERIO_DO_ESPORTE', 'PRECIFICACAO_DE_EMENDAS', 'DATA', new Date().toISOString().split('T')[0]],
+                        ['VALOR_TOTAL_EMENDA', valorEmenda],
+                        ['VALOR_GASTO', valorGasto],
+                        ['VALOR_RESTANTE', valorEmenda - valorGasto]
+                    ];
+
+                    const meta_work_sheet = XLSX.utils.aoa_to_sheet(meta_data);
+                    XLSX.utils.book_append_sheet(work_book, meta_work_sheet, "Metadados")
+
+                    // Planilha 2 dados detalhados da proposta
+                    const headers = ['TIPO', 'DESCRICAO', 'QUANTIDADE', 'PERIODO', 'TOTAL', 'EMPRESA', 'VALOR_UNITARIO', 'VALOR_TOTAL', 'LINK'];
+                    const itemsdata = [headers]
+
+                    carrinho.forEach(item => {
+                        item.empresas.forEach(empresa => {
+                            itemsdata.push([
+                                item.tipo.toUpperCase().replace('-', '_'),
+                                item.descricao,
+                                item.quantidade,
+                                item.periodo,
+                                item.total,
+                                empresa.nome,
+                                empresa.unitario,
+                                empresa.total,
+                                empresa.link || ''
+                            ]);
+                        });
                     });
-                });
-                
-                // Converter para CSV (formato mais fácil para Python)
-                const csvContent = dados.map(row => 
-                    row.map(cell => 
-                        typeof cell === 'string' ? `"${cell.replace(/"/g, '""')}"` : cell
-                    ).join(',')
-                ).join('\n');
-                
-                // Criar link de download
-                const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.setAttribute('href', url);
-                link.setAttribute('download', `precificacao_emenda_${new Date().toISOString().slice(0,10)}.csv`);
-                link.style.visibility = 'hidden';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
+
+                    const items_work_sheet = XLSX.utils.aoa_to_sheet(itemsdata);
+
+                    // Formata as colunas (VALOR_UNITARIO, VALOR_TOTAL) em contábil
+                    if (items_work_sheet['!ref']) {
+                        const range = XLSX.utils.decode_range(items_work_sheet['!ref']);
+                        for (let C = 6; C<= 7; C++) {  // Colunas G e H (índice base 0, 6-7)
+                            for (let R = 1; R <= range.e.r; R++) {  // Pula cabeçalho
+                                const cell_ref = XLSX.utils.encode_cell({r:R, c:C});
+                                if (items_work_sheet[cell_ref]) {
+                                    items_work_sheet[cell_ref].t = 'n'; // Formato numérico
+                                    items_work_sheet[cell_ref].z = '"R$"#,##0.00;[Red]"R$"-#,##0.00'; // Formato BRL
+                                }
+                            }
+                        }
+                    }
+                    
+                    XLSX.utils.book_append_sheet(work_book, items_work_sheet, 'Itens');
+
+                    // Exporta o arquivo
+                    XLSX.writeFile(work_book, `precificacao_emenda_${new Date().toISOString().slice(0,10)}.xlsx`);
+                };
+                document.head.appendChild(script);
             });
             
             // Finalizar precificação
