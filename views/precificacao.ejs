@@ -660,57 +660,85 @@
                 });
             }
             
-            // Exportar para Excel
-            document.getElementById('btn-exportar-excel').addEventListener('click', function() {
-                if (carrinho.length === 0) {
-                    alert('O carrinho está vazio!');
-                    return;
-                }
-                
-                // Criar uma planilha Excel estruturada para fácil leitura por Python
-                const dados = [
-                    ['MINISTERIO_DO_ESPORTE', 'PRECIFICACAO_DE_EMENDAS', 'DATA', new Date().toISOString().split('T')[0]],
-                    ['VALOR_TOTAL_EMENDA', valorEmenda],
-                    ['VALOR_GASTO', valorGasto],
-                    ['VALOR_RESTANTE', valorEmenda - valorGasto],
-                    [],
-                    ['TIPO', 'DESCRICAO', 'QUANTIDADE', 'PERIODO', 'TOTAL', 'EMPRESA', 'VALOR_UNITARIO', 'VALOR_TOTAL', 'LINK']
-                ];
-                
-                carrinho.forEach(item => {
-                    item.empresas.forEach(empresa => {
-                        dados.push([
-                            item.tipo.toUpperCase().replace('-', '_'),
-                            item.descricao,
-                            item.quantidade,
-                            item.periodo,
-                            item.total,
-                            empresa.nome,
-                            empresa.unitario,
-                            empresa.total,
-                            empresa.link || ''
-                        ]);
-                    });
-                });
-                
-                // Converter para CSV (formato mais fácil para Python)
-                const csvContent = dados.map(row => 
-                    row.map(cell => 
-                        typeof cell === 'string' ? `"${cell.replace(/"/g, '""')}"` : cell
-                    ).join(',')
-                ).join('\n');
-                
-                // Criar link de download
-                const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.setAttribute('href', url);
-                link.setAttribute('download', `precificacao_emenda_${new Date().toISOString().slice(0,10)}.csv`);
-                link.style.visibility = 'hidden';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            });
+  // Exportar para Excel
+document.getElementById('btn-exportar-excel').addEventListener('click', function() {
+    if (carrinho.length === 0) {
+        alert('O carrinho está vazio!');
+        return;
+    }
+    
+    // Cabeçalho das colunas principais
+    const dados = [
+        // Cabeçalho principal
+        [
+            'Tipo', 
+            'Descrição', 
+            'Quantidade', 
+            'Período (Dias/Meses)', 
+            'Total', 
+            'Empresa', 
+            'Valor Unitário', 
+            'Valor Total', 
+            'Link da Cotação'
+        ]
+    ];
+    
+    // Adicionar os itens do carrinho
+    carrinho.forEach(item => {
+        item.empresas.forEach((empresa, index) => {
+            dados.push([
+                formatarTipo(item.tipo),
+                item.descricao,
+                item.quantidade,
+                item.periodo,
+                item.total,
+                empresa.nome || '-',
+                formatarMoeda(empresa.unitario),
+                formatarMoeda(empresa.total),
+                empresa.link || '-'
+            ]);
+        });
+    });
+    
+    // Adicionar linha vazia de separação
+    dados.push(['', '', '', '', '', '', '', '', '']);
+    
+    // Adicionar os totais no final
+    dados.push(
+        ['Data:', new Date().toISOString().split('T')[0], '', '', '', '', '', '', ''],
+        ['Valor Total da Emenda:', formatarMoeda(valorEmenda), '', '', '', '', '', '', ''],
+        ['Valor Gasto:', formatarMoeda(valorGasto), '', '', '', '', '', '', ''],
+        ['Valor Restante:', formatarMoeda(valorEmenda - valorGasto), '', '', '', '', '', '', '']
+    );
+    
+    // Função auxiliar para formatar o tipo
+    function formatarTipo(tipo) {
+        const tipos = {
+            'recursos-humanos': 'Recursos Humanos',
+            'material-esportivo': 'Material Esportivo',
+            'uniformes': 'Uniformes'
+        };
+        return tipos[tipo] || tipo;
+    }
+    
+    // Converter para CSV
+    const csvContent = dados.map(row => 
+        row.map(cell => 
+            typeof cell === 'string' ? `"${cell.replace(/"/g, '""')}"` : cell
+        ).join(';')
+    ).join('\n');
+    
+    // Criar link de download
+    const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `precificacao_emenda_${new Date().toISOString().slice(0,10)}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+});
             
             // Finalizar precificação
             document.getElementById('btn-finalizar').addEventListener('click', function() {
