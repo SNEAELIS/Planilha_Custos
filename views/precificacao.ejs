@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -24,7 +25,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .logo {
@@ -37,10 +38,11 @@
             padding: 20px;
             background: white;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        h1, h2 {
+        h1,
+        h2 {
             color: #003366;
             margin-bottom: 20px;
             text-align: center;
@@ -116,7 +118,9 @@
             color: #003366;
         }
 
-        .form-group input, .form-group textarea, .form-group select {
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
             width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
@@ -249,17 +253,18 @@
                 margin: 15px;
                 padding: 15px;
             }
-            
+
             .empresas-container {
                 grid-template-columns: 1fr;
             }
-            
+
             .resumo-valores {
                 flex-direction: column;
             }
         }
     </style>
 </head>
+
 <body>
     <header class="header">
         <img src="logo-ministerio-esporte.png" alt="Ministério do Esporte" class="logo">
@@ -268,7 +273,7 @@
 
     <div class="container">
         <h1>Precificação de Itens</h1>
-        
+
         <div class="resumo-valores">
             <p><span>Valor Total da Emenda:</span> <strong id="valor-total">R$ 0,00</strong></p>
             <p><span>Valor Gasto:</span> <strong id="valor-gasto">R$ 0,00</strong></p>
@@ -279,35 +284,38 @@
             <div class="tab active" data-tab="recursos-humanos">Recursos Humanos</div>
             <div class="tab" data-tab="material-esportivo">Material Esportivo</div>
             <div class="tab" data-tab="uniformes">Uniformes</div>
+            <div class="tab" data-tab="identificacao">Identificação</div>
+            <div class="tab" data-tab="alimentacao">Alimentação</div>
         </div>
 
         <!-- Formulário Recursos Humanos -->
         <div id="recursos-humanos" class="tab-content active">
             <div class="formulario-item">
                 <h2>Adicionar Item - Recursos Humanos</h2>
-                
+
                 <div class="form-group">
                     <label for="rh-descricao">Descrição do Item/Método de Cálculo</label>
-                    <textarea id="rh-descricao" placeholder="Ex: PROFESSOR - Responsável pela preparação e execução das aulas"></textarea>
+                    <textarea id="rh-descricao"
+                        placeholder="Ex: PROFESSOR - Responsável pela preparação e execução das aulas"></textarea>
                 </div>
-                
+
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
                     <div class="form-group">
                         <label for="rh-quantidade">Quantidade</label>
                         <input type="number" id="rh-quantidade" min="1" value="1">
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="rh-periodo">Diárias/Meses</label>
                         <input type="number" id="rh-periodo" min="1" value="1">
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="rh-total">Total</label>
                         <input type="text" id="rh-total" readonly>
                     </div>
                 </div>
-                
+
                 <h3 style="margin-top: 20px;">Empresas Cotadas</h3>
                 <div class="empresas-container">
                     <!-- Empresa 1 -->
@@ -330,7 +338,7 @@
                             <input type="text" id="rh-empresa1-total" readonly>
                         </div>
                     </div>
-                    
+
                     <!-- Empresa 2 -->
                     <div class="empresa">
                         <h4>Empresa 2</h4>
@@ -351,7 +359,7 @@
                             <input type="text" id="rh-empresa2-total" readonly>
                         </div>
                     </div>
-                    
+
                     <!-- Empresa 3 -->
                     <div class="empresa">
                         <h4>Empresa 3</h4>
@@ -373,12 +381,12 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="form-group" style="margin-top: 20px;">
                     <label for="rh-menor-valor">Menor Valor Cotado (R$)</label>
                     <input type="text" id="rh-menor-valor" readonly>
                 </div>
-                
+
                 <button class="btn btn-success" id="rh-adicionar-carrinho">Adicionar ao Carrinho</button>
             </div>
         </div>
@@ -387,10 +395,105 @@
         <div id="material-esportivo" class="tab-content">
             <div class="formulario-item">
                 <h2>Adicionar Item - Material Esportivo</h2>
-                
+
+
+                <div class="form-group">
+                    <label for="me-descricao">Descrição do Item/Método de Cálculo</label>
+                    <textarea id="me-descricao"
+                        placeholder="Ex: Bola de Futebol - Responsável pela preparação e execução das aulas"></textarea>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                    <div class="form-group">
+                        <label for="me-quantidade">Quantidade</label>
+                        <input type="number" id="me-quantidade" min="1" value="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="me-periodo">Diárias/Meses</label>
+                        <input type="number" id="me-periodo" min="1" value="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="me-total">Total</label>
+                        <input type="text" id="me-total" readonly>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 20px;">Empresas Cotadas</h3>
+                <div class="empresas-container">
+                    <!-- Empresa 1 -->
+                    <div class="empresa">
+                        <h4>Empresa 1</h4>
+                        <div class="form-group">
+                            <label for="me-empresa1-nome">Nome</label>
+                            <input type="text" id="me-empresa1-nome" placeholder="Nome da empresa">
+                        </div>
+                        <div class="form-group">
+                            <label for="me-empresa1-link">Link (opcional)</label>
+                            <input type="url" id="me-empresa1-link" placeholder="https://...">
+                        </div>
+                        <div class="form-group">
+                            <label for="me-empresa1-unitario">Valor Unitário (R$)</label>
+                            <input type="text" id="me-empresa1-unitario" class="valor-monetario" placeholder="0,00">
+                        </div>
+                        <div class="form-group">
+                            <label for="me-empresa1-total">Valor Total (R$)</label>
+                            <input type="text" id="me-empresa1-total" readonly>
+                        </div>
+                    </div>
+
+                    <!-- Empresa 2 -->
+                    <div class="empresa">
+                        <h4>Empresa 2</h4>
+                        <div class="form-group">
+                            <label for="me-empresa2-nome">Nome</label>
+                            <input type="text" id="me-empresa2-nome" placeholder="Nome da empresa">
+                        </div>
+                        <div class="form-group">
+                            <label for="rh-empresa2-link">Link (opcional)</label>
+                            <input type="url" id="me-empresa2-link" placeholder="https://...">
+                        </div>
+                        <div class="form-group">
+                            <label for="me-empresa2-unitario">Valor Unitário (R$)</label>
+                            <input type="text" id="me-empresa2-unitario" class="valor-monetario" placeholder="0,00">
+                        </div>
+                        <div class="form-group">
+                            <label for="me-empresa2-total">Valor Total (R$)</label>
+                            <input type="text" id="me-empresa2-total" readonly>
+                        </div>
+                    </div>
+
+                    <!-- Empresa 3 -->
+                    <div class="empresa">
+                        <h4>Empresa 3</h4>
+                        <div class="form-group">
+                            <label for="me-empresa3-nome">Nome</label>
+                            <input type="text" id="me-empresa3-nome" placeholder="Nome da empresa">
+                        </div>
+                        <div class="form-group">
+                            <label for="me-empresa3-link">Link (opcional)</label>
+                            <input type="url" id="rh-empresa3-link" placeholder="https://...">
+                        </div>
+                        <div class="form-group">
+                            <label for="me-empresa3-unitario">Valor Unitário (R$)</label>
+                            <input type="text" id="me-empresa3-unitario" class="valor-monetario" placeholder="0,00">
+                        </div>
+                        <div class="form-group">
+                            <label for="me-empresa3-total">Valor Total (R$)</label>
+                            <input type="text" id="me-empresa3-total" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 20px;">
+                    <label for="me-menor-valor">Menor Valor Cotado (R$)</label>
+                    <input type="text" id="me-menor-valor" readonly>
+                </div>
+
                 <!-- Estrutura similar ao de Recursos Humanos -->
                 <!-- Implementação omitida por brevidade, mas seguiria o mesmo padrão -->
-                
+
                 <button class="btn btn-secondary" id="me-adicionar-carrinho">Adicionar ao Carrinho</button>
             </div>
         </div>
@@ -399,27 +502,312 @@
         <div id="uniformes" class="tab-content">
             <div class="formulario-item">
                 <h2>Adicionar Item - Uniformes</h2>
-                
-                <!-- Estrutura similar ao de Recursos Humanos -->
-                <!-- Implementação omitida por brevidade, mas seguiria o mesmo padrão -->
-                
-                <button class="btn btn-secondary" id="uniformes-adicionar-carrinho">Adicionar ao Carrinho</button>
+
+
+                <div class="form-group">
+                    <label for="un-descricao">Descrição do Item/Método de Cálculo</label>
+                    <textarea id="un-descricao"
+                        placeholder="Ex: Camisa - Responsável pela preparação e execução das aulas"></textarea>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                    <div class="form-group">
+                        <label for="un-quantidade">Quantidade</label>
+                        <input type="number" id="un-quantidade" min="1" value="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="un-periodo">Diárias/Meses</label>
+                        <input type="number" id="un-periodo" min="1" value="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="un-total">Total</label>
+                        <input type="text" id="un-total" readonly>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 20px;">Empresas Cotadas</h3>
+                <div class="empresas-container">
+                    <!-- Empresa 1 -->
+                    <div class="empresa">
+                        <h4>Empresa 1</h4>
+                        <div class="form-group">
+                            <label for="un-empresa1-nome">Nome</label>
+                            <input type="text" id="un-empresa1-nome" placeholder="Nome da empresa">
+                        </div>
+                        <div class="form-group">
+                            <label for="un-empresa1-link">Link (opcional)</label>
+                            <input type="url" id="un-empresa1-link" placeholder="https://...">
+                        </div>
+                        <div class="form-group">
+                            <label for="un-empresa1-unitario">Valor Unitário (R$)</label>
+                            <input type="text" id="un-empresa1-unitario" class="valor-monetario" placeholder="0,00">
+                        </div>
+                        <div class="form-group">
+                            <label for="un-empresa1-total">Valor Total (R$)</label>
+                            <input type="text" id="un-empresa1-total" readonly>
+                        </div>
+                    </div>
+
+                    <!-- Empresa 2 -->
+                    <div class="empresa">
+                        <h4>Empresa 2</h4>
+                        <div class="form-group">
+                            <label for="un-empresa2-nome">Nome</label>
+                            <input type="text" id="un-empresa2-nome" placeholder="Nome da empresa">
+                        </div>
+                        <div class="form-group">
+                            <label for="un-empresa2-link">Link (opcional)</label>
+                            <input type="url" id="un-empresa2-link" placeholder="https://...">
+                        </div>
+                        <div class="form-group">
+                            <label for="un-empresa2-unitario">Valor Unitário (R$)</label>
+                            <input type="text" id="un-empresa2-unitario" class="valor-monetario" placeholder="0,00">
+                        </div>
+                        <div class="form-group">
+                            <label for="un-empresa2-total">Valor Total (R$)</label>
+                            <input type="text" id="un-empresa2-total" readonly>
+                        </div>
+                    </div>
+
+                    <!-- Empresa 3 -->
+                    <div class="empresa">
+                        <h4>Empresa 3</h4>
+                        <div class="form-group">
+                            <label for="un-empresa3-nome">Nome</label>
+                            <input type="text" id="un-empresa3-nome" placeholder="Nome da empresa">
+                        </div>
+                        <div class="form-group">
+                            <label for="un-empresa3-link">Link (opcional)</label>
+                            <input type="url" id="un-empresa3-link" placeholder="https://...">
+                        </div>
+                        <div class="form-group">
+                            <label for="un-empresa3-unitario">Valor Unitário (R$)</label>
+                            <input type="text" id="un-empresa3-unitario" class="valor-monetario" placeholder="0,00">
+                        </div>
+                        <div class="form-group">
+                            <label for="un-empresa3-total">Valor Total (R$)</label>
+                            <input type="text" id="un-empresa3-total" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 20px;">
+                    <label for="un-menor-valor">Menor Valor Cotado (R$)</label>
+                    <input type="text" id="un-menor-valor" readonly>
+                </div>
+
+                <button class="btn btn-secondary" id="un-adicionar-carrinho">Adicionar ao Carrinho</button>
             </div>
         </div>
 
-        <!-- Carrinho de Compras -->
-        <div class="carrinho">
-            <h3>Carrinho de Compras</h3>
-            <div id="lista-carrinho" class="carrinho-vazio">
-                Nenhum item adicionado ao carrinho
+
+        <!-- Formulário Identificação -->
+        <div id="identificacao" class="tab-content active">
+            <div class="formulario-item">
+                <h2>Adicionar Item - Identificação</h2>
+
+                <div class="form-group">
+                    <label for="id-descricao">Descrição do Item/Método de Cálculo</label>
+                    <textarea id="id-descricao"
+                        placeholder="Ex: PROFESSOR - Responsável pela preparação e execução das aulas"></textarea>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                    <div class="form-group">
+                        <label for="id-quantidade">Quantidade</label>
+                        <input type="number" id="id-quantidade" min="1" value="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id-periodo">Diárias/Meses</label>
+                        <input type="number" id="id-periodo" min="1" value="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id-total">Total</label>
+                        <input type="text" id="rh-total" readonly>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 20px;">Empresas Cotadas</h3>
+                <div class="empresas-container">
+                    <!-- Empresa 1 -->
+                    <div class="empresa">
+                        <h4>Empresa 1</h4>
+                        <div class="form-group">
+                            <label for="id-empresa1-nome">Nome</label>
+                            <input type="text" id="rh-empresa1-nome" placeholder="Nome da empresa">
+                        </div>
+                        <div class="form-group">
+                            <label for="id-empresa1-link">Link (opcional)</label>
+                            <input type="url" id="id-empresa1-link" placeholder="https://...">
+                        </div>
+                        <div class="form-group">
+                            <label for="id-empresa1-unitario">Valor Unitário (R$)</label>
+                            <input type="text" id="id-empresa1-unitario" class="valor-monetario" placeholder="0,00">
+                        </div>
+                        <div class="form-group">
+                            <label for="id-empresa1-total">Valor Total (R$)</label>
+                            <input type="text" id="id-empresa1-total" readonly>
+                        </div>
+                    </div>
+
+                    <!-- Empresa 2 -->
+                    <div class="empresa">
+                        <h4>Empresa 2</h4>
+                        <div class="form-group">
+                            <label for="id-empresa2-nome">Nome</label>
+                            <input type="text" id="id-empresa2-nome" placeholder="Nome da empresa">
+                        </div>
+                        <div class="form-group">
+                            <label for="id-empresa2-link">Link (opcional)</label>
+                            <input type="url" id="id-empresa2-link" placeholder="https://...">
+                        </div>
+                        <div class="form-group">
+                            <label for="id-empresa2-unitario">Valor Unitário (R$)</label>
+                            <input type="text" id="id-empresa2-unitario" class="valor-monetario" placeholder="0,00">
+                        </div>
+                        <div class="form-group">
+                            <label for="id-empresa2-total">Valor Total (R$)</label>
+                            <input type="text" id="id-empresa2-total" readonly>
+                        </div>
+                    </div>
+
+                    <!-- Empresa 3 -->
+                    <div class="empresa">
+                        <h4>Empresa 3</h4>
+                        <div class="form-group">
+                            <label for="id-empresa3-nome">Nome</label>
+                            <input type="text" id="id-empresa3-nome" placeholder="Nome da empresa">
+                        </div>
+                        <div class="form-group">
+                            <label for="id-empresa3-link">Link (opcional)</label>
+                            <input type="url" id="id-empresa3-link" placeholder="https://...">
+                        </div>
+                        <div class="form-group">
+                            <label for="id-empresa3-unitario">Valor Unitário (R$)</label>
+                            <input type="text" id="id-empresa3-unitario" class="valor-monetario" placeholder="0,00">
+                        </div>
+                        <div class="form-group">
+                            <label for="id-empresa3-total">Valor Total (R$)</label>
+                            <input type="text" id="id-empresa3-total" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 20px;">
+                    <label for="id-menor-valor">Menor Valor Cotado (R$)</label>
+                    <input type="text" id="id-menor-valor" readonly>
+                </div>
+
+                <button class="btn btn-success" id="id-adicionar-carrinho">Adicionar ao Carrinho</button>
             </div>
-            <div id="total-carrinho" class="total-carrinho">
-                Total no Carrinho: R$ 0,00
+        </div>
+
+    
+
+    <!-- Formulário Alimentação -->
+    <div id="alimentacao" class="tab-content active">
+        <div class="formulario-item">
+            <h2>Adicionar Item -Alimentação</h2>
+
+            <div class="form-group">
+                <label for="al-descricao">Descrição do Item/Método de Cálculo</label>
+                <textarea id="al-descricao"
+                    placeholder="Ex: Kit de alimentação - Responsável pela preparação e execução das aulas"></textarea>
             </div>
-            <div class="acoes-carrinho">
-                <button class="btn" id="btn-exportar-excel">Gerar Excel</button>
-                <button class="btn btn-success" id="btn-finalizar">Finalizar Precificação</button>
+
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                <div class="form-group">
+                    <label for="al-quantidade">Quantidade</label>
+                    <input type="number" id="al-quantidade" min="1" value="1">
+                </div>
+
+                <div class="form-group">
+                    <label for="al-periodo">Diárias/Meses</label>
+                    <input type="number" id="al-periodo" min="1" value="1">
+                </div>
+
+                <div class="form-group">
+                    <label for="al-total">Total</label>
+                    <input type="text" id="al-total" readonly>
+                </div>
             </div>
+
+            <h3 style="margin-top: 20px;">Empresas Cotadas</h3>
+            <div class="empresas-container">
+                <!-- Empresa 1 -->
+                <div class="empresa">
+                    <h4>Empresa 1</h4>
+                    <div class="form-group">
+                        <label for="al-empresa1-nome">Nome</label>
+                        <input type="text" id="al-empresa1-nome" placeholder="Nome da empresa">
+                    </div>
+                    <div class="form-group">
+                        <label for="al-empresa1-link">Link (opcional)</label>
+                        <input type="url" id="al-empresa1-link" placeholder="https://...">
+                    </div>
+                    <div class="form-group">
+                        <label for="al-empresa1-unitario">Valor Unitário (R$)</label>
+                        <input type="text" id="al-empresa1-unitario" class="valor-monetario" placeholder="0,00">
+                    </div>
+                    <div class="form-group">
+                        <label for="al-empresa1-total">Valor Total (R$)</label>
+                        <input type="text" id="al-empresa1-total" readonly>
+                    </div>
+                </div>
+
+                <!-- Empresa 2 -->
+                <div class="empresa">
+                    <h4>Empresa 2</h4>
+                    <div class="form-group">
+                        <label for="al-empresa2-nome">Nome</label>
+                        <input type="text" id="al-empresa2-nome" placeholder="Nome da empresa">
+                    </div>
+                    <div class="form-group">
+                        <label for="al-empresa2-link">Link (opcional)</label>
+                        <input type="url" id="al-empresa2-link" placeholder="https://...">
+                    </div>
+                    <div class="form-group">
+                        <label for="al-empresa2-unitario">Valor Unitário (R$)</label>
+                        <input type="text" id="al-empresa2-unitario" class="valor-monetario" placeholder="0,00">
+                    </div>
+                    <div class="form-group">
+                        <label for="al-empresa2-total">Valor Total (R$)</label>
+                        <input type="text" id="rh-empresa2-total" readonly>
+                    </div>
+                </div>
+
+                <!-- Empresa 3 -->
+                <div class="empresa">
+                    <h4>Empresa 3</h4>
+                    <div class="form-group">
+                        <label for="al-empresa3-nome">Nome</label>
+                        <input type="text" id="al-empresa3-nome" placeholder="Nome da empresa">
+                    </div>
+                    <div class="form-group">
+                        <label for="al-empresa3-link">Link (opcional)</label>
+                        <input type="url" id="al-empresa3-link" placeholder="https://...">
+                    </div>
+                    <div class="form-group">
+                        <label for="al-empresa3-unitario">Valor Unitário (R$)</label>
+                        <input type="text" id="al-empresa3-unitario" class="valor-monetario" placeholder="0,00">
+                    </div>
+                    <div class="form-group">
+                        <label for="al-empresa3-total">Valor Total (R$)</label>
+                        <input type="text" id="al-empresa3-total" readonly>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 20px;">
+                <label for="al-menor-valor">Menor Valor Cotado (R$)</label>
+                <input type="text" id="al-menor-valor" readonly>
+            </div>
+
+            <button class="btn btn-success" id="al-adicionar-carrinho">Adicionar ao Carrinho</button>
         </div>
     </div>
 
@@ -428,23 +816,23 @@
     </footer>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Recupera o valor da emenda da sessionStorage
             const valorEmenda = parseFloat(sessionStorage.getItem('valorEmenda')) || 0;
             document.getElementById('valor-total').textContent = formatarMoeda(valorEmenda);
             document.getElementById('valor-restante').textContent = formatarMoeda(valorEmenda);
-            
+
             // Variáveis do carrinho
             let carrinho = [];
             let valorGasto = 0;
-            
+
             // Sistema de abas
             const tabs = document.querySelectorAll('.tab');
             tabs.forEach(tab => {
-                tab.addEventListener('click', function() {
+                tab.addEventListener('click', function () {
                     tabs.forEach(t => t.classList.remove('active'));
                     this.classList.add('active');
-                    
+
                     const tabId = this.getAttribute('data-tab');
                     document.querySelectorAll('.tab-content').forEach(content => {
                         content.classList.remove('active');
@@ -452,94 +840,67 @@
                     document.getElementById(tabId).classList.add('active');
                 });
             });
-            
-            // Cálculos para Recursos Humanos
-            const rhQuantidade = document.getElementById('rh-quantidade');
-            const rhPeriodo = document.getElementById('rh-periodo');
-            const rhTotal = document.getElementById('rh-total');
-            
-            function calcularTotalRH() {
-                const quantidade = parseInt(rhQuantidade.value) || 0;
-                const periodo = parseInt(rhPeriodo.value) || 0;
+
+            // Função genérica para calcular totais
+            function calcularTotal(prefixo) {
+                const quantidade = parseInt(document.getElementById(`${prefixo}-quantidade`).value) || 0;
+                const periodo = parseInt(document.getElementById(`${prefixo}-periodo`).value) || 0;
                 const total = quantidade * periodo;
-                rhTotal.value = total;
-                
-                // Recalcular totais das empresas
-                calcularTotaisEmpresas('rh');
+                document.getElementById(`${prefixo}-total`).value = total;
+
+                calcularTotaisEmpresas(prefixo);
                 return total;
             }
-            
-            rhQuantidade.addEventListener('change', calcularTotalRH);
-            rhPeriodo.addEventListener('change', calcularTotalRH);
-            
+
             // Função para calcular totais das empresas
             function calcularTotaisEmpresas(prefixo) {
                 const total = parseInt(document.getElementById(`${prefixo}-total`).value) || 0;
                 let menorValor = Infinity;
-                
+
                 for (let i = 1; i <= 3; i++) {
                     const unitario = parseFloat(
                         document.getElementById(`${prefixo}-empresa${i}-unitario`).value.replace('.', '').replace(',', '.')
                     ) || 0;
-                    
+
                     const valorTotal = unitario * total;
                     const valorTotalFormatado = formatarMoeda(valorTotal);
-                    
+
                     document.getElementById(`${prefixo}-empresa${i}-total`).value = valorTotalFormatado;
-                    
+
                     if (valorTotal < menorValor && valorTotal > 0) {
                         menorValor = valorTotal;
                     }
                 }
-                
-                document.getElementById(`${prefixo}-menor-valor`).value = 
+
+                document.getElementById(`${prefixo}-menor-valor`).value =
                     menorValor !== Infinity ? formatarMoeda(menorValor) : 'R$ 0,00';
-                
+
                 return menorValor !== Infinity ? menorValor : 0;
             }
-            
-            // Configurar máscara monetária
-            document.querySelectorAll('.valor-monetario').forEach(input => {
-                input.addEventListener('input', function(e) {
-                    let value = e.target.value.replace(/\D/g, '');
-                    value = (value / 100).toLocaleString('pt-BR', {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    });
-                    e.target.value = value;
-                    
-                    // Recalcular totais quando o valor unitário muda
-                    const id = e.target.id;
-                    if (id.includes('unitario')) {
-                        const prefixo = id.split('-')[0];
-                        calcularTotaisEmpresas(prefixo);
-                    }
-                });
-            });
-            
-            // Adicionar item ao carrinho (Recursos Humanos)
-            document.getElementById('rh-adicionar-carrinho').addEventListener('click', function() {
-                const descricao = document.getElementById('rh-descricao').value;
-                const quantidade = parseInt(rhQuantidade.value) || 0;
-                const periodo = parseInt(rhPeriodo.value) || 0;
+
+            // Função genérica para adicionar item ao carrinho
+            function adicionarAoCarrinho(prefixo, tipo) {
+                const descricao = document.getElementById(`${prefixo}-descricao`).value;
+                const quantidade = parseInt(document.getElementById(`${prefixo}-quantidade`).value) || 0;
+                const periodo = parseInt(document.getElementById(`${prefixo}-periodo`).value) || 0;
                 const total = quantidade * periodo;
-                
+
                 if (!descricao || quantidade <= 0 || periodo <= 0) {
                     alert('Preencha todos os campos obrigatórios!');
                     return;
                 }
-                
+
                 const empresas = [];
                 let menorValor = Infinity;
-                
+
                 for (let i = 1; i <= 3; i++) {
-                    const nome = document.getElementById(`rh-empresa${i}-nome`).value;
-                    const link = document.getElementById(`rh-empresa${i}-link`).value;
+                    const nome = document.getElementById(`${prefixo}-empresa${i}-nome`).value;
+                    const link = document.getElementById(`${prefixo}-empresa${i}-link`).value;
                     const unitario = parseFloat(
-                        document.getElementById(`rh-empresa${i}-unitario`).value.replace('.', '').replace(',', '.')
+                        document.getElementById(`${prefixo}-empresa${i}-unitario`).value.replace('.', '').replace(',', '.')
                     ) || 0;
                     const valorTotal = unitario * total;
-                    
+
                     if (nome && valorTotal > 0) {
                         empresas.push({
                             nome,
@@ -547,27 +908,27 @@
                             unitario,
                             total: valorTotal
                         });
-                        
+
                         if (valorTotal < menorValor) {
                             menorValor = valorTotal;
                         }
                     }
                 }
-                
+
                 if (empresas.length === 0) {
                     alert('Informe pelo menos uma empresa válida!');
                     return;
                 }
-                
+
                 if (valorGasto + menorValor > valorEmenda) {
                     alert('Valor excede o saldo disponível na emenda!');
                     return;
                 }
-                
+
                 // Adiciona ao carrinho
                 const novoItem = {
                     id: Date.now(),
-                    tipo: 'recursos-humanos',
+                    tipo: tipo,
                     descricao,
                     quantidade,
                     periodo,
@@ -576,63 +937,112 @@
                     valor: menorValor,
                     data: new Date()
                 };
-                
+
                 carrinho.push(novoItem);
                 valorGasto += menorValor;
-                
+
                 // Atualiza a interface
                 atualizarCarrinho();
                 atualizarResumoValores();
-                
+
                 // Limpa o formulário
-                document.getElementById('rh-descricao').value = '';
-                rhQuantidade.value = '1';
-                rhPeriodo.value = '1';
-                rhTotal.value = '';
-                
+                document.getElementById(`${prefixo}-descricao`).value = '';
+                document.getElementById(`${prefixo}-quantidade`).value = '1';
+                document.getElementById(`${prefixo}-periodo`).value = '1';
+                document.getElementById(`${prefixo}-total`).value = '';
+
                 for (let i = 1; i <= 3; i++) {
-                    document.getElementById(`rh-empresa${i}-nome`).value = '';
-                    document.getElementById(`rh-empresa${i}-link`).value = '';
-                    document.getElementById(`rh-empresa${i}-unitario`).value = '';
-                    document.getElementById(`rh-empresa${i}-total`).value = '';
+                    document.getElementById(`${prefixo}-empresa${i}-nome`).value = '';
+                    document.getElementById(`${prefixo}-empresa${i}-link`).value = '';
+                    document.getElementById(`${prefixo}-empresa${i}-unitario`).value = '';
+                    document.getElementById(`${prefixo}-empresa${i}-total`).value = '';
                 }
-                
-                document.getElementById('rh-menor-valor').value = '';
+
+                document.getElementById(`${prefixo}-menor-valor`).value = '';
+            }
+
+            // Configuração para Recursos Humanos
+            document.getElementById('rh-quantidade').addEventListener('change', () => calcularTotal('rh'));
+            document.getElementById('rh-periodo').addEventListener('change', () => calcularTotal('rh'));
+            document.getElementById('rh-adicionar-carrinho').addEventListener('click', () => adicionarAoCarrinho('rh', 'recursos-humanos'));
+
+            // Configuração para Material Esportivo
+            document.getElementById('me-quantidade').addEventListener('change', () => calcularTotal('me'));
+            document.getElementById('me-periodo').addEventListener('change', () => calcularTotal('me'));
+            document.getElementById('me-adicionar-carrinho').addEventListener('click', () => adicionarAoCarrinho('me', 'material-esportivo'));
+
+            // Configuração para Uniformes
+            document.getElementById('un-quantidade').addEventListener('change', () => calcularTotal('un'));
+            document.getElementById('un-periodo').addEventListener('change', () => calcularTotal('un'));
+            document.getElementById('un-adicionar-carrinho').addEventListener('click', () => adicionarAoCarrinho('un', 'uniformes'));
+
+
+
+            // Configuração para identificação / Divulgação
+            document.getElementById('id-quantidade').addEventListener('change', () => calcularTotal('id'));
+            document.getElementById('id-periodo').addEventListener('change', () => calcularTotal('id'));
+            document.getElementById('id-adicionar-carrinho').addEventListener('click', () => adicionarAoCarrinho('id', 'identificacao'));
+
+
+
+            // Configuração para Alimentação
+            document.getElementById('al-quantidade').addEventListener('change', () => calcularTotal('al'));
+            document.getElementById('al-periodo').addEventListener('change', () => calcularTotal('al'));
+            document.getElementById('al-adicionar-carrinho').addEventListener('click', () => adicionarAoCarrinho('al', 'alimentacao'));
+
+
+            // Configurar máscara monetária
+            document.querySelectorAll('.valor-monetario').forEach(input => {
+                input.addEventListener('input', function (e) {
+                    let value = e.target.value.replace(/\D/g, '');
+                    value = (value / 100).toLocaleString('pt-BR', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+                    e.target.value = value;
+
+                    // Recalcular totais quando o valor unitário muda
+                    const id = e.target.id;
+                    if (id.includes('unitario')) {
+                        const prefixo = id.split('-')[0];
+                        calcularTotaisEmpresas(prefixo);
+                    }
+                });
             });
-            
+
             // Função para atualizar o carrinho
             function atualizarCarrinho() {
                 const listaCarrinho = document.getElementById('lista-carrinho');
-                
+
                 if (carrinho.length === 0) {
                     listaCarrinho.innerHTML = 'Nenhum item adicionado ao carrinho';
                     listaCarrinho.className = 'carrinho-vazio';
                 } else {
                     listaCarrinho.className = '';
                     listaCarrinho.innerHTML = carrinho.map(item => `
-                        <div class="item-carrinho" data-id="${item.id}">
-                            <div class="item-carrinho-info">
-                                <strong>${item.descricao}</strong><br>
-                                <small>${item.quantidade} x ${item.periodo} = ${item.total} | Menor valor: ${formatarMoeda(item.valor)}</small>
-                            </div>
-                            <div class="item-carrinho-acoes">
-                                <button class="remover-item">Remover</button>
-                            </div>
-                        </div>
-                    `).join('');
-                    
+                <div class="item-carrinho" data-id="${item.id}">
+                    <div class="item-carrinho-info">
+                        <strong>${item.descricao}</strong><br>
+                        <small>${item.quantidade} x ${item.periodo} = ${item.total} | Menor valor: ${formatarMoeda(item.valor)}</small>
+                    </div>
+                    <div class="item-carrinho-acoes">
+                        <button class="remover-item">Remover</button>
+                    </div>
+                </div>
+            `).join('');
+
                     // Adiciona eventos aos botões de remover
                     document.querySelectorAll('.remover-item').forEach(btn => {
-                        btn.addEventListener('click', function() {
+                        btn.addEventListener('click', function () {
                             const itemId = parseInt(this.closest('.item-carrinho').getAttribute('data-id'));
                             removerItemCarrinho(itemId);
                         });
                     });
                 }
-                
+
                 document.getElementById('total-carrinho').textContent = `Total no Carrinho: ${formatarMoeda(valorGasto)}`;
             }
-            
+
             // Função para remover item do carrinho
             function removerItemCarrinho(itemId) {
                 const itemIndex = carrinho.findIndex(item => item.id === itemId);
@@ -640,18 +1050,18 @@
                     const itemRemovido = carrinho[itemIndex];
                     valorGasto -= itemRemovido.valor;
                     carrinho.splice(itemIndex, 1);
-                    
+
                     atualizarCarrinho();
                     atualizarResumoValores();
                 }
             }
-            
+
             // Função para atualizar os valores resumidos
             function atualizarResumoValores() {
                 document.getElementById('valor-gasto').textContent = formatarMoeda(valorGasto);
                 document.getElementById('valor-restante').textContent = formatarMoeda(valorEmenda - valorGasto);
             }
-            
+
             // Função para formatar valores monetários
             function formatarMoeda(valor) {
                 return 'R$ ' + (typeof valor === 'number' ? valor : 0).toLocaleString('pt-BR', {
@@ -659,94 +1069,96 @@
                     maximumFractionDigits: 2
                 });
             }
-            
-  // Exportar para Excel
-document.getElementById('btn-exportar-excel').addEventListener('click', function() {
-    if (carrinho.length === 0) {
-        alert('O carrinho está vazio!');
-        return;
-    }
-    
-    // Cabeçalho das colunas principais
-    const dados = [
-        // Cabeçalho principal
-        [
-            'Tipo', 
-            'Descrição', 
-            'Quantidade', 
-            'Período (Dias/Meses)', 
-            'Total', 
-            'Empresa', 
-            'Valor Unitário', 
-            'Valor Total', 
-            'Link da Cotação'
-        ]
-    ];
-    
-    // Adicionar os itens do carrinho
-    carrinho.forEach(item => {
-        item.empresas.forEach((empresa, index) => {
-            dados.push([
-                formatarTipo(item.tipo),
-                item.descricao,
-                item.quantidade,
-                item.periodo,
-                item.total,
-                empresa.nome || '-',
-                formatarMoeda(empresa.unitario),
-                formatarMoeda(empresa.total),
-                empresa.link || '-'
-            ]);
-        });
-    });
-    
-    // Adicionar linha vazia de separação
-    dados.push(['', '', '', '', '', '', '', '', '']);
-    
-    // Adicionar os totais no final
-    dados.push(
-        ['Data:', new Date().toISOString().split('T')[0], '', '', '', '', '', '', ''],
-        ['Valor Total da Emenda:', formatarMoeda(valorEmenda), '', '', '', '', '', '', ''],
-        ['Valor Gasto:', formatarMoeda(valorGasto), '', '', '', '', '', '', ''],
-        ['Valor Restante:', formatarMoeda(valorEmenda - valorGasto), '', '', '', '', '', '', '']
-    );
-    
-    // Função auxiliar para formatar o tipo
-    function formatarTipo(tipo) {
-        const tipos = {
-            'recursos-humanos': 'Recursos Humanos',
-            'material-esportivo': 'Material Esportivo',
-            'uniformes': 'Uniformes'
-        };
-        return tipos[tipo] || tipo;
-    }
-    
-    // Converter para CSV
-    const csvContent = dados.map(row => 
-        row.map(cell => 
-            typeof cell === 'string' ? `"${cell.replace(/"/g, '""')}"` : cell
-        ).join(';')
-    ).join('\n');
-    
-    // Criar link de download
-    const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.setAttribute('href', url);
-    link.setAttribute('download', `precificacao_emenda_${new Date().toISOString().slice(0,10)}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-});
-            
+
+            // Exportar para Excel
+            document.getElementById('btn-exportar-excel').addEventListener('click', function () {
+                if (carrinho.length === 0) {
+                    alert('O carrinho está vazio!');
+                    return;
+                }
+
+                // Cabeçalho das colunas principais
+                const dados = [
+                    // Cabeçalho principal
+                    [
+                        'Tipo',
+                        'Descrição',
+                        'Quantidade',
+                        'Período (Dias/Meses)',
+                        'Total',
+                        'Empresa',
+                        'Valor Unitário',
+                        'Valor Total',
+                        'Link da Cotação'
+                    ]
+                ];
+
+                // Adicionar os itens do carrinho
+                carrinho.forEach(item => {
+                    item.empresas.forEach((empresa, index) => {
+                        dados.push([
+                            formatarTipo(item.tipo),
+                            item.descricao,
+                            item.quantidade,
+                            item.periodo,
+                            item.total,
+                            empresa.nome || '-',
+                            formatarMoeda(empresa.unitario),
+                            formatarMoeda(empresa.total),
+                            empresa.link || '-'
+                        ]);
+                    });
+                });
+
+                // Adicionar linha vazia de separação
+                dados.push(['', '', '', '', '', '', '', '', '']);
+
+                // Adicionar os totais no final
+                dados.push(
+                    ['Data:', new Date().toISOString().split('T')[0], '', '', '', '', '', '', ''],
+                    ['Valor Total da Emenda:', formatarMoeda(valorEmenda), '', '', '', '', '', '', ''],
+                    ['Valor Gasto:', formatarMoeda(valorGasto), '', '', '', '', '', '', ''],
+                    ['Valor Restante:', formatarMoeda(valorEmenda - valorGasto), '', '', '', '', '', '', '']
+                );
+
+                // Função auxiliar para formatar o tipo
+                function formatarTipo(tipo) {
+                    const tipos = {
+                        'recursos-humanos': 'Recursos Humanos',
+                        'material-esportivo': 'Material Esportivo',
+                        'uniformes': 'Uniformes',
+                        'identificacao': 'Identificação',
+                        'alimentacao': 'Alimentação'
+                    };
+                    return tipos[tipo] || tipo;
+                }
+
+                // Converter para CSV
+                const csvContent = dados.map(row =>
+                    row.map(cell =>
+                        typeof cell === 'string' ? `"${cell.replace(/"/g, '""')}"` : cell
+                    ).join(';')
+                ).join('\n');
+
+                // Criar link de download
+                const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.setAttribute('href', url);
+                link.setAttribute('download', `precificacao_emenda_${new Date().toISOString().slice(0, 10)}.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+
             // Finalizar precificação
-            document.getElementById('btn-finalizar').addEventListener('click', function() {
+            document.getElementById('btn-finalizar').addEventListener('click', function () {
                 if (carrinho.length === 0) {
                     alert('Adicione itens ao carrinho antes de finalizar!');
                     return;
                 }
-                
+
                 if (confirm('Deseja finalizar a precificação? Após confirmar, não será possível alterar os itens.')) {
                     // Bloquear edição
                     document.querySelectorAll('input, textarea, button').forEach(element => {
@@ -754,10 +1166,10 @@ document.getElementById('btn-exportar-excel').addEventListener('click', function
                             element.disabled = true;
                         }
                     });
-                    
+
                     // Mostrar mensagem de sucesso
                     alert('Precificação finalizada com sucesso!');
-                    
+
                     // Desabilitar botão de finalizar
                     this.disabled = true;
                 }
@@ -765,4 +1177,5 @@ document.getElementById('btn-exportar-excel').addEventListener('click', function
         });
     </script>
 </body>
+
 </html>
