@@ -4,149 +4,206 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Precificação de Emendas - Ministério do Esporte</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Roboto', sans-serif;
         }
 
         body {
-            background-color: #f5f5f5;
-            color: #333;
+            background-color: #e9ecef;
+            color: #2d3748;
         }
 
         .header {
-            background-color: #003366;
+            background-color: #003087;
             color: white;
-            padding: 15px 20px;
+            padding: 20px 30px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
         .logo {
-            height: 50px;
+            height: 60px;
         }
 
         .container {
-            max-width: 800px;
-            margin: 30px auto;
-            padding: 20px;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 30px;
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
         }
 
         h1 {
-            color: #003366;
-            margin-bottom: 20px;
+            color: #003087;
+            margin-bottom: 30px;
             text-align: center;
+            font-size: 28px;
+            font-weight: 700;
         }
 
         .valor-emenda {
-            margin-bottom: 30px;
+            margin-bottom: 40px;
         }
 
         .input-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            position: relative;
         }
 
         label {
             display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #003366;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: #003087;
+            font-size: 16px;
         }
 
-        .input-currency {
+        .input-icon {
             position: relative;
         }
 
-        .input-currency span {
+        .input-icon i {
             position: absolute;
-            left: 10px;
+            left: 12px;
             top: 50%;
             transform: translateY(-50%);
-            font-weight: bold;
+            color: #6b7280;
+            font-size: 18px;
         }
 
-        .input-currency input {
+        .input-icon input {
             width: 100%;
             padding: 12px 12px 12px 40px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
             font-size: 16px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .input-icon input:focus {
+            outline: none;
+            border-color: #003087;
+            box-shadow: 0 0 0 3px rgba(0,48,135,0.1);
+        }
+
+        .error-message {
+            color: #dc2626;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
         }
 
         .btn {
-            background-color: #003366;
+            background-color: #003087;
             color: white;
             border: none;
-            padding: 12px 20px;
-            border-radius: 4px;
+            padding: 14px 24px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 16px;
+            font-weight: 500;
             width: 100%;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.2s;
         }
 
         .btn:hover {
-            background-color: #002244;
+            background-color: #00205b;
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
         }
 
         .resumo-valores {
-            background-color: #f9f9f9;
-            padding: 15px;
-            border-radius: 4px;
-            margin-top: 20px;
-            border-left: 4px solid #003366;
+            background-color: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            border-left: 5px solid #003087;
         }
 
         .resumo-valores p {
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             display: flex;
             justify-content: space-between;
+            font-size: 16px;
         }
 
         .resumo-valores strong {
-            color: #003366;
+            color: #003087;
+            font-weight: 500;
         }
 
         .footer {
             text-align: center;
-            margin-top: 30px;
-            padding: 15px;
-            color: #666;
+            margin-top: 40px;
+            padding: 20px;
+            color: #6b7280;
             font-size: 14px;
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
             .container {
-                margin: 15px;
-                padding: 15px;
+                margin: 20px;
+                padding: 20px;
+            }
+
+            .header {
+                padding: 15px 20px;
+            }
+
+            .logo {
+                height: 50px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 24px;
+            }
+
+            .btn {
+                padding: 12px 20px;
             }
         }
     </style>
 </head>
 <body>
-    <header class="header">
+    <header class="header" role="banner">
         <img src="logo-ministerio-esporte.png" alt="Ministério do Esporte" class="logo">
         <h2>Sistema de Precificação de Emendas</h2>
     </header>
 
-    <div class="container">
+    <main class="container" role="main">
         <h1>Definição do Valor da Emenda</h1>
         
-        <div class="valor-emenda">
+        <section class="valor-emenda">
+            <div class="input-group">
+                <label for="numero-proposta">N° da Proposta</label>
+                <div class="input-icon">
+                    <i class="fas fa-file-alt"></i>
+                    <input type="text" id="numero-proposta" placeholder="Digite o número da proposta" aria-describedby="numero-proposta-error">
+                </div>
+                <span id="numero-proposta-error" class="error-message">Por favor, insira um número de proposta válido (mínimo 3 caracteres).</span>
+            </div>
+
             <div class="input-group">
                 <label for="valor-total">Valor Total da Emenda</label>
-                <div class="input-currency">
-                    <span>R$</span>
-                    <input type="text" id="valor-total" placeholder="0,00" inputmode="numeric">
+                <div class="input-icon">
+                    <i class="fas fa-dollar-sign"></i>
+                    <input type="text" id="valor-total" placeholder="0,00" inputmode="numeric" aria-describedby="valor-total-error">
                 </div>
+                <span id="valor-total-error" class="error-message">Por favor, insira um valor válido para a emenda.</span>
             </div>
 
             <div class="resumo-valores">
@@ -165,18 +222,21 @@
             </div>
 
             <button class="btn" id="btn-continuar">Continuar para Precificação</button>
-        </div>
-    </div>
+        </section>
+    </main>
 
-    <footer class="footer">
+    <footer class="footer" role="contentinfo">
         © 2024 Ministério do Esporte - Todos os direitos reservados
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            const numeroPropostaInput = document.getElementById('numero-proposta');
             const valorTotalInput = document.getElementById('valor-total');
             const displayValorTotal = document.getElementById('display-valor-total');
             const btnContinuar = document.getElementById('btn-continuar');
+            const numeroPropostaError = document.getElementById('numero-proposta-error');
+            const valorTotalError = document.getElementById('valor-total-error');
 
             // Formatação monetária
             valorTotalInput.addEventListener('input', function(e) {
@@ -188,19 +248,44 @@
                 e.target.value = value;
                 displayValorTotal.textContent = `R$ ${value}`;
                 document.getElementById('display-valor-restante').textContent = `R$ ${value}`;
+                valorTotalError.style.display = 'none';
+            });
+
+            // Validação em tempo real do número da proposta
+            numeroPropostaInput.addEventListener('input', function() {
+                if (numeroPropostaInput.value.trim().length >= 3) {
+                    numeroPropostaError.style.display = 'none';
+                }
             });
 
             // Validação e redirecionamento
             btnContinuar.addEventListener('click', function() {
+                const numeroProposta = numeroPropostaInput.value.trim();
                 const valor = valorTotalInput.value.replace(/[^\d,]/g, '').replace(',', '.');
                 const valorNumerico = parseFloat(valor);
-                
-                if (isNaN(valorNumerico) || valorNumerico <= 0) {
-                    alert('Por favor, insira um valor válido para a emenda.');
-                    return;
+
+                let hasError = false;
+
+                // Validação do número da proposta
+                if (numeroProposta.length < 3) {
+                    numeroPropostaError.style.display = 'block';
+                    hasError = true;
+                } else {
+                    numeroPropostaError.style.display = 'none';
                 }
 
-                // Armazena o valor na sessionStorage para usar na próxima página
+                // Validação do valor da emenda
+                if (isNaN(valorNumerico) || valorNumerico <= 0) {
+                    valorTotalError.style.display = 'block';
+                    hasError = true;
+                } else {
+                    valorTotalError.style.display = 'none';
+                }
+
+                if (hasError) return;
+
+                // Armazena os valores na sessionStorage para usar na próxima página
+                sessionStorage.setItem('numeroProposta', numeroProposta);
                 sessionStorage.setItem('valorEmenda', valorNumerico);
                 
                 // Redireciona para a página de precificação
