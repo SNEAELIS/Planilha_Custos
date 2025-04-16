@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+não terminou o cóidigo pare onde parou: <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -524,6 +524,11 @@
                 </div>
                 
                 <div class="form-group">
+                    <label for="me-cod-catmat">CÓD. CATMAT/CATSER/CBO</label>
+                    <input type="text" id="me-cod-catmat" readonly>
+                </div>
+                
+                <div class="form-group">
                     <label for="me-tipo">Tipo</label>
                     <select id="me-tipo" onchange="toggleLocacaoFields()">
                         <option value="aquisicao">Aquisição</option>
@@ -683,6 +688,11 @@
                 </div>
                 
                 <div class="form-group">
+                    <label for="uni-cod-catmat">CÓD. CATMAT/CATSER/CBO</label>
+                    <input type="text" id="uni-cod-catmat" readonly>
+                </div>
+                
+                <div class="form-group">
                     <label for="uni-descricao">Descrição do Item/Método de Cálculo</label>
                     <textarea id="uni-descricao" placeholder="Ex: CAMISA ESPORTIVA - Uniforme para atletas"></textarea>
                 </div>
@@ -834,6 +844,11 @@
                 </div>
                 
                 <div class="form-group">
+                    <label for="idv-cod-catmat">CÓD. CATMAT/CATSER/CBO</label>
+                    <input type="text" id="idv-cod-catmat" readonly>
+                </div>
+                
+                <div class="form-group">
                     <label for="idv-descricao">Descrição do Item/Método de Cálculo</label>
                     <textarea id="idv-descricao" placeholder="Ex: BANNER PROMOCIONAL - Material de divulgação do evento"></textarea>
                 </div>
@@ -982,6 +997,11 @@
                     <label for="ali-subitem">Subitem</label>
                     <input type="text" id="ali-subitem" placeholder="Digite para buscar um subitem" oninput="filtrarSubitens('ali')" autocomplete="off">
                     <div id="ali-subitem-suggestions" class="suggestions" style="display: none;"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="ali-cod-catmat">CÓD. CATMAT/CATSER/CBO</label>
+                    <input type="text" id="ali-cod-catmat" readonly>
                 </div>
                 
                 <div class="form-group">
@@ -1161,7 +1181,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Carregar a planilha Base_Dados.xlsx
     async function carregarPlanilha() {
         try {
-            const response = await fetch('Base_Dados.xlsx');
+            const response = await fetch('/data/Base_Dados.xlsx');
             if (!response.ok) throw new Error('Erro ao carregar o arquivo Excel');
 
             const data = await response.arrayBuffer();
@@ -1170,33 +1190,22 @@ document.addEventListener('DOMContentLoaded', function() {
             // Aba UNIFORME
             const uniformeSheet = workbook.Sheets['UNIFORME'];
             if (!uniformeSheet) throw new Error('Aba UNIFORME não encontrada');
-            uniformesData = XLSX.utils.sheet_to_json(uniformeSheet, { header: ['ITEM', 'SUBITEM'] }).slice(1);
+            uniformesData = XLSX.utils.sheet_to_json(uniformeSheet, { header: ['ITEM', 'COD_CATMAT', 'SUBITEM'] }).slice(1);
 
-            // Aba MATERIAL ESPORTIVO (para itens de aquisição)
+            // Aba MATERIAL ESPORTIVO
             const materialEsportivoSheet = workbook.Sheets['MATERIAL ESPORTIVO'];
             if (!materialEsportivoSheet) throw new Error('Aba MATERIAL ESPORTIVO não encontrada');
-            materialEsportivoData = XLSX.utils.sheet_to_json(materialEsportivoSheet, { header: ['ITEM', 'SUBITEM'] }).slice(1);
-
-            // Aba LOCAÇÃO (para itens de locação)
-            const locacaoSheet = workbook.Sheets['LOCAÇÃO'];
-            if (!locacaoSheet) throw new Error('Aba LOCAÇÃO não encontrada');
-            locacaoData = XLSX.utils.sheet_to_json(locacaoSheet, { header: ['ITEM', 'SUBITEM'] }).slice(1);
+            materialEsportivoData = XLSX.utils.sheet_to_json(materialEsportivoSheet, { header: ['ITEM', 'COD_CATMAT', 'SUBITEM'] }).slice(1);
 
             // Aba IDENTIDADES/DIVULGAÇÕES
             const identidadesDivulgacoesSheet = workbook.Sheets['IDENTIDADES_DIVULGACOES'];
             if (!identidadesDivulgacoesSheet) throw new Error('Aba IDENTIDADES_DIVULGACOES não encontrada');
-            identidadesDivulgacoesData = XLSX.utils.sheet_to_json(identidadesDivulgacoesSheet, { header: ['ITEM', 'SUBITEM'] }).slice(1);
+            identidadesDivulgacoesData = XLSX.utils.sheet_to_json(identidadesDivulgacoesSheet, { header: ['ITEM', 'COD_CATMAT', 'SUBITEM'] }).slice(1);
 
-            // Aba ALIMENTAÇÃO (filtrando apenas os itens específicos)
+            // Aba ALIMENTAÇÃO
             const alimentacaoSheet = workbook.Sheets['ALIMENTACAO'];
             if (!alimentacaoSheet) throw new Error('Aba ALIMENTACAO não encontrada');
-            const todosAlimentacaoData = XLSX.utils.sheet_to_json(alimentacaoSheet, { header: ['ITEM', 'SUBITEM'] }).slice(1);
-            
-            // Filtrar apenas os itens específicos para alimentação
-            alimentacaoData = todosAlimentacaoData.filter(item => 
-                item.ITEM && ['ÁGUA', 'ÁGUA MINERAL', 'ALIMENTAÇÃO - ALMOÇO/JANTA (MARMITEX)', 'ALIMENTAÇÃO - KIT LANCHE']
-                    .includes(item.ITEM.trim().toUpperCase())
-            );
+            alimentacaoData = XLSX.utils.sheet_to_json(alimentacaoSheet, { header: ['ITEM', 'COD_CATMAT', 'SUBITEM'] }).slice(1);
         } catch (error) {
             console.error('Erro ao carregar a planilha:', error);
             alert('Erro ao carregar a base de dados. Verifique o console para mais detalhes.');
@@ -1207,27 +1216,10 @@ document.addEventListener('DOMContentLoaded', function() {
     window.filtrarItens = function(prefixo) {
         const input = document.getElementById(`${prefixo}-item`);
         const suggestions = document.getElementById(`${prefixo}-item-suggestions`);
-        let dados;
-        
-        switch(prefixo) {
-            case 'uni':
-                dados = uniformesData;
-                break;
-            case 'me':
-                // Verifica se é locação ou aquisição
-                const tipo = document.getElementById('me-tipo') ? document.getElementById('me-tipo').value : 'aquisicao';
-                dados = tipo === 'locacao' ? locacaoData : materialEsportivoData;
-                break;
-            case 'idv':
-                dados = identidadesDivulgacoesData;
-                break;
-            case 'ali':
-                dados = alimentacaoData;
-                break;
-            default:
-                dados = [];
-        }
-        
+        const dados = prefixo === 'uni' ? uniformesData : 
+                     prefixo === 'me' ? materialEsportivoData : 
+                     prefixo === 'idv' ? identidadesDivulgacoesData : 
+                     alimentacaoData;
         const query = input.value.toLowerCase();
 
         if (query.length < 2) {
@@ -1250,26 +1242,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const itemInput = document.getElementById(`${prefixo}-item`).value;
         const subitemInput = document.getElementById(`${prefixo}-subitem`);
         const suggestions = document.getElementById(`${prefixo}-subitem-suggestions`);
-        let dados;
-        
-        switch(prefixo) {
-            case 'uni':
-                dados = uniformesData;
-                break;
-            case 'me':
-                const tipo = document.getElementById('me-tipo') ? document.getElementById('me-tipo').value : 'aquisicao';
-                dados = tipo === 'locacao' ? locacaoData : materialEsportivoData;
-                break;
-            case 'idv':
-                dados = identidadesDivulgacoesData;
-                break;
-            case 'ali':
-                dados = alimentacaoData;
-                break;
-            default:
-                dados = [];
-        }
-
+        const codCatmatInput = document.getElementById(`${prefixo}-cod-catmat`);
+        const dados = prefixo === 'uni' ? uniformesData : 
+                     prefixo === 'me' ? materialEsportivoData : 
+                     prefixo === 'idv' ? identidadesDivulgacoesData : 
+                     alimentacaoData;
         const query = subitemInput.value.toLowerCase();
 
         if (!itemInput || query.length < 2) {
@@ -1282,7 +1259,7 @@ document.addEventListener('DOMContentLoaded', function() {
         );
 
         suggestions.innerHTML = subitens.map(row => 
-            `<div class="suggestion-item" onclick="selecionarSubitem('${prefixo}', '${row.SUBITEM.replace(/'/g, "\\'")}')">${row.SUBITEM}</div>`
+            `<div class="suggestion-item" onclick="selecionarSubitem('${prefixo}', '${row.SUBITEM.replace(/'/g, "\\'")}', '${row.COD_CATMAT || ''}')">${row.SUBITEM}</div>`
         ).join('');
 
         suggestions.style.display = subitens.length ? 'block' : 'none';
@@ -1295,17 +1272,15 @@ document.addEventListener('DOMContentLoaded', function() {
         input.value = item;
         subitemInput.value = '';
         suggestions.style.display = 'none';
-        
-        // Se for material esportivo e o tipo mudou, precisamos atualizar os dados
-        if (prefixo === 'me') {
-            filtrarSubitens(prefixo);
-        }
+        filtrarSubitens(prefixo);
     }
 
-    window.selecionarSubitem = function(prefixo, subitem) {
+    window.selecionarSubitem = function(prefixo, subitem, codCatmat) {
         const subitemInput = document.getElementById(`${prefixo}-subitem`);
         const suggestions = document.getElementById(`${prefixo}-subitem-suggestions`);
+        const codCatmatInput = document.getElementById(`${prefixo}-cod-catmat`);
         subitemInput.value = subitem;
+        codCatmatInput.value = codCatmat;
         suggestions.style.display = 'none';
     }
 
@@ -1480,6 +1455,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     : document.getElementById(`${prefixo}-cargo`).value)
                 : document.getElementById(`${prefixo}-item`).value;
             const subitem = prefixo !== 'srv' ? document.getElementById(`${prefixo}-subitem`).value : null;
+            const codCatmat = prefixo !== 'srv' ? document.getElementById(`${prefixo}-cod-catmat`).value : null;
             const descricao = document.getElementById(`${prefixo}-descricao`).value;
             const quantidade = parseInt(document.getElementById(`${prefixo}-quantidade`).value) || 0;
             const periodo = prefixo === 'me' && document.getElementById('me-tipo').value === 'aquisicao' 
@@ -1573,6 +1549,7 @@ document.addEventListener('DOMContentLoaded', function() {
                       prefixo === 'idv' ? 'identidades-divulgacoes' : 'alimentacao',
                 cargoOuItem,
                 subitem: subitem || null,
+                codCatmat: codCatmat || null,
                 descricao,
                 quantidade,
                 periodo,
@@ -1586,6 +1563,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 materialTipo: prefixo === 'me' ? tipo : null
             };
 
+            javascript
+
+Copiar
             carrinho.push(novoItem);
             valorGasto += valorSelecionado;
 
@@ -1658,6 +1638,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             document.getElementById(`${prefixo}-item`).value = '';
             document.getElementById(`${prefixo}-subitem`).value = '';
+            document.getElementById(`${prefixo}-cod-catmat`).value = '';
             document.getElementById(`${prefixo}-item-suggestions`).style.display = 'none';
             document.getElementById(`${prefixo}-subitem-suggestions`).style.display = 'none';
         }
@@ -1713,6 +1694,7 @@ document.addEventListener('DOMContentLoaded', function() {
             Tipo: item.tipo,
             Item: item.cargoOuItem,
             Subitem: item.subitem || '-',
+            'Cód. CATMAT/CATSER/CBO': item.codCatmat || '-',
             Descrição: item.descricao,
             Quantidade: item.quantidade,
             Período: item.materialTipo === 'aquisicao' ? '-' : item.periodo,
@@ -1730,7 +1712,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const ws = XLSX.utils.json_to_sheet(dataExportacao);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, 'Precificação');
-        XLSX.writeFile(wb, `Precificacao_Emenda_${numeroProposta}.xlsx`);
+        XLSX.write(wb, `Precificacao_Emenda_${numeroProposta}.xlsx`);
         console.log('Arquivo Excel gerado com sucesso');
     });
 
