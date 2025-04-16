@@ -42,6 +42,14 @@
             box-shadow: 0 6px 12px rgba(0,0,0,0.1);
         }
 
+        .banner {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
         h1 {
             color: #003087;
             margin-bottom: 30px;
@@ -152,6 +160,30 @@
             font-size: 14px;
         }
 
+        .loading {
+            display: none;
+            color: #003087;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .loading i {
+            margin-right: 5px;
+            animation: spin 1s linear infinite;
+        }
+
+        .api-error {
+            color: #dc2626;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         @media (max-width: 768px) {
             .container {
                 margin: 20px;
@@ -165,6 +197,10 @@
             .logo {
                 height: 50px;
             }
+
+            .banner {
+                max-height: 150px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -174,6 +210,10 @@
 
             .btn {
                 padding: 12px 20px;
+            }
+
+            .banner {
+                max-height: 100px;
             }
         }
     </style>
@@ -185,7 +225,6 @@
     </header>
 
     <main class="container" role="main">
-        <h1>Definição do Valor da Emenda</h1>
         
         <section class="valor-emenda">
             <div class="input-group">
@@ -195,6 +234,30 @@
                     <input type="text" id="numero-proposta" placeholder="Digite o número da proposta" aria-describedby="numero-proposta-error">
                 </div>
                 <span id="numero-proposta-error" class="error-message">Por favor, insira um número de proposta válido (mínimo 3 caracteres).</span>
+            </div>
+
+            <div class="input-group">
+                <label for="cnpj">CNPJ da Entidade</label>
+                <div class="input-icon">
+                    <i class="fas fa-building"></i>
+                    <input type="text" id="cnpj" placeholder="00.000.000/0000-00" inputmode="numeric" aria-describedby="cnpj-error">
+                </div>
+                <span id="cnpj-error" class="error-message">Por favor, insira um CNPJ válido.</span>
+                <div id="loading-cnpj" class="loading">
+                    <i class="fas fa-spinner"></i> Consultando Receita Federal...
+                </div>
+                <div id="api-error" class="api-error">
+                    <i class="fas fa-exclamation-triangle"></i> Não foi possível consultar os dados. Preencha manualmente.
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="nome-entidade">Nome da Entidade</label>
+                <div class="input-icon">
+                    <i class="fas fa-university"></i>
+                    <input type="text" id="nome-entidade" placeholder="Digite o nome da entidade" aria-describedby="nome-entidade-error">
+                </div>
+                <span id="nome-entidade-error" class="error-message">Por favor, insira o nome da entidade (mínimo 3 caracteres).</span>
             </div>
 
             <div class="input-group">
@@ -232,11 +295,118 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const numeroPropostaInput = document.getElementById('numero-proposta');
+            const cnpjInput = document.getElementById('cnpj');
+            const nomeEntidadeInput = document.getElementById('nome-entidade');
             const valorTotalInput = document.getElementById('valor-total');
             const displayValorTotal = document.getElementById('display-valor-total');
             const btnContinuar = document.getElementById('btn-continuar');
             const numeroPropostaError = document.getElementById('numero-proposta-error');
+            const cnpjError = document.getElementById('cnpj-error');
+            const nomeEntidadeError = document.getElementById('nome-entidade-error');
             const valorTotalError = document.getElementById('valor-total-error');
+            const loadingCnpj = document.getElementById('loading-cnpj');
+            const apiError = document.getElementById('api-error');
+
+            // Formatação do CNPJ
+            cnpjInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                
+                if (value.length > 2) {
+                    value = value.substring(0, 2) + '.' + value.substring(2);
+                }
+                if (value.length > 6) {
+                    value = value.substring(0, 6) + '.' + value.substring(6);
+                }
+                if (value.length > 10) {
+                    value = value.substring(0, 10) + '/' + value.substring(10);
+                }
+                if (value.length > 15) {
+                    value = value.substring(0, 15) + '-' + value.substring(15);
+                }
+                
+                e.target.value = value.substring(0, 18);
+                cnpjError.style.display = 'none';
+                apiError.style.display = 'none';
+            });
+
+            // Busca automática ao sair do campo CNPJ
+            cnpjInput.addEventListener('blur', async function() {
+                const cnpj = cnpjInput.value.replace(/\D/g, '');
+                
+                if (cnpj.length === 14 && validarCNPJ(cnpjInput.value)) {
+                    await consultarCNPJ(cnpj);
+                }
+            });
+
+            // Função para consultar CNPJ na API da ReceitaWS
+            async function consultarCNPJ(cnpj) {
+                // Verificar cache local
+                const cacheKey = `cnpj_${cnpj}`;
+                const cachedData = localStorage.getItem(cacheKey);
+                if (cachedData) {
+                    const data = JSON.parse(cachedData);
+                    if (data.nome || data.fantasia) {
+                        nomeEntidadeInput.value = data.nome || data.fantasia;
+                        nomeEntidadeError.style.display = 'none';
+                    }
+                    return;
+                }
+
+                loadingCnpj.style.display = 'block';
+                nomeEntidadeInput.disabled = true;
+                apiError.style.display = 'none';
+                
+                try {
+                    // Usando proxy CORS para testes
+                    const response = await fetch(`https://cors-anywhere.herokuapp.com/https://receitaws.com.br/v1/cnpj/${cnpj}`, {
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        if (response.status === 403) {
+                            throw new Error('Acesso ao serviço bloqueado (403). Verifique o proxy CORS ou preencha manualmente.');
+                        }
+                        if (response.status === 429) {
+                            throw new Error('Limite de requisições excedido. Tente novamente em alguns minutos.');
+                        }
+                        throw new Error(`Erro HTTP: ${response.status} - ${response.statusText}`);
+                    }
+                    
+                    const data = await response.json();
+                    
+                    if (data.status === 'ERROR') {
+                        throw new Error(data.message || 'CNPJ não encontrado na Receita Federal');
+                    }
+                    
+                    // Preenche o nome da entidade com os dados da API
+                    if (data.nome || data.fantasia) {
+                        nomeEntidadeInput.value = data.nome || data.fantasia;
+                        nomeEntidadeError.style.display = 'none';
+                        // Salvar no cache local
+                        localStorage.setItem(cacheKey, JSON.stringify(data));
+                    } else {
+                        throw new Error('Nome da entidade não encontrado');
+                    }
+                } catch (error) {
+                    console.error('Erro ao consultar CNPJ:', error.message);
+                    apiError.textContent = `Erro: ${error.message}. Preencha manualmente.`;
+                    apiError.style.display = 'block';
+                } finally {
+                    loadingCnpj.style.display = 'none';
+                    nomeEntidadeInput.disabled = false;
+                }
+            }
+
+            // Validação em tempo real do nome da entidade
+            nomeEntidadeInput.addEventListener('input', function() {
+                if (nomeEntidadeInput.value.trim().length >= 3) {
+                    nomeEntidadeError.style.display = 'none';
+                } else {
+                    nomeEntidadeError.style.display = 'block';
+                }
+            });
 
             // Formatação monetária
             valorTotalInput.addEventListener('input', function(e) {
@@ -255,12 +425,16 @@
             numeroPropostaInput.addEventListener('input', function() {
                 if (numeroPropostaInput.value.trim().length >= 3) {
                     numeroPropostaError.style.display = 'none';
+                } else {
+                    numeroPropostaError.style.display = 'block';
                 }
             });
 
             // Validação e redirecionamento
             btnContinuar.addEventListener('click', function() {
                 const numeroProposta = numeroPropostaInput.value.trim();
+                const cnpj = cnpjInput.value.trim();
+                const nomeEntidade = nomeEntidadeInput.value.trim();
                 const valor = valorTotalInput.value.replace(/[^\d,]/g, '').replace(',', '.');
                 const valorNumerico = parseFloat(valor);
 
@@ -272,6 +446,22 @@
                     hasError = true;
                 } else {
                     numeroPropostaError.style.display = 'none';
+                }
+
+                // Validação do CNPJ
+                if (cnpj.length !== 18 || !validarCNPJ(cnpj)) {
+                    cnpjError.style.display = 'block';
+                    hasError = true;
+                } else {
+                    cnpjError.style.display = 'none';
+                }
+
+                // Validação do nome da entidade
+                if (nomeEntidade.length < 3) {
+                    nomeEntidadeError.style.display = 'block';
+                    hasError = true;
+                } else {
+                    nomeEntidadeError.style.display = 'none';
                 }
 
                 // Validação do valor da emenda
@@ -286,11 +476,69 @@
 
                 // Armazena os valores na sessionStorage para usar na próxima página
                 sessionStorage.setItem('numeroProposta', numeroProposta);
+                sessionStorage.setItem('cnpj', cnpj);
+                sessionStorage.setItem('nomeEntidade', nomeEntidade);
                 sessionStorage.setItem('valorEmenda', valorNumerico);
+                
+                // Confirma que o nome da entidade foi salvo (para depuração)
+                console.log(`Nome da Entidade salvo: ${nomeEntidade}`);
                 
                 // Redireciona para a página de precificação
                 window.location.href = 'precificacao';
             });
+
+            // Função para validar CNPJ
+            function validarCNPJ(cnpj) {
+                cnpj = cnpj.replace(/[^\d]+/g,'');
+                
+                if(cnpj == '') return false;
+                
+                if (cnpj.length != 14)
+                    return false;
+                
+                // Elimina CNPJs invalidos conhecidos
+                if (cnpj == "00000000000000" || 
+                    cnpj == "11111111111111" || 
+                    cnpj == "22222222222222" || 
+                    cnpj == "33333333333333" || 
+                    cnpj == "44444444444444" || 
+                    cnpj == "55555555555555" || 
+                    cnpj == "66666666666666" || 
+                    cnpj == "77777777777777" || 
+                    cnpj == "88888888888888" || 
+                    cnpj == "99999999999999")
+                    return false;
+                    
+                // Valida DVs
+                let tamanho = cnpj.length - 2
+                let numeros = cnpj.substring(0,tamanho);
+                let digitos = cnpj.substring(tamanho);
+                let soma = 0;
+                let pos = tamanho - 7;
+                for (let i = tamanho; i >= 1; i--) {
+                    soma += numeros.charAt(tamanho - i) * pos--;
+                    if (pos < 2)
+                        pos = 9;
+                }
+                let resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+                if (resultado != digitos.charAt(0))
+                    return false;
+                    
+                tamanho = tamanho + 1;
+                numeros = cnpj.substring(0,tamanho);
+                soma = 0;
+                pos = tamanho - 7;
+                for (let i = tamanho; i >= 1; i--) {
+                    soma += numeros.charAt(tamanho - i) * pos--;
+                    if (pos < 2)
+                        pos = 9;
+                }
+                resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+                if (resultado != digitos.charAt(1))
+                    return false;
+                    
+                return true;
+            }
         });
     </script>
 </body>
