@@ -1697,17 +1697,6 @@ document.addEventListener('DOMContentLoaded', function() {
         worksheet.getCell('A4').value = 'ENTIDADE';
         worksheet.getCell('B4').value = nomeEntidade;
 
-        // Table Headers (starting at row 8)
-        const headerRow = worksheet.getRow(8);
-        headerRow.values = [
-            'Nº', 'TIPO', 'ITEM', 'ESPECIFICAÇÃO DO ITEM',
-            'QTD', 'DIÁRIAS/MESES', 'TOTAL',
-            'RAZÃO ou LINK', 'CNPJ', 'VALOR UNITÁRIO', 'VALOR TOTAL',
-            'RAZÃO ou LINK', 'CNPJ', 'VALOR UNITÁRIO', 'VALOR TOTAL',
-            'RAZÃO ou LINK', 'CNPJ', 'VALOR UNITÁRIO', 'VALOR TOTAL',
-            'VALOR UNITÁRIO', 'VALOR TOTAL', 'JUSTIFICATIVA', 'MENOR VALOR'
-        ];
-
         // Subheaders for Quotes (row 7)
         const subHeaderRow = worksheet.getRow(7);
         subHeaderRow.getCell(5).value = 'MEDIDAS';
@@ -1716,11 +1705,33 @@ document.addEventListener('DOMContentLoaded', function() {
         subHeaderRow.getCell(16).value = '3ª COTAÇÃO';
         subHeaderRow.getCell(20).value = 'COTAÇÃO DEFINIDA';
 
-        // Styling for Subheaders
-        worksheet.mergeCells('A7:A8'); // Nº
-        worksheet.mergeCells('B7:B8'); // TIPO
-        worksheet.mergeCells('C7:C8'); // ITEM
-        worksheet.mergeCells('D7:D8'); // ESPECIFICAÇÃO DO ITEM
+        // Definir os títulos diretamente na linha 8 (sem mesclagem para A8:D8)
+        const headerRow = worksheet.getRow(8);
+        headerRow.getCell(1).value = 'Nº';
+        headerRow.getCell(2).value = 'TIPO';
+        headerRow.getCell(3).value = 'ITEM';
+        headerRow.getCell(4).value = 'ESPECIFICAÇÃO DO ITEM';
+        headerRow.getCell(5).value = 'QTD';
+        headerRow.getCell(6).value = 'DIÁRIAS/MESES';
+        headerRow.getCell(7).value = 'TOTAL';
+        headerRow.getCell(8).value = 'RAZÃO ou LINK';
+        headerRow.getCell(9).value = 'CNPJ';
+        headerRow.getCell(10).value = 'VALOR UNITÁRIO';
+        headerRow.getCell(11).value = 'VALOR TOTAL';
+        headerRow.getCell(12).value = 'RAZÃO ou LINK';
+        headerRow.getCell(13).value = 'CNPJ';
+        headerRow.getCell(14).value = 'VALOR UNITÁRIO';
+        headerRow.getCell(15).value = 'VALOR TOTAL';
+        headerRow.getCell(16).value = 'RAZÃO ou LINK';
+        headerRow.getCell(17).value = 'CNPJ';
+        headerRow.getCell(18).value = 'VALOR UNITÁRIO';
+        headerRow.getCell(19).value = 'VALOR TOTAL';
+        headerRow.getCell(20).value = 'VALOR UNITÁRIO';
+        headerRow.getCell(21).value = 'VALOR TOTAL';
+        headerRow.getCell(22).value = 'JUSTIFICATIVA';
+        headerRow.getCell(23).value = 'MENOR VALOR';
+
+        // Mesclar células apenas para os subtítulos (MEDIDAS, 1ª COTAÇÃO, etc.)
         worksheet.mergeCells('E7:G7'); // MEDIDAS
         worksheet.mergeCells('H7:K7'); // 1ª COTAÇÃO
         worksheet.mergeCells('L7:O7'); // 2ª COTAÇÃO
@@ -1729,69 +1740,89 @@ document.addEventListener('DOMContentLoaded', function() {
         worksheet.mergeCells('V7:V8'); // JUSTIFICATIVA
         worksheet.mergeCells('W7:W8'); // MENOR VALOR
 
-        // Apply Colors
-        subHeaderRow.getCell(5).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFB266' } }; // Burnt Gold for MEDIDAS
-        subHeaderRow.getCell(8).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFCC99' } }; // Orange for 1ª COTAÇÃO
-        subHeaderRow.getCell(12).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'CCCCFF' } }; // Purple for 2ª COTAÇÃO
-        subHeaderRow.getCell(16).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '99CCFF' } }; // Blue for 3ª COTAÇÃO
-        subHeaderRow.getCell(20).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF9999' } }; // Red for COTAÇÃO DEFINIDA
+        // Aplicar formatação aos títulos na linha 8
+        headerRow.eachCell({ includeEmpty: false }, (cell) => {
+            cell.font = { bold: true, color: { argb: 'FF000000' } };
+            cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+            cell.border = {
+                top: { style: 'thin' },
+                left: { style: 'thin' },
+                bottom: { style: 'thin' },
+                right: { style: 'thin' }
+            };
+        });
+
+        // Formatação para os subtítulos (MEDIDAS, 1ª COTAÇÃO, etc.) na linha 7
+        subHeaderRow.eachCell({ includeEmpty: false }, (cell) => {
+            cell.font = { bold: true, color: { argb: 'FF000000' } };
+            cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+            cell.border = {
+                top: { style: 'thin' },
+                left: { style: 'thin' },
+                bottom: { style: 'thin' },
+                right: { style: 'thin' }
+            };
+        });
+
+        // Definir largura das colunas
+        worksheet.columns = [
+            { width: 5 }, { width: 15 }, { width: 20 }, { width: 30 }, { width: 10 },
+            { width: 15 }, { width: 10 }, { width: 20 }, { width: 15 }, { width: 15 },
+            { width: 15 }, { width: 20 }, { width: 15 }, { width: 15 }, { width: 15 },
+            { width: 20 }, { width: 15 }, { width: 15 }, { width: 15 }, { width: 15 },
+            { width: 15 }, { width: 30 }, { width: 15 }
+        ];
+
+        // Aplicar cores
+        subHeaderRow.getCell(5).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFB266' } };
+        subHeaderRow.getCell(8).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFCC99' } };
+        subHeaderRow.getCell(12).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'CCCCFF' } };
+        subHeaderRow.getCell(16).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '99CCFF' } };
+        subHeaderRow.getCell(20).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF9999' } };
 
         // Data Rows
         let rowIndex = 9;
         carrinho.forEach(item => {
             const row = worksheet.getRow(rowIndex);
             const menorValor = Math.min(...item.empresas.map(e => e.total).filter(t => t > 0));
+            // Ajustar o valor de "TIPO" se for "SERVICOS"
+            const tipo = item.categoria.toUpperCase() === 'SERVICOS' ? 'SERVIÇOS/RECURSOS HUMANOS' : item.categoria.toUpperCase();
             row.values = [
-                item.id, // Nº
-                item.categoria.toUpperCase(), // TIPO
-                `${item.item}${item.subitem ? ' - ' + item.subitem : ''}`, // ITEM
-                item.descricao, // ESPECIFICAÇÃO DO ITEM
-                item.quantidade, // QTD
-                item.periodo === 'N/A' ? 'N/A' : (item.periodo === 'diarias' ? 'Diárias' : 'Meses'), // DIÁRIAS/MESES
-                item.total, // TOTAL
-                item.empresas[0]?.nome || '', // 1ª RAZÃO ou LINK
-                item.empresas[0]?.cnpj || '', // 1ª CNPJ
-                item.empresas[0]?.unitario || 0, // 1ª VALOR UNITÁRIO
-                item.empresas[0]?.total || 0, // 1ª VALOR TOTAL
-                item.empresas[1]?.nome || '', // 2ª RAZÃO ou LINK
-                item.empresas[1]?.cnpj || '', // 2ª CNPJ
-                item.empresas[1]?.unitario || 0, // 2ª VALOR UNITÁRIO
-                item.empresas[1]?.total || 0, // 2ª VALOR TOTAL
-                item.empresas[2]?.nome || '', // 3ª RAZÃO ou LINK
-                item.empresas[2]?.cnpj || '', // 3ª CNPJ
-                item.empresas[2]?.unitario || 0, // 3ª VALOR UNITÁRIO
-                item.empresas[2]?.total || 0, // 3ª VALOR TOTAL
-                item.empresaSelecionada.unitario, // COTAÇÃO DEFINIDA VALOR UNITÁRIO
-                item.empresaSelecionada.total, // COTAÇÃO DEFINIDA VALOR TOTAL
-                item.empresaSelecionada.total > menorValor ? item.justificativa : '', // JUSTIFICATIVA
-                menorValor !== Infinity ? menorValor : 0 // MENOR VALOR
+                item.id, tipo, `${item.item}${item.subitem ? ' - ' + item.subitem : ''}`, item.descricao,
+                item.quantidade, item.periodo === 'N/A' ? 'N/A' : (item.periodo === 'diarias' ? 'Diárias' : 'Meses'), item.total,
+                item.empresas[0]?.nome || '', item.empresas[0]?.cnpj || '', item.empresas[0]?.unitario || 0, item.empresas[0]?.total || 0,
+                item.empresas[1]?.nome || '', item.empresas[1]?.cnpj || '', item.empresas[1]?.unitario || 0, item.empresas[1]?.total || 0,
+                item.empresas[2]?.nome || '', item.empresas[2]?.cnpj || '', item.empresas[2]?.unitario || 0, item.empresas[2]?.total || 0,
+                item.empresaSelecionada.unitario, item.empresaSelecionada.total,
+                item.empresaSelecionada.total > menorValor ? item.justificativa : '',
+                menorValor !== Infinity ? menorValor : 0
             ];
-            row.getCell(10).numFmt = '"R$ "#,##0.00'; // 1ª VALOR UNITÁRIO
-            row.getCell(11).numFmt = '"R$ "#,##0.00'; // 1ª VALOR TOTAL
-            row.getCell(14).numFmt = '"R$ "#,##0.00'; // 2ª VALOR UNITÁRIO
-            row.getCell(15).numFmt = '"R$ "#,##0.00'; // 2ª VALOR TOTAL
-            row.getCell(18).numFmt = '"R$ "#,##0.00'; // 3ª VALOR UNITÁRIO
-            row.getCell(19).numFmt = '"R$ "#,##0.00'; // 3ª VALOR TOTAL
-            row.getCell(20).numFmt = '"R$ "#,##0.00'; // COTAÇÃO DEFINIDA VALOR UNITÁRIO
-            row.getCell(21).numFmt = '"R$ "#,##0.00'; // COTAÇÃO DEFINIDA VALOR TOTAL
-            row.getCell(23).numFmt = '"R$ "#,##0.00'; // MENOR VALOR
+            row.getCell(10).numFmt = '"R$ "#,##0.00';
+            row.getCell(11).numFmt = '"R$ "#,##0.00';
+            row.getCell(14).numFmt = '"R$ "#,##0.00';
+            row.getCell(15).numFmt = '"R$ "#,##0.00';
+            row.getCell(18).numFmt = '"R$ "#,##0.00';
+            row.getCell(19).numFmt = '"R$ "#,##0.00';
+            row.getCell(20).numFmt = '"R$ "#,##0.00';
+            row.getCell(21).numFmt = '"R$ "#,##0.00';
+            row.getCell(23).numFmt = '"R$ "#,##0.00';
             rowIndex++;
         });
 
         // Total Row
         const totalRow = worksheet.getRow(rowIndex);
         totalRow.getCell(1).value = 'TOTAL';
-        totalRow.getCell(5).value = { formula: `SUM(E9:E${rowIndex - 1})` }; // QTD
-        totalRow.getCell(7).value = { formula: `SUM(G9:G${rowIndex - 1})` }; // TOTAL
-        totalRow.getCell(10).value = { formula: `SUM(J9:J${rowIndex - 1})` }; // 1ª VALOR UNITÁRIO
-        totalRow.getCell(11).value = { formula: `SUM(K9:K${rowIndex - 1})` }; // 1ª VALOR TOTAL
-        totalRow.getCell(14).value = { formula: `SUM(N9:N${rowIndex - 1})` }; // 2ª VALOR UNITÁRIO
-        totalRow.getCell(15).value = { formula: `SUM(O9:O${rowIndex - 1})` }; // 2ª VALOR TOTAL
-        totalRow.getCell(18).value = { formula: `SUM(R9:R${rowIndex - 1})` }; // 3ª VALOR UNITÁRIO
-        totalRow.getCell(19).value = { formula: `SUM(S9:S${rowIndex - 1})` }; // 3ª VALOR TOTAL
-        totalRow.getCell(20).value = { formula: `SUM(T9:T${rowIndex - 1})` }; // COTAÇÃO DEFINIDA VALOR UNITÁRIO
-        totalRow.getCell(21).value = { formula: `SUM(U9:U${rowIndex - 1})` }; // COTAÇÃO DEFINIDA VALOR TOTAL
-        totalRow.getCell(23).value = { formula: `SUM(W9:W${rowIndex - 1})` }; // MENOR VALOR
+        totalRow.getCell(5).value = { formula: `SUM(E9:E${rowIndex - 1})` };
+        totalRow.getCell(7).value = { formula: `SUM(G9:G${rowIndex - 1})` };
+        totalRow.getCell(10).value = { formula: `SUM(J9:J${rowIndex - 1})` };
+        totalRow.getCell(11).value = { formula: `SUM(K9:K${rowIndex - 1})` };
+        totalRow.getCell(14).value = { formula: `SUM(N9:N${rowIndex - 1})` };
+        totalRow.getCell(15).value = { formula: `SUM(O9:O${rowIndex - 1})` };
+        totalRow.getCell(18).value = { formula: `SUM(R9:R${rowIndex - 1})` };
+        totalRow.getCell(19).value = { formula: `SUM(S9:S${rowIndex - 1})` };
+        totalRow.getCell(20).value = { formula: `SUM(T9:T${rowIndex - 1})` };
+        totalRow.getCell(21).value = { formula: `SUM(U9:U${rowIndex - 1})` };
+        totalRow.getCell(23).value = { formula: `SUM(W9:W${rowIndex - 1})` };
         totalRow.getCell(10).numFmt = '"R$ "#,##0.00';
         totalRow.getCell(11).numFmt = '"R$ "#,##0.00';
         totalRow.getCell(14).numFmt = '"R$ "#,##0.00';
@@ -1802,30 +1833,27 @@ document.addEventListener('DOMContentLoaded', function() {
         totalRow.getCell(21).numFmt = '"R$ "#,##0.00';
         totalRow.getCell(23).numFmt = '"R$ "#,##0.00';
 
-        // Apply light gray background to the entire total row
         totalRow.eachCell({ includeEmpty: true }, (cell) => {
-            cell.fill = {
-                type: 'pattern',
-                pattern: 'solid',
-                fgColor: { argb: 'D3D3D3' } // Light gray color
-            };
+            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'D3D3D3' } };
         });
 
-        // Generate File
+        // Configurar orientação da página para paisagem (horizontal)
+        worksheet.pageSetup.orientation = 'landscape';
+
+        // Gerar arquivo Excel
         const buffer = await workbook.xlsx.writeBuffer();
-        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = `Precificação_${numeroProposta}_${new Date().toISOString().slice(0, 10)}.xlsx`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        const blobExcel = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const linkExcel = document.createElement('a');
+        linkExcel.href = URL.createObjectURL(blobExcel);
+        linkExcel.download = `Precificação_${numeroProposta}_${new Date().toISOString().slice(0, 10)}.xlsx`;
+        document.body.appendChild(linkExcel);
+        linkExcel.click();
+        document.body.removeChild(linkExcel);
     } catch (error) {
-        console.error('Erro ao gerar Excel:', error);
-        alert('Ocorreu um erro ao gerar o arquivo Excel. Por favor, tente novamente.');
+        console.error('Erro ao gerar arquivos:', error);
+        alert('Ocorreu um erro ao gerar os arquivos. Por favor, tente novamente.');
     }
 }
-
     // Inicializar a aplicação
     carregarPlanilha();
 });
