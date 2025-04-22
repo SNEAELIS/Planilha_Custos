@@ -7,7 +7,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/exceljs@4.3.0/dist/exceljs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>~
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.3/jspdf.plugin.autotable.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -211,12 +213,17 @@
         }
 
         .carrinho {
-        margin-top: 30px; /* Mantém apenas a margem superior */
-        padding: 20px;
-        background-color: #f8fafc;
-        border-radius: 8px;
-    /* Remove max-width e margin: auto se estavam presentes */
-}
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8fafc;
+            border-radius: 8px;
+            max-width: 1200px;
+            margin-left: 0 !important; /* Força o alinhamento à esquerda */
+            margin-right: 0 !important;
+            width: 100%; /* Garante que o carrinho ocupe toda a largura disponível à esquerda */
+            box-sizing: border-box;
+        }
+
 
         .carrinho h3 {
             color: #003087;
@@ -229,17 +236,25 @@
             padding: 20px;
             text-align: center;
         }
-
         .item-carrinho {
             display: flex;
             justify-content: space-between;
             padding: 10px;
             border-bottom: 1px solid #e2e8f0;
             align-items: center;
+            text-align: left; /* Alinha o texto à esquerda */
+            width: 100%; /* Garante que o item ocupe a largura total */
         }
 
         .item-carrinho-info {
             flex: 1;
+            text-align: left; /* Garante que o texto dentro desta div esteja à esquerda */
+        }
+
+        .item-carrinho-info p,
+        .item-carrinho-info span {
+            text-align: left;
+            display: block; /* Para garantir que cada linha de texto comece à esquerda */
         }
 
         .item-carrinho-acoes button {
@@ -1088,11 +1103,20 @@
     </footer>
 
     <script>
-document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function() {
     if (typeof XLSX === 'undefined') {
         alert('Erro: A biblioteca SheetJS não foi carregada.');
         return;
     }
+
+    // Cache para armazenar dados das empresas entre adições
+    let empresasCache = {
+        srv: [{}, {}, {}],
+        me: [{}, {}, {}],
+        uni: [{}, {}, {}],
+        idv: [{}, {}, {}],
+        ali: [{}, {}, {}]
+    };
 
     let dadosPlanilha = {
         material: [],
@@ -1155,6 +1179,7 @@ document.addEventListener('DOMContentLoaded', function() {
         dadosPlanilha.servicos = [
             { ITEM: 'Coordenador de eventos', SUBITEM: 'Gestão' },
             { ITEM: 'Professor', SUBITEM: 'Aulas práticas' },
+            { ITEM: 'Professor de Educação Física', SUBITEM: 'Aulas de educação física' },
             { ITEM: 'Outros', SUBITEM: 'Especifique' }
         ];
         dadosPlanilha.material = [
@@ -1278,8 +1303,8 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     window.mostrarJustificativa = function(prefixo, empresaIndex) {
-        const menorValor = parseFloat(document.getElementById(`${prefixo}-menor-valor`).value.replace('R$ ', '').replace('.', '').replace(',', '.')) || 0;
-        const valorSelecionado = parseFloat(document.getElementById(`${prefixo}-empresa${empresaIndex}-total`).value.replace('R$ ', '').replace('.', '').replace(',', '.')) || 0;
+        const menorValor = parseFloat(document.getElementById(`${prefixo}-menor-valor`).value.replace('R$ ', '').replace(/\./g, '').replace(',', '.')) || 0;
+        const valorSelecionado = parseFloat(document.getElementById(`${prefixo}-empresa${empresaIndex}-total`).value.replace('R$ ', '').replace(/\./g, '').replace(',', '.')) || 0;
         const justificativaContainer = document.getElementById(`${prefixo}-justificativa-container`);
         justificativaContainer.style.display = valorSelecionado > menorValor ? 'block' : 'none';
     };
@@ -1301,7 +1326,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnExportarExcel = document.getElementById('btn-exportar-excel');
 
     function formatarMoeda(valor) {
-        return `R$ ${valor.toLocaleString('pt-BR', {
+        const numericValor = parseFloat(valor) || 0;
+        return `R$ ${numericValor.toLocaleString('pt-BR', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
         })}`;
@@ -1317,6 +1343,17 @@ document.addEventListener('DOMContentLoaded', function() {
             return cnpj.substring(0, 18);
         }
         return cnpj;
+    }
+
+    function parseValorMonetario(inputValue) {
+        if (!inputValue) return 0;
+        // Remove tudo exceto números, pontos e vírgula
+        let value = inputValue.replace(/[^\d,.]/g, '');
+        // Remove pontos de milhares e substitui vírgula por ponto
+        const cleanedValue = value
+            .replace(/\.(?=.*\.)|,/g, (m) => m === ',' ? '.' : '')
+            .replace(/^0+(?=\d)/, ''); // Remove zeros à esquerda
+        return parseFloat(cleanedValue) || 0;
     }
 
     function calcularTotal(prefixo) {
@@ -1343,7 +1380,7 @@ document.addEventListener('DOMContentLoaded', function() {
         for (let i = 1; i <= 3; i++) {
             const unitarioInput = document.getElementById(`${prefixo}-empresa${i}-unitario`);
             if (!unitarioInput) continue;
-            const unitario = parseFloat(unitarioInput.value.replace('.', '').replace(',', '.')) || 0;
+            const unitario = parseFloat(unitarioInput.getAttribute('data-value') || '0') || 0;
             const valorTotal = unitario * total;
             const valorTotalFormatado = formatarMoeda(valorTotal);
             const totalInput = document.getElementById(`${prefixo}-empresa${i}-total`);
@@ -1400,22 +1437,69 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Nova lógica para campos monetários
     document.querySelectorAll('.valor-monetario').forEach(input => {
-        input.addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, '');
-            if (value === '') value = '0';
-            value = (parseInt(value) / 100).toLocaleString('pt-BR', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
-            e.target.value = value;
-            const id = e.target.id;
-            if (id.includes('unitario')) {
-                const prefixo = id.split('-')[0];
-                calcularTotaisEmpresas(prefixo);
-            }
+    input.addEventListener('input', function(e) {
+        // Captura a posição atual do cursor
+        let cursorPosition = e.target.selectionStart;
+        let value = e.target.value;
+
+        // Remove caracteres não permitidos (mantém números, vírgula e ponto)
+        value = value.replace(/[^0-9,.]/g, '');
+
+        // Impede múltiplos pontos ou vírgulas
+        const parts = value.split(/[,.]/);
+        if (parts.length > 2) {
+            value = parts[0] + ',' + parts[1];
+        }
+
+        // Atualiza o valor no campo
+        e.target.value = value;
+
+        // Converte para valor numérico
+        let numericValue = parseFloat(value.replace(',', '.')) || 0;
+        if (parts.length > 1) {
+            // Ajusta para manter até 2 casas decimais
+            const decimals = parts[1].slice(0, 2);
+            numericValue = parseFloat(`${parts[0]}.${decimals}`) || 0;
+        }
+
+        // Armazena o valor numérico puro
+        e.target.setAttribute('data-value', numericValue.toString());
+
+        // Restaura a posição do cursor
+        e.target.selectionStart = e.target.selectionEnd = cursorPosition;
+
+        // Atualiza totais da empresa se necessário
+        const id = e.target.id;
+        if (id.includes('unitario')) {
+            const prefixo = id.split('-')[0];
+            calcularTotaisEmpresas(prefixo);
+        }
+    });
+
+    // Formata o valor ao sair do campo
+    input.addEventListener('blur', function(e) {
+        let numericValue = parseFloat(e.target.getAttribute('data-value') || '0') || 0;
+        // Formata como moeda brasileira
+        e.target.value = numericValue.toLocaleString('pt-BR', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
         });
     });
+
+    // Permite apenas números, vírgula, ponto e teclas de controle
+    input.addEventListener('keydown', function(e) {
+        // Permite teclas de controle
+        if (['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Home', 'End'].includes(e.key)) {
+            return;
+        }
+        // Permite números, vírgula e ponto
+        if (!/[\d,.]/.test(e.key) && e.key.length === 1) {
+            e.preventDefault();
+        }
+    });
+});
 
     prefixes.forEach(prefixo => {
         const btnAdicionar = document.getElementById(`${prefixo}-adicionar-carrinho`);
@@ -1447,8 +1531,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            if (prefixo !== 'srv' && !subitem) {
-                alert('Selecione ou especifique um subitem!');
+            if (prefixo !== 'srv' && !subitem && !descricao) {
+                alert('Preencha pelo menos o subitem ou a descrição do item!');
                 return;
             }
 
@@ -1461,11 +1545,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 const nome = document.getElementById(`${prefixo}-empresa${i}-nome`).value.trim();
                 const cnpj = document.getElementById(`${prefixo}-empresa${i}-cnpj`).value.trim();
                 const link = document.getElementById(`${prefixo}-empresa${i}-link`).value.trim();
-                const unitarioInput = document.getElementById(`${prefixo}-empresa${i}-unitario`).value.trim();
-                const unitario = parseFloat(unitarioInput.replace('.', '').replace(',', '.')) || 0;
+                const unitarioInput = document.getElementById(`${prefixo}-empresa${i}-unitario`);
+                const unitario = parseFloat(unitarioInput.getAttribute('data-value') || '0') || 0;
                 const valorTotal = unitario * total;
 
-                if (nome && cnpj && link && unitario > 0) {
+                empresasCache[prefixo][i-1] = { nome, cnpj, link };
+
+                if (nome && cnpj && unitario > 0) {
                     if (!validarCNPJ(cnpj)) {
                         alert(`CNPJ inválido para Empresa ${i} na seção ${prefixo.toUpperCase()}.`);
                         return;
@@ -1473,12 +1559,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     empresas.push({
                         nome,
                         cnpj,
-                        link,
+                        link: link || '',
                         unitario,
                         total: valorTotal
                     });
 
-                    if (valorTotal < menorValor) {
+                    if (valorTotal < menorValor && valorTotal > 0) {
                         menorValor = valorTotal;
                     }
 
@@ -1486,16 +1572,18 @@ document.addEventListener('DOMContentLoaded', function() {
                         empresaSelecionada = {
                             nome,
                             cnpj,
-                            link,
+                            link: link || '',
                             unitario,
                             total: valorTotal
                         };
                     }
+                } else {
+                    empresas.push({ nome: '', cnpj: '', link: '', unitario: 0, total: 0 });
                 }
             }
 
-            if (empresas.length < 1) {
-                alert('Preencha pelo menos uma empresa com nome, CNPJ, link e valor unitário válidos!');
+            if (empresas.filter(e => e.nome && e.cnpj && e.unitario > 0).length < 1) {
+                alert('Preencha pelo menos uma empresa com nome, CNPJ e valor unitário válidos!');
                 return;
             }
 
@@ -1504,31 +1592,31 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            const justificativa = empresaSelecionada.total > menorValor
+            const justificativa = empresaSelecionada.total > menorValor && menorValor !== Infinity
                 ? document.getElementById(`${prefixo}-justificativa`).value.trim()
                 : '';
 
-            if (empresaSelecionada.total > menorValor && !justificativa) {
+            if (empresaSelecionada.total > menorValor && menorValor !== Infinity && !justificativa) {
                 alert('Por favor, forneça uma justificativa para a escolha de uma empresa com valor superior ao menor cotado.');
                 return;
             }
 
             const itemCarrinho = {
-    id: itemIdCounter++,
-    categoria: prefixoToCategoria[prefixo],
-    item: cargoOuItem,
-    subitem: subitem || '',
-    descricao,
-    quantidade,
-    periodo: tipo === 'aquisicao' ? 'N/A' : periodo,
-    periodoValor: tipo === 'aquisicao' ? 1 : periodoValor,
-    tipo: tipo || 'N/A',
-    total,
-    empresas,
-    empresaSelecionada, // Keep this as it contains the selected company
-    justificativa,
-    dataAdicao: new Date().toISOString()
-};
+                id: itemIdCounter++,
+                categoria: prefixoToCategoria[prefixo],
+                item: cargoOuItem,
+                subitem: subitem || '',
+                descricao,
+                quantidade,
+                periodo: tipo === 'aquisicao' ? 'N/A' : periodo,
+                periodoValor: tipo === 'aquisicao' ? 1 : periodoValor,
+                tipo: tipo || 'N/A',
+                total,
+                empresas,
+                empresaSelecionada,
+                justificativa,
+                dataAdicao: new Date().toISOString()
+            };
 
             carrinho.push(itemCarrinho);
             valorGasto += empresaSelecionada.total;
@@ -1541,48 +1629,46 @@ document.addEventListener('DOMContentLoaded', function() {
         cnpj = cnpj.replace(/[^\d]+/g, '');
         if (cnpj === '') return false;
         if (cnpj.length !== 14) return false;
-        
-        // Elimina CNPJs invalidos conhecidos
-        if (cnpj === "00000000000000" || 
-            cnpj === "11111111111111" || 
-            cnpj === "22222222222222" || 
-            cnpj === "33333333333333" || 
-            cnpj === "44444444444444" || 
-            cnpj === "55555555555555" || 
-            cnpj === "66666666666666" || 
-            cnpj === "77777777777777" || 
-            cnpj === "88888888888888" || 
+
+        if (cnpj === "00000000000000" ||
+            cnpj === "11111111111111" ||
+            cnpj === "22222222222222" ||
+            cnpj === "33333333333333" ||
+            cnpj === "44444444444444" ||
+            cnpj === "55555555555555" ||
+            cnpj === "66666666666666" ||
+            cnpj === "77777777777777" ||
+            cnpj === "88888888888888" ||
             cnpj === "99999999999999")
             return false;
-            
-        // Valida DVs
+
         let tamanho = cnpj.length - 2;
         let numeros = cnpj.substring(0, tamanho);
         let digitos = cnpj.substring(tamanho);
         let soma = 0;
         let pos = tamanho - 7;
-        
+
         for (let i = tamanho; i >= 1; i--) {
             soma += numeros.charAt(tamanho - i) * pos--;
             if (pos < 2) pos = 9;
         }
-        
+
         let resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
         if (resultado != digitos.charAt(0)) return false;
-        
+
         tamanho = tamanho + 1;
         numeros = cnpj.substring(0, tamanho);
         soma = 0;
         pos = tamanho - 7;
-        
+
         for (let i = tamanho; i >= 1; i--) {
             soma += numeros.charAt(tamanho - i) * pos--;
             if (pos < 2) pos = 9;
         }
-        
+
         resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
         if (resultado != digitos.charAt(1)) return false;
-            
+
         return true;
     }
 
@@ -1590,7 +1676,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const listaCarrinho = document.getElementById('lista-carrinho');
         const totalCarrinho = document.getElementById('total-carrinho');
         const valorRestante = valorEmenda - valorGasto;
-        
+
         if (carrinho.length === 0) {
             listaCarrinho.innerHTML = '<div class="carrinho-vazio">Nenhum item adicionado ao carrinho</div>';
             totalCarrinho.textContent = 'Total no Carrinho: R$ 0,00';
@@ -1605,18 +1691,18 @@ document.addEventListener('DOMContentLoaded', function() {
                         Empresa selecionada: ${item.empresaSelecionada.nome} (${formatarMoeda(item.empresaSelecionada.total)})
                     </div>
                     <div class="item-carrinho-acoes">
+                        <button onclick="editarItemCarrinho(${item.id})"><i class="fas fa-edit"></i> Editar</button>
                         <button onclick="removerItemCarrinho(${item.id})"><i class="fas fa-trash"></i> Remover</button>
                     </div>
                 </div>
             `).join('');
-            
+
             totalCarrinho.textContent = `Total no Carrinho: ${formatarMoeda(valorGasto)}`;
         }
-        
+
         document.getElementById('valor-gasto').textContent = formatarMoeda(valorGasto);
         document.getElementById('valor-restante').textContent = formatarMoeda(valorRestante);
-        
-        // Atualizar estado do botão de exportação
+
         btnExportarExcel.disabled = carrinho.length === 0 || !declaracaoCheckbox.checked;
     }
 
@@ -1627,6 +1713,74 @@ document.addEventListener('DOMContentLoaded', function() {
             carrinho.splice(itemIndex, 1);
             atualizarCarrinho();
         }
+    };
+
+    window.editarItemCarrinho = function(id) {
+        const item = carrinho.find(item => item.id === id);
+        if (!item) return;
+
+        const prefixoMap = {
+            'servicos': 'srv',
+            'material': 'me',
+            'uniforme': 'uni',
+            'impressos': 'idv',
+            'alimentacao': 'ali'
+        };
+        const prefixo = prefixoMap[item.categoria];
+
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelector(`.tab[data-tab="${item.categoria === 'servicos' ? 'servicos' : item.categoria}"]`).classList.add('active');
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.getElementById(item.categoria === 'servicos' ? 'servicos' : item.categoria).classList.add('active');
+
+        if (prefixo === 'srv') {
+            if (item.item === 'Outros') {
+                document.getElementById(`${prefixo}-cargo`).value = 'Outros';
+                document.getElementById(`${prefixo}-outros`).value = item.item;
+                document.getElementById(`${prefixo}-outros-container`).style.display = 'block';
+            } else {
+                document.getElementById(`${prefixo}-cargo`).value = item.item;
+                document.getElementById(`${prefixo}-outros`).value = '';
+                document.getElementById(`${prefixo}-outros-container`).style.display = 'none';
+            }
+        } else {
+            document.getElementById(`${prefixo}-item`).value = item.item;
+            document.getElementById(`${prefixo}-subitem`).value = item.subitem;
+            document.getElementById(`${prefixo}-outros`).value = item.item === 'Outros' ? item.subitem : '';
+            document.getElementById(`${prefixo}-outros-container`).style.display = item.item === 'Outros' ? 'block' : 'none';
+        }
+
+        document.getElementById(`${prefixo}-descricao`).value = item.descricao;
+        document.getElementById(`${prefixo}-quantidade`).value = item.quantidade;
+        if (prefixo === 'me') {
+            document.getElementById(`${prefixo}-tipo`).value = item.tipo;
+            toggleLocacaoFields();
+        }
+        if (item.periodo !== 'N/A') {
+            document.getElementById(`${prefixo}-periodo`).value = item.periodo;
+            document.getElementById(`${prefixo}-periodo-valor`).value = item.periodoValor;
+        }
+
+        for (let i = 0; i < 3; i++) {
+            const empresa = item.empresas[i] || {};
+            document.getElementById(`${prefixo}-empresa${i+1}-nome`).value = empresa.nome || '';
+            document.getElementById(`${prefixo}-empresa${i+1}-cnpj`).value = empresa.cnpj || '';
+            document.getElementById(`${prefixo}-empresa${i+1}-link`).value = empresa.link || '';
+            const unitarioInput = document.getElementById(`${prefixo}-empresa${i+1}-unitario`);
+            const unitarioValue = empresa.unitario || 0;
+            unitarioInput.value = unitarioValue ? unitarioValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : '0,00';
+            unitarioInput.setAttribute('data-value', unitarioValue.toString());
+            document.getElementById(`${prefixo}-empresa${i+1}-total`).value = empresa.total ? formatarMoeda(empresa.total) : 'R$ 0,00';
+            document.getElementById(`${prefixo}-empresa${i+1}-selecionada`).checked = item.empresaSelecionada && item.empresaSelecionada.nome === empresa.nome;
+        }
+
+        document.getElementById(`${prefixo}-justificativa`).value = item.justificativa || '';
+        document.getElementById(`${prefixo}-justificativa-container`).style.display = item.justificativa ? 'block' : 'none';
+        calcularTotaisEmpresas(prefixo);
+
+        valorGasto -= item.empresaSelecionada.total;
+        carrinho = carrinho.filter(i => i.id !== id);
+        atualizarCarrinho();
     };
 
     function limparFormulario(prefixo) {
@@ -1640,7 +1794,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById(`${prefixo}-outros`).value = '';
             document.getElementById(`${prefixo}-outros-container`).style.display = 'none';
         }
-        
+
         document.getElementById(`${prefixo}-descricao`).value = '';
         document.getElementById(`${prefixo}-quantidade`).value = '1';
         document.getElementById(`${prefixo}-periodo`).value = 'diarias';
@@ -1649,13 +1803,16 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById(`${prefixo}-justificativa`).value = '';
         document.getElementById(`${prefixo}-justificativa-container`).style.display = 'none';
         document.getElementById(`${prefixo}-menor-valor`).value = '';
-        
+
         for (let i = 1; i <= 3; i++) {
-            document.getElementById(`${prefixo}-empresa${i}-nome`).value = '';
-            document.getElementById(`${prefixo}-empresa${i}-cnpj`).value = '';
-            document.getElementById(`${prefixo}-empresa${i}-link`).value = '';
-            document.getElementById(`${prefixo}-empresa${i}-unitario`).value = '';
-            document.getElementById(`${prefixo}-empresa${i}-total`).value = '';
+            const empresa = empresasCache[prefixo][i-1] || {};
+            document.getElementById(`${prefixo}-empresa${i}-nome`).value = empresa.nome || '';
+            document.getElementById(`${prefixo}-empresa${i}-cnpj`).value = empresa.cnpj || '';
+            document.getElementById(`${prefixo}-empresa${i}-link`).value = empresa.link || '';
+            const unitarioInput = document.getElementById(`${prefixo}-empresa${i}-unitario`);
+            unitarioInput.value = '0,00';
+            unitarioInput.setAttribute('data-value', '0');
+            document.getElementById(`${prefixo}-empresa${i}-total`).value = 'R$ 0,00';
             document.getElementById(`${prefixo}-empresa${i}-selecionada`).checked = false;
         }
     }
@@ -1669,194 +1826,519 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('O carrinho está vazio. Adicione itens antes de exportar.');
             return;
         }
-        
+
         if (!declaracaoCheckbox.checked) {
             alert('Você precisa marcar a declaração antes de exportar.');
             return;
         }
-        
+
         gerarExcel();
     });
 
     async function gerarExcel() {
-    try {
-        const workbook = new ExcelJS.Workbook();
-        workbook.creator = 'Ministério do Esporte';
-        workbook.lastModifiedBy = 'Sistema de Precificação';
-        workbook.created = new Date();
-        workbook.modified = new Date();
+        try {
+            // Validate prerequisites
+            console.log('Iniciando geração de Excel. Estado do carrinho:', {
+                carrinhoLength: carrinho.length,
+                declaracaoChecked: declaracaoCheckbox.checked,
+                numeroProposta,
+                nomeEntidade,
+                cnpj
+            });
 
-        // Main Worksheet
-        const worksheet = workbook.addWorksheet('Orçamento');
+            if (carrinho.length === 0) {
+                alert('O carrinho está vazio. Adicione itens antes de exportar.');
+                return;
+            }
 
-        // Header Section
-        worksheet.getCell('A2').value = 'PROPOSTA';
-        worksheet.getCell('B2').value = numeroProposta;
-        worksheet.getCell('A3').value = 'CNPJ';
-        worksheet.getCell('B3').value = cnpj;
-        worksheet.getCell('A4').value = 'ENTIDADE';
-        worksheet.getCell('B4').value = nomeEntidade;
+            if (!declaracaoCheckbox.checked) {
+                alert('Você precisa marcar a declaração antes de exportar.');
+                return;
+            }
 
-        // Subheaders for Quotes (row 7)
-        const subHeaderRow = worksheet.getRow(7);
-        subHeaderRow.getCell(5).value = 'MEDIDAS';
-        subHeaderRow.getCell(8).value = '1ª COTAÇÃO';
-        subHeaderRow.getCell(12).value = '2ª COTAÇÃO';
-        subHeaderRow.getCell(16).value = '3ª COTAÇÃO';
-        subHeaderRow.getCell(20).value = 'COTAÇÃO DEFINIDA';
+            if (!numeroProposta || !nomeEntidade || !cnpj) {
+                alert('Preencha todos os campos obrigatórios: Número da Proposta, Entidade e CNPJ.');
+                return;
+            }
 
-        // Definir os títulos diretamente na linha 8 (sem mesclagem para A8:D8)
-        const headerRow = worksheet.getRow(8);
-        headerRow.getCell(1).value = 'Nº';
-        headerRow.getCell(2).value = 'TIPO';
-        headerRow.getCell(3).value = 'ITEM';
-        headerRow.getCell(4).value = 'ESPECIFICAÇÃO DO ITEM';
-        headerRow.getCell(5).value = 'QTD';
-        headerRow.getCell(6).value = 'DIÁRIAS/MESES';
-        headerRow.getCell(7).value = 'TOTAL';
-        headerRow.getCell(8).value = 'RAZÃO ou LINK';
-        headerRow.getCell(9).value = 'CNPJ';
-        headerRow.getCell(10).value = 'VALOR UNITÁRIO';
-        headerRow.getCell(11).value = 'VALOR TOTAL';
-        headerRow.getCell(12).value = 'RAZÃO ou LINK';
-        headerRow.getCell(13).value = 'CNPJ';
-        headerRow.getCell(14).value = 'VALOR UNITÁRIO';
-        headerRow.getCell(15).value = 'VALOR TOTAL';
-        headerRow.getCell(16).value = 'RAZÃO ou LINK';
-        headerRow.getCell(17).value = 'CNPJ';
-        headerRow.getCell(18).value = 'VALOR UNITÁRIO';
-        headerRow.getCell(19).value = 'VALOR TOTAL';
-        headerRow.getCell(20).value = 'VALOR UNITÁRIO';
-        headerRow.getCell(21).value = 'VALOR TOTAL';
-        headerRow.getCell(22).value = 'JUSTIFICATIVA';
-        headerRow.getCell(23).value = 'MENOR VALOR';
+            // Initialize Excel workbook
+            const workbook = new ExcelJS.Workbook();
+            workbook.creator = 'Ministério do Esporte';
+            workbook.lastModifiedBy = 'Sistema de Precificação';
+            workbook.created = new Date();
+            workbook.modified = new Date();
 
-        // Mesclar células apenas para os subtítulos (MEDIDAS, 1ª COTAÇÃO, etc.)
-        worksheet.mergeCells('E7:G7'); // MEDIDAS
-        worksheet.mergeCells('H7:K7'); // 1ª COTAÇÃO
-        worksheet.mergeCells('L7:O7'); // 2ª COTAÇÃO
-        worksheet.mergeCells('P7:S7'); // 3ª COTAÇÃO
-        worksheet.mergeCells('T7:U7'); // COTAÇÃO DEFINIDA
-        worksheet.mergeCells('V7:V8'); // JUSTIFICATIVA
-        worksheet.mergeCells('W7:W8'); // MENOR VALOR
+            const worksheet = workbook.addWorksheet('Orçamento');
 
-        // Aplicar formatação aos títulos na linha 8
-        headerRow.eachCell({ includeEmpty: false }, (cell) => {
-            cell.font = { bold: true, color: { argb: 'FF000000' } };
-            cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
-            cell.border = {
-                top: { style: 'thin' },
-                left: { style: 'thin' },
-                bottom: { style: 'thin' },
-                right: { style: 'thin' }
-            };
-        });
+            // Protect worksheet
+            await worksheet.protect('Mesp@123456', {
+                selectLockedCells: true,
+                selectUnlockedCells: true,
+                formatCells: false,
+                formatColumns: false,
+                formatRows: false,
+                insertColumns: false,
+                insertRows: false,
+                insertHyperlinks: false,
+                deleteColumns: false,
+                deleteRows: false,
+                sort: false,
+                autoFilter: false,
+                pivotTables: false
+            });
 
-        // Formatação para os subtítulos (MEDIDAS, 1ª COTAÇÃO, etc.) na linha 7
-        subHeaderRow.eachCell({ includeEmpty: false }, (cell) => {
-            cell.font = { bold: true, color: { argb: 'FF000000' } };
-            cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
-            cell.border = {
-                top: { style: 'thin' },
-                left: { style: 'thin' },
-                bottom: { style: 'thin' },
-                right: { style: 'thin' }
-            };
-        });
+            // Add metadata
+            worksheet.getCell('A2').value = 'PROPOSTA';
+            worksheet.getCell('B2').value = numeroProposta;
+            worksheet.getCell('A3').value = 'CNPJ';
+            worksheet.getCell('B3').value = cnpj;
+            worksheet.getCell('A4').value = 'ENTIDADE';
+            worksheet.getCell('B4').value = nomeEntidade;
+            worksheet.getCell('A5').value = 'DATA';
+            worksheet.getCell('B5').value = new Date().toLocaleDateString('pt-BR');
 
-        // Definir largura das colunas
-        worksheet.columns = [
-            { width: 5 }, { width: 15 }, { width: 20 }, { width: 30 }, { width: 10 },
-            { width: 15 }, { width: 10 }, { width: 20 }, { width: 15 }, { width: 15 },
-            { width: 15 }, { width: 20 }, { width: 15 }, { width: 15 }, { width: 15 },
-            { width: 20 }, { width: 15 }, { width: 15 }, { width: 15 }, { width: 15 },
-            { width: 15 }, { width: 30 }, { width: 15 }
-        ];
+            // Sub-header row
+            const subHeaderRow = worksheet.getRow(7);
+            subHeaderRow.getCell(5).value = 'MEDIDAS';
+            subHeaderRow.getCell(8).value = '1ª COTAÇÃO';
+            subHeaderRow.getCell(12).value = '2ª COTAÇÃO';
+            subHeaderRow.getCell(16).value = '3ª COTAÇÃO';
+            subHeaderRow.getCell(20).value = 'COTAÇÃO DEFINIDA';
 
-        // Aplicar cores
-        subHeaderRow.getCell(5).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFB266' } };
-        subHeaderRow.getCell(8).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFCC99' } };
-        subHeaderRow.getCell(12).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'CCCCFF' } };
-        subHeaderRow.getCell(16).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '99CCFF' } };
-        subHeaderRow.getCell(20).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF9999' } };
+            // Header row
+            const headerRow = worksheet.getRow(8);
+            headerRow.getCell(1).value = 'Nº';
+            headerRow.getCell(2).value = 'TIPO';
+            headerRow.getCell(3).value = 'ITEM';
+            headerRow.getCell(4).value = 'ESPECIFICAÇÃO DO ITEM';
+            headerRow.getCell(5).value = 'QTD';
+            headerRow.getCell(6).value = 'DIÁRIAS/MESES';
+            headerRow.getCell(7).value = 'TOTAL';
+            headerRow.getCell(8).value = 'RAZÃO ou LINK';
+            headerRow.getCell(9).value = 'CNPJ';
+            headerRow.getCell(10).value = 'VALOR UNITÁRIO';
+            headerRow.getCell(11).value = 'VALOR TOTAL';
+            headerRow.getCell(12).value = 'RAZÃO ou LINK';
+            headerRow.getCell(13).value = 'CNPJ';
+            headerRow.getCell(14).value = 'VALOR UNITÁRIO';
+            headerRow.getCell(15).value = 'VALOR TOTAL';
+            headerRow.getCell(16).value = 'RAZÃO ou LINK';
+            headerRow.getCell(17).value = 'CNPJ';
+            headerRow.getCell(18).value = 'VALOR UNITÁRIO';
+            headerRow.getCell(19).value = 'VALOR TOTAL';
+            headerRow.getCell(20).value = 'VALOR UNITÁRIO';
+            headerRow.getCell(21).value = 'VALOR TOTAL';
+            headerRow.getCell(22).value = 'JUSTIFICATIVA';
+            headerRow.getCell(23).value = 'MENOR VALOR DE COTAÇÃO';
 
-        // Data Rows
-        let rowIndex = 9;
-        carrinho.forEach(item => {
-            const row = worksheet.getRow(rowIndex);
-            const menorValor = Math.min(...item.empresas.map(e => e.total).filter(t => t > 0));
-            // Ajustar o valor de "TIPO" se for "SERVICOS"
-            const tipo = item.categoria.toUpperCase() === 'SERVICOS' ? 'SERVIÇOS/RECURSOS HUMANOS' : item.categoria.toUpperCase();
-            row.values = [
-                item.id, tipo, `${item.item}${item.subitem ? ' - ' + item.subitem : ''}`, item.descricao,
-                item.quantidade, item.periodo === 'N/A' ? 'N/A' : (item.periodo === 'diarias' ? 'Diárias' : 'Meses'), item.total,
-                item.empresas[0]?.nome || '', item.empresas[0]?.cnpj || '', item.empresas[0]?.unitario || 0, item.empresas[0]?.total || 0,
-                item.empresas[1]?.nome || '', item.empresas[1]?.cnpj || '', item.empresas[1]?.unitario || 0, item.empresas[1]?.total || 0,
-                item.empresas[2]?.nome || '', item.empresas[2]?.cnpj || '', item.empresas[2]?.unitario || 0, item.empresas[2]?.total || 0,
-                item.empresaSelecionada.unitario, item.empresaSelecionada.total,
-                item.empresaSelecionada.total > menorValor ? item.justificativa : '',
-                menorValor !== Infinity ? menorValor : 0
+            // Merge cells for sub-headers
+            worksheet.mergeCells('E7:G7');
+            worksheet.mergeCells('H7:K7');
+            worksheet.mergeCells('L7:O7');
+            worksheet.mergeCells('P7:S7');
+            worksheet.mergeCells('T7:U7');
+
+            // Style headers
+            headerRow.eachCell({ includeEmpty: false }, (cell) => {
+                cell.font = { bold: true, color: { argb: 'FF000000' } };
+                cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+                cell.border = {
+                    top: { style: 'thin' },
+                    left: { style: 'thin' },
+                    bottom: { style: 'thin' },
+                    right: { style: 'thin' }
+                };
+            });
+
+            subHeaderRow.eachCell({ includeEmpty: false }, (cell) => {
+                cell.font = { bold: true, color: { argb: 'FF000000' } };
+                cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+                cell.border = {
+                    top: { style: 'thin' },
+                    left: { style: 'thin' },
+                    bottom: { style: 'thin' },
+                    right: { style: 'thin' }
+                };
+            });
+
+            // Set column widths
+            worksheet.columns = [
+                { width: 5 }, { width: 15 }, { width: 20 }, { width: 30 }, { width: 10 },
+                { width: 15 }, { width: 10 }, { width: 20 }, { width: 15 }, { width: 15 },
+                { width: 15 }, { width: 20 }, { width: 15 }, { width: 15 }, { width: 15 },
+                { width: 20 }, { width: 15 }, { width: 15 }, { width: 15 }, { width: 15 },
+                { width: 15 }, { width: 30 }, { width: 15 }
             ];
-            row.getCell(10).numFmt = '"R$ "#,##0.00';
-            row.getCell(11).numFmt = '"R$ "#,##0.00';
-            row.getCell(14).numFmt = '"R$ "#,##0.00';
-            row.getCell(15).numFmt = '"R$ "#,##0.00';
-            row.getCell(18).numFmt = '"R$ "#,##0.00';
-            row.getCell(19).numFmt = '"R$ "#,##0.00';
-            row.getCell(20).numFmt = '"R$ "#,##0.00';
-            row.getCell(21).numFmt = '"R$ "#,##0.00';
-            row.getCell(23).numFmt = '"R$ "#,##0.00';
-            rowIndex++;
-        });
 
-        // Total Row
-        const totalRow = worksheet.getRow(rowIndex);
-        totalRow.getCell(1).value = 'TOTAL';
-        totalRow.getCell(5).value = { formula: `SUM(E9:E${rowIndex - 1})` };
-        totalRow.getCell(7).value = { formula: `SUM(G9:G${rowIndex - 1})` };
-        totalRow.getCell(10).value = { formula: `SUM(J9:J${rowIndex - 1})` };
-        totalRow.getCell(11).value = { formula: `SUM(K9:K${rowIndex - 1})` };
-        totalRow.getCell(14).value = { formula: `SUM(N9:N${rowIndex - 1})` };
-        totalRow.getCell(15).value = { formula: `SUM(O9:O${rowIndex - 1})` };
-        totalRow.getCell(18).value = { formula: `SUM(R9:R${rowIndex - 1})` };
-        totalRow.getCell(19).value = { formula: `SUM(S9:S${rowIndex - 1})` };
-        totalRow.getCell(20).value = { formula: `SUM(T9:T${rowIndex - 1})` };
-        totalRow.getCell(21).value = { formula: `SUM(U9:U${rowIndex - 1})` };
-        totalRow.getCell(23).value = { formula: `SUM(W9:W${rowIndex - 1})` };
-        totalRow.getCell(10).numFmt = '"R$ "#,##0.00';
-        totalRow.getCell(11).numFmt = '"R$ "#,##0.00';
-        totalRow.getCell(14).numFmt = '"R$ "#,##0.00';
-        totalRow.getCell(15).numFmt = '"R$ "#,##0.00';
-        totalRow.getCell(18).numFmt = '"R$ "#,##0.00';
-        totalRow.getCell(19).numFmt = '"R$ "#,##0.00';
-        totalRow.getCell(20).numFmt = '"R$ "#,##0.00';
-        totalRow.getCell(21).numFmt = '"R$ "#,##0.00';
-        totalRow.getCell(23).numFmt = '"R$ "#,##0.00';
+            // Apply fill colors to sub-headers
+            subHeaderRow.getCell(5).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFB266' } };
+            subHeaderRow.getCell(8).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFCC99' } };
+            subHeaderRow.getCell(12).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'CCCCFF' } };
+            subHeaderRow.getCell(16).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '99CCFF' } };
+            subHeaderRow.getCell(20).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF9999' } };
 
-        totalRow.eachCell({ includeEmpty: true }, (cell) => {
-            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'D3D3D3' } };
-        });
+            // Add carrinho data
+            let rowIndex = 9;
+            carrinho.forEach(item => {
+                const totals = [
+                    item.empresas[0]?.total || 0,
+                    item.empresas[1]?.total || 0,
+                    item.empresas[2]?.total || 0
+                ].filter(t => t > 0 && !isNaN(t));
+                const menorValor = totals.length > 0 ? Math.min(...totals) : 0;
+                const justificativa = item.empresaSelecionada.total > menorValor && menorValor !== 0 ? item.justificativa : '';
+                const menorValorCotado = menorValor !== 0 ? menorValor : 0;
+                const tipo = item.categoria.toUpperCase() === 'SERVICOS' ? 'SERVIÇOS/RECURSOS HUMANOS' : item.categoria.toUpperCase();
+                const row = worksheet.getRow(rowIndex);
+                row.values = [
+                    item.id, tipo, `${item.item}${item.subitem ? ' - ' + item.subitem : ''}`, item.descricao,
+                    item.quantidade, item.periodo === 'N/A' ? 'N/A' : (item.periodo === 'diarias' ? 'Diárias' : 'Meses'), item.total,
+                    item.empresas[0]?.nome && item.empresas[0]?.link ? `${item.empresas[0].nome} - ${item.empresas[0].link}` : item.empresas[0]?.nome || '',
+                    item.empresas[0]?.cnpj || '', item.empresas[0]?.unitario || 0, item.empresas[0]?.total || 0,
+                    item.empresas[1]?.nome && item.empresas[1]?.link ? `${item.empresas[1].nome} - ${item.empresas[1].link}` : item.empresas[1]?.nome || '',
+                    item.empresas[1]?.cnpj || '', item.empresas[1]?.unitario || 0, item.empresas[1]?.total || 0,
+                    item.empresas[2]?.nome && item.empresas[2]?.link ? `${item.empresas[2].nome} - ${item.empresas[2].link}` : item.empresas[2]?.nome || '',
+                    item.empresas[2]?.cnpj || '', item.empresas[2]?.unitario || 0, item.empresas[2]?.total || 0,
+                    item.empresaSelecionada.unitario, item.empresaSelecionada.total,
+                    justificativa,
+                    menorValorCotado
+                ];
+                row.getCell(3).alignment = { wrapText: true };
+                row.getCell(4).alignment = { wrapText: true };
+                row.getCell(9).alignment = { wrapText: true };
+                row.getCell(13).alignment = { wrapText: true };
+                row.getCell(17).alignment = { wrapText: true };
+                row.getCell(10).numFmt = '"R$ "#,##0.00';
+                row.getCell(11).numFmt = '"R$ "#,##0.00';
+                row.getCell(14).numFmt = '"R$ "#,##0.00';
+                row.getCell(15).numFmt = '"R$ "#,##0.00';
+                row.getCell(18).numFmt = '"R$ "#,##0.00';
+                row.getCell(19).numFmt = '"R$ "#,##0.00';
+                row.getCell(20).numFmt = '"R$ "#,##0.00';
+                row.getCell(21).numFmt = '"R$ "#,##0.00';
+                row.getCell(23).numFmt = '"R$ "#,##0.00';
+                row.height = 60;
+                rowIndex++;
+            });
 
-        // Configurar orientação da página para paisagem (horizontal)
-        worksheet.pageSetup.orientation = 'landscape';
+            // Add total row
+            const totalRow = worksheet.getRow(rowIndex);
+            totalRow.getCell(1).value = 'TOTAL';
+            totalRow.getCell(5).value = { formula: `SUM(E9:E${rowIndex - 1})` };
+            totalRow.getCell(7).value = { formula: `SUM(G9:G${rowIndex - 1})` };
+            totalRow.getCell(10).value = { formula: `SUM(J9:J${rowIndex - 1})` };
+            totalRow.getCell(11).value = { formula: `SUM(K9:K${rowIndex - 1})` };
+            totalRow.getCell(14).value = { formula: `SUM(N9:N${rowIndex - 1})` };
+            totalRow.getCell(15).value = { formula: `SUM(O9:O${rowIndex - 1})` };
+            totalRow.getCell(18).value = { formula: `SUM(R9:R${rowIndex - 1})` };
+            totalRow.getCell(19).value = { formula: `SUM(S9:S${rowIndex - 1})` };
+            totalRow.getCell(20).value = { formula: `SUM(T9:T${rowIndex - 1})` };
+            totalRow.getCell(21).value = { formula: `SUM(U9:U${rowIndex - 1})` };
+            totalRow.getCell(23).value = { formula: `SUM(W9:W${rowIndex - 1})` };
+            totalRow.getCell(10).numFmt = '"R$ "#,##0.00';
+            totalRow.getCell(11).numFmt = '"R$ "#,##0.00';
+            totalRow.getCell(14).numFmt = '"R$ "#,##0.00';
+            totalRow.getCell(15).numFmt = '"R$ "#,##0.00';
+            totalRow.getCell(18).numFmt = '"R$ "#,##0.00';
+            totalRow.getCell(19).numFmt = '"R$ "#,##0.00';
+            totalRow.getCell(20).numFmt = '"R$ "#,##0.00';
+            totalRow.getCell(21).numFmt = '"R$ "#,##0.00';
+            totalRow.getCell(23).numFmt = '"R$ "#,##0.00';
 
-        // Gerar arquivo Excel
-        const buffer = await workbook.xlsx.writeBuffer();
-        const blobExcel = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        const linkExcel = document.createElement('a');
-        linkExcel.href = URL.createObjectURL(blobExcel);
-        linkExcel.download = `Precificação_${numeroProposta}_${new Date().toISOString().slice(0, 10)}.xlsx`;
-        document.body.appendChild(linkExcel);
-        linkExcel.click();
-        document.body.removeChild(linkExcel);
-    } catch (error) {
-        console.error('Erro ao gerar arquivos:', error);
-        alert('Ocorreu um erro ao gerar os arquivos. Por favor, tente novamente.');
+            totalRow.eachCell({ includeEmpty: true }, (cell) => {
+                cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'D3D3D3' } };
+            });
+
+            worksheet.pageSetup.orientation = 'landscape';
+
+            // Generate and download Excel
+            const buffer = await workbook.xlsx.writeBuffer();
+            const blobExcel = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            const linkExcel = document.createElement('a');
+            linkExcel.href = URL.createObjectURL(blobExcel);
+            linkExcel.download = `Precificação_${numeroProposta}_${new Date().toISOString().slice(0, 10)}.xlsx`;
+            document.body.appendChild(linkExcel);
+            linkExcel.click();
+            document.body.removeChild(linkExcel);
+
+            // Generate PDF if carrinho is valid
+            await gerarPDF(carrinho);
+
+        } catch (error) {
+            console.error('Erro ao gerar Excel:', error);
+            alert('Ocorreu um erro ao gerar o Excel. Verifique o console para mais detalhes.');
+        }
     }
-}
-    // Inicializar a aplicação
-    carregarPlanilha();
+
+    async function gerarPDF(carrinho) {
+        try {
+            console.log('Iniciando geração de PDF. Estado do carrinho:', { carrinhoLength: carrinho.length });
+
+            // Validate inputs
+            if (!carrinho || !Array.isArray(carrinho) || carrinho.length === 0) {
+                console.warn('Carrinho inválido:', {
+                    exists: !!carrinho,
+                    isArray: Array.isArray(carrinho),
+                    length: carrinho?.length
+                });
+                alert('O carrinho está vazio ou não foi carregado. Adicione itens antes de gerar o PDF.');
+                return;
+            }
+
+            if (!numeroProposta || !nomeEntidade || !cnpj) {
+                alert('Preencha todos os campos obrigatórios: Número da Proposta, Entidade e CNPJ.');
+                return;
+            }
+
+            if (typeof formatarMoeda !== 'function') {
+                throw new Error('A função formatarMoeda não está definida.');
+            }
+
+            // Initialize jsPDF
+            const { jsPDF } = window.jspdf;
+            if (!jsPDF) {
+                throw new Error('A biblioteca jsPDF não foi carregada corretamente.');
+            }
+            const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+
+            // Cover Page
+            doc.setFillColor(240, 240, 240);
+            doc.rect(0, 0, doc.internal.pageSize.width, doc.internal.pageSize.height, 'F');
+            doc.setFontSize(28);
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(0, 51, 102);
+            doc.text('Proposta de Precificação', doc.internal.pageSize.width / 2, 160, { align: 'center' });
+            doc.setFontSize(22);
+            doc.text('Ministério do Esporte', doc.internal.pageSize.width / 2, 200, { align: 'center' });
+            doc.setFontSize(16);
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(50, 50, 50);
+            doc.text(`Proposta: ${numeroProposta || 'N/A'}`, doc.internal.pageSize.width / 2, 260, { align: 'center' });
+            doc.text(`Entidade: ${nomeEntidade || 'N/A'}`, doc.internal.pageSize.width / 2, 280, { align: 'center' });
+            doc.text(`CNPJ: ${cnpj || 'N/A'}`, doc.internal.pageSize.width / 2, 300, { align: 'center' });
+            doc.text(`Data: ${new Date().toLocaleDateString('pt-BR')}`, doc.internal.pageSize.width / 2, 320, { align: 'center' });
+            doc.addPage();
+
+            // Header
+            doc.setFontSize(20);
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(0, 51, 102);
+            doc.text('Precificação - Ministério do Esporte', 40, 40);
+            doc.setLineWidth(2);
+            doc.setDrawColor(0, 51, 102);
+            doc.line(40, 48, 802, 48);
+
+            doc.setFontSize(12);
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(50, 50, 50);
+            doc.text(`Proposta: ${numeroProposta || 'N/A'}`, 40, 65);
+            doc.text(`CNPJ: ${cnpj || 'N/A'}`, 40, 80);
+            doc.text(`Entidade: ${nomeEntidade || 'N/A'}`, 40, 95);
+            doc.text(`Data: ${new Date().toLocaleDateString('pt-BR')}`, 40, 110);
+
+            // Table Headers
+            const headers = [
+                'Nº', 'Tipo', 'Item', 'Especificação', 'Qtd', 'Diárias/Meses', 'Total',
+                'Razão/Link 1', 'CNPJ 1', 'Unitário 1', 'Total 1',
+                'Razão/Link 2', 'CNPJ 2', 'Unitário 2', 'Total 2',
+                'Razão/Link 3', 'CNPJ 3', 'Unitário 3', 'Total 3',
+                'Unitário Def.', 'Total Def.', 'Justificativa', 'Menor Valor'
+            ];
+
+            const subHeaders = [
+                '', '', '', '', 'MEDIDAS', '', '', '1ª COTAÇÃO', '', '', '', '2ª COTAÇÃO', '', '', '', '3ª COTAÇÃO', '', '', '', 'COTAÇÃO DEFINIDA', '', ''
+            ];
+
+            // Table Data
+            const data = carrinho.map((item, index) => {
+                const totals = (item.empresas || []).map(e => e?.total || 0).filter(t => t > 0 && !isNaN(t));
+                const menorValor = totals.length > 0 ? Math.min(...totals) : 0;
+                const justificativa = (item.empresaSelecionada?.total || 0) > menorValor && menorValor !== 0 ? (item.justificativa || 'N/A') : '';
+                const menorValorCotado = menorValor !== 0 ? formatarMoeda(menorValor) : 'R$ 0,00';
+                const tipo = item.categoria?.toUpperCase() === 'SERVICOS' ? 'SERVIÇOS/RECURSOS HUMANOS' : (item.categoria?.toUpperCase() || 'N/A');
+                return [
+                    item.id || index + 1,
+                    tipo,
+                    `${item.item || 'N/A'}${item.subitem ? ' - ' + item.subitem : ''}`,
+                    item.descricao || 'N/A',
+                    item.quantidade || 0,
+                    item.periodo === 'N/A' ? 'N/A' : (item.periodo === 'diarias' ? 'Diárias' : 'Meses'),
+                    formatarMoeda(item.total || 0),
+                    item.empresas?.[0]?.nome && item.empresas?.[0]?.link ? `${item.empresas[0].nome} - ${item.empresas[0].link}` : (item.empresas?.[0]?.nome || ''),
+                    item.empresas?.[0]?.cnpj || '',
+                    formatarMoeda(item.empresas?.[0]?.unitario || 0),
+                    formatarMoeda(item.empresas?.[0]?.total || 0),
+                    item.empresas?.[1]?.nome && item.empresas?.[1]?.link ? `${item.empresas[1].nome} - ${item.empresas[1].link}` : (item.empresas?.[1]?.nome || ''),
+                    item.empresas?.[1]?.cnpj || '',
+                    formatarMoeda(item.empresas?.[1]?.unitario || 0),
+                    formatarMoeda(item.empresas?.[1]?.total || 0),
+                    item.empresas?.[2]?.nome && item.empresas?.[2]?.link ? `${item.empresas[2].nome} - ${item.empresas[2].link}` : (item.empresas?.[2]?.nome || ''),
+                    item.empresas?.[2]?.cnpj || '',
+                    formatarMoeda(item.empresas?.[2]?.unitario || 0),
+                    formatarMoeda(item.empresas?.[2]?.total || 0),
+                    formatarMoeda(item.empresaSelecionada?.unitario || 0),
+                    formatarMoeda(item.empresaSelecionada?.total || 0),
+                    justificativa,
+                    menorValorCotado
+                ];
+            });
+
+            // Main Table
+            doc.autoTable({
+                startY: 130,
+                head: [subHeaders, headers],
+                body: data,
+                theme: 'grid',
+                styles: {
+                    font: 'helvetica',
+                    fontSize: 8,
+                    cellPadding: 8,
+                    overflow: 'linebreak',
+                    minCellHeight: 16,
+                    textColor: [40, 40, 40],
+                    lineColor: [180, 180, 180],
+                    lineWidth: 0.5
+                },
+                headStyles: {
+                    fillColor: [0, 51, 102],
+                    textColor: [255, 255, 255],
+                    fontStyle: 'bold',
+                    fontSize: 9,
+                    halign: 'center',
+                    valign: 'middle',
+                    lineColor: [0, 51, 102],
+                    lineWidth: 0.5
+                },
+                alternateRowStyles: {
+                    fillColor: [245, 245, 245]
+                },
+                columnStyles: {
+                    0: { cellWidth: 20, halign: 'center' },
+                    1: { cellWidth: 40, halign: 'left' },
+                    2: { cellWidth: 50, halign: 'left' },
+                    3: { cellWidth: 70, halign: 'left' },
+                    4: { cellWidth: 25, halign: 'center' },
+                    5: { cellWidth: 35, halign: 'center' },
+                    6: { cellWidth: 30, halign: 'right' },
+                    7: { cellWidth: 50, halign: 'left' },
+                    8: { cellWidth: 35, halign: 'center' },
+                    9: { cellWidth: 30, halign: 'right' },
+                    10: { cellWidth: 30, halign: 'right' },
+                    11: { cellWidth: 50, halign: 'left' },
+                    12: { cellWidth: 35, halign: 'center' },
+                    13: { cellWidth: 30, halign: 'right' },
+                    14: { cellWidth: 30, halign: 'right' },
+                    15: { cellWidth: 50, halign: 'left' },
+                    16: { cellWidth: 35, halign: 'center' },
+                    17: { cellWidth: 30, halign: 'right' },
+                    18: { cellWidth: 30, halign: 'right' },
+                    19: { cellWidth: 30, halign: 'right' },
+                    20: { cellWidth: 30, halign: 'right' },
+                    21: { cellWidth: 60, halign: 'left' },
+                    22: { cellWidth: 30, halign: 'right' }
+                },
+                didDrawPage: function (data) {
+                    const pageSize = doc.internal.pageSize;
+                    const pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
+                    doc.setFontSize(9);
+                    doc.setFont('helvetica', 'italic');
+                    doc.setTextColor(100, 100, 100);
+                    doc.text(`Página ${doc.internal.getNumberOfPages() - 1}`, pageSize.width - 60, pageHeight - 20);
+                    doc.text('Ministério do Esporte - © 2025', 40, pageHeight - 20);
+                }
+            });
+
+            // Total Table
+            const totalRow = [
+                'TOTAL',
+                '',
+                '',
+                '',
+                carrinho.reduce((sum, item) => sum + (item.quantidade || 0), 0),
+                '',
+                formatarMoeda(carrinho.reduce((sum, item) => sum + (item.total || 0), 0)),
+                '',
+                '',
+                formatarMoeda(carrinho.reduce((sum, item) => sum + (item.empresas?.[0]?.unitario || 0), 0)),
+                formatarMoeda(carrinho.reduce((sum, item) => sum + (item.empresas?.[0]?.total || 0), 0)),
+                '',
+                '',
+                formatarMoeda(carrinho.reduce((sum, item) => sum + (item.empresas?.[1]?.unitario || 0), 0)),
+                formatarMoeda(carrinho.reduce((sum, item) => sum + (item.empresas?.[1]?.total || 0), 0)),
+                '',
+                '',
+                formatarMoeda(carrinho.reduce((sum, item) => sum + (item.empresas?.[2]?.unitario || 0), 0)),
+                formatarMoeda(carrinho.reduce((sum, item) => sum + (item.empresas?.[2]?.total || 0), 0)),
+                formatarMoeda(carrinho.reduce((sum, item) => sum + (item.empresaSelecionada?.unitario || 0), 0)),
+                formatarMoeda(carrinho.reduce((sum, item) => sum + (item.empresaSelecionada?.total || 0), 0)),
+                '',
+                formatarMoeda(carrinho.reduce((sum, item) => {
+                    const totals = (item.empresas || []).map(e => e?.total || 0).filter(t => t > 0 && !isNaN(t));
+                    return sum + (totals.length > 0 ? Math.min(...totals) : 0);
+                }, 0))
+            ];
+
+            doc.autoTable({
+                startY: doc.lastAutoTable.finalY + 20,
+                head: [],
+                body: [totalRow],
+                theme: 'grid',
+                styles: {
+                    font: 'helvetica',
+                    fontSize: 8,
+                    cellPadding: 8,
+                    overflow: 'linebreak',
+                    minCellHeight: 16,
+                    textColor: [40, 40, 40],
+                    lineColor: [180, 180, 180],
+                    lineWidth: 0.5
+                },
+                bodyStyles: {
+                    fillColor: [230, 230, 230],
+                    textColor: [50, 50, 50],
+                    halign: 'center',
+                    valign: 'middle',
+                    fontStyle: 'bold'
+                },
+                columnStyles: {
+                    0: { cellWidth: 20, halign: 'center' },
+                    1: { cellWidth: 40, halign: 'left' },
+                    2: { cellWidth: 50, halign: 'left' },
+                    3: { cellWidth: 70, halign: 'left' },
+                    4: { cellWidth: 25, halign: 'center' },
+                    5: { cellWidth: 35, halign: 'center' },
+                    6: { cellWidth: 30, halign: 'right' },
+                    7: { cellWidth: 50, halign: 'left' },
+                    8: { cellWidth: 35, halign: 'center' },
+                    9: { cellWidth: 30, halign: 'right' },
+                    10: { cellWidth: 30, halign: 'right' },
+                    11: { cellWidth: 50, halign: 'left' },
+                    12: { cellWidth: 35, halign: 'center' },
+                    13: { cellWidth: 30, halign: 'right' },
+                    14: { cellWidth: 30, halign: 'right' },
+                    15: { cellWidth: 50, halign: 'left' },
+                    16: { cellWidth: 35, halign: 'center' },
+                    17: { cellWidth: 30, halign: 'right' },
+                    18: { cellWidth: 30, halign: 'right' },
+                    19: { cellWidth: 30, halign: 'right' },
+                    20: { cellWidth: 30, halign: 'right' },
+                    21: { cellWidth: 60, halign: 'left' },
+                    22: { cellWidth: 30, halign: 'right' }
+                }
+            });
+
+            // Save PDF
+            const fileName = `Precificação_${numeroProposta || 'SemNúmero'}_${new Date().toISOString().slice(0, 10)}.pdf`;
+            doc.save(fileName);
+
+        } catch (error) {
+            console.error('Erro ao gerar PDF:', error);
+            alert(`Ocorreu um erro ao gerar o PDF: ${error.message}. Verifique o console para mais detalhes.`);
+        }
+    }
+
+carregarPlanilha();
 });
-</script>
+    </script>
 </body>
 </html>
