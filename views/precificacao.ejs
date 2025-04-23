@@ -2069,273 +2069,268 @@
             alert('Ocorreu um erro ao gerar o Excel. Verifique o console para mais detalhes.');
         }
     }
-
     async function gerarPDF(carrinho) {
-        try {
-            console.log('Iniciando geração de PDF. Estado do carrinho:', { carrinhoLength: carrinho.length });
+    try {
+        console.log('Iniciando geração de PDF. Estado do carrinho:', { carrinhoLength: carrinho.length });
 
-            // Validate inputs
-            if (!carrinho || !Array.isArray(carrinho) || carrinho.length === 0) {
-                console.warn('Carrinho inválido:', {
-                    exists: !!carrinho,
-                    isArray: Array.isArray(carrinho),
-                    length: carrinho?.length
-                });
-                alert('O carrinho está vazio ou não foi carregado. Adicione itens antes de gerar o PDF.');
-                return;
-            }
-
-            if (!numeroProposta || !nomeEntidade || !cnpj) {
-                alert('Preencha todos os campos obrigatórios: Número da Proposta, Entidade e CNPJ.');
-                return;
-            }
-
-            if (typeof formatarMoeda !== 'function') {
-                throw new Error('A função formatarMoeda não está definida.');
-            }
-
-            // Initialize jsPDF
-            const { jsPDF } = window.jspdf;
-            if (!jsPDF) {
-                throw new Error('A biblioteca jsPDF não foi carregada corretamente.');
-            }
-            const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
-
-            // Cover Page
-            doc.setFillColor(240, 240, 240);
-            doc.rect(0, 0, doc.internal.pageSize.width, doc.internal.pageSize.height, 'F');
-            doc.setFontSize(28);
-            doc.setFont('helvetica', 'bold');
-            doc.setTextColor(0, 51, 102);
-            doc.text('Proposta de Precificação', doc.internal.pageSize.width / 2, 160, { align: 'center' });
-            doc.setFontSize(22);
-            doc.text('Ministério do Esporte', doc.internal.pageSize.width / 2, 200, { align: 'center' });
-            doc.setFontSize(16);
-            doc.setFont('helvetica', 'normal');
-            doc.setTextColor(50, 50, 50);
-            doc.text(`Proposta: ${numeroProposta || 'N/A'}`, doc.internal.pageSize.width / 2, 260, { align: 'center' });
-            doc.text(`Entidade: ${nomeEntidade || 'N/A'}`, doc.internal.pageSize.width / 2, 280, { align: 'center' });
-            doc.text(`CNPJ: ${cnpj || 'N/A'}`, doc.internal.pageSize.width / 2, 300, { align: 'center' });
-            doc.text(`Data: ${new Date().toLocaleDateString('pt-BR')}`, doc.internal.pageSize.width / 2, 320, { align: 'center' });
-            doc.addPage();
-
-            // Header
-            doc.setFontSize(20);
-            doc.setFont('helvetica', 'bold');
-            doc.setTextColor(0, 51, 102);
-            doc.text('Precificação - Ministério do Esporte', 40, 40);
-            doc.setLineWidth(2);
-            doc.setDrawColor(0, 51, 102);
-            doc.line(40, 48, 802, 48);
-
-            doc.setFontSize(12);
-            doc.setFont('helvetica', 'normal');
-            doc.setTextColor(50, 50, 50);
-            doc.text(`Proposta: ${numeroProposta || 'N/A'}`, 40, 65);
-            doc.text(`CNPJ: ${cnpj || 'N/A'}`, 40, 80);
-            doc.text(`Entidade: ${nomeEntidade || 'N/A'}`, 40, 95);
-            doc.text(`Data: ${new Date().toLocaleDateString('pt-BR')}`, 40, 110);
-
-            // Table Headers
-            const headers = [
-                'Nº', 'Tipo', 'Item', 'Especificação', 'Qtd', 'Diárias/Meses', 'Total',
-                'Razão/Link 1', 'CNPJ 1', 'Unitário 1', 'Total 1',
-                'Razão/Link 2', 'CNPJ 2', 'Unitário 2', 'Total 2',
-                'Razão/Link 3', 'CNPJ 3', 'Unitário 3', 'Total 3',
-                'Unitário Def.', 'Total Def.', 'Justificativa', 'Menor Valor'
-            ];
-
-            const subHeaders = [
-                '', '', '', '', 'MEDIDAS', '', '', '1ª COTAÇÃO', '', '', '', '2ª COTAÇÃO', '', '', '', '3ª COTAÇÃO', '', '', '', 'COTAÇÃO DEFINIDA', '', ''
-            ];
-
-            // Table Data
-            const data = carrinho.map((item, index) => {
-                const totals = (item.empresas || []).map(e => e?.total || 0).filter(t => t > 0 && !isNaN(t));
-                const menorValor = totals.length > 0 ? Math.min(...totals) : 0;
-                const justificativa = (item.empresaSelecionada?.total || 0) > menorValor && menorValor !== 0 ? (item.justificativa || 'N/A') : '';
-                const menorValorCotado = menorValor !== 0 ? formatarMoeda(menorValor) : 'R$ 0,00';
-                const tipo = item.categoria?.toUpperCase() === 'SERVICOS' ? 'SERVIÇOS/RECURSOS HUMANOS' : (item.categoria?.toUpperCase() || 'N/A');
-                return [
-                    item.id || index + 1,
-                    tipo,
-                    `${item.item || 'N/A'}${item.subitem ? ' - ' + item.subitem : ''}`,
-                    item.descricao || 'N/A',
-                    item.quantidade || 0,
-                    item.periodo === 'N/A' ? 'N/A' : (item.periodo === 'diarias' ? 'Diárias' : 'Meses'),
-                    formatarMoeda(item.total || 0),
-                    item.empresas?.[0]?.nome && item.empresas?.[0]?.link ? `${item.empresas[0].nome} - ${item.empresas[0].link}` : (item.empresas?.[0]?.nome || ''),
-                    item.empresas?.[0]?.cnpj || '',
-                    formatarMoeda(item.empresas?.[0]?.unitario || 0),
-                    formatarMoeda(item.empresas?.[0]?.total || 0),
-                    item.empresas?.[1]?.nome && item.empresas?.[1]?.link ? `${item.empresas[1].nome} - ${item.empresas[1].link}` : (item.empresas?.[1]?.nome || ''),
-                    item.empresas?.[1]?.cnpj || '',
-                    formatarMoeda(item.empresas?.[1]?.unitario || 0),
-                    formatarMoeda(item.empresas?.[1]?.total || 0),
-                    item.empresas?.[2]?.nome && item.empresas?.[2]?.link ? `${item.empresas[2].nome} - ${item.empresas[2].link}` : (item.empresas?.[2]?.nome || ''),
-                    item.empresas?.[2]?.cnpj || '',
-                    formatarMoeda(item.empresas?.[2]?.unitario || 0),
-                    formatarMoeda(item.empresas?.[2]?.total || 0),
-                    formatarMoeda(item.empresaSelecionada?.unitario || 0),
-                    formatarMoeda(item.empresaSelecionada?.total || 0),
-                    justificativa,
-                    menorValorCotado
-                ];
+        // Validação de entradas
+        if (!carrinho || !Array.isArray(carrinho) || carrinho.length === 0) {
+            console.warn('Carrinho inválido:', {
+                exists: !!carrinho,
+                isArray: Array.isArray(carrinho),
+                length: carrinho?.length
             });
-
-            // Main Table
-            doc.autoTable({
-                startY: 130,
-                head: [subHeaders, headers],
-                body: data,
-                theme: 'grid',
-                styles: {
-                    font: 'helvetica',
-                    fontSize: 8,
-                    cellPadding: 8,
-                    overflow: 'linebreak',
-                    minCellHeight: 16,
-                    textColor: [40, 40, 40],
-                    lineColor: [180, 180, 180],
-                    lineWidth: 0.5
-                },
-                headStyles: {
-                    fillColor: [0, 51, 102],
-                    textColor: [255, 255, 255],
-                    fontStyle: 'bold',
-                    fontSize: 9,
-                    halign: 'center',
-                    valign: 'middle',
-                    lineColor: [0, 51, 102],
-                    lineWidth: 0.5
-                },
-                alternateRowStyles: {
-                    fillColor: [245, 245, 245]
-                },
-                columnStyles: {
-                    0: { cellWidth: 20, halign: 'center' },
-                    1: { cellWidth: 40, halign: 'left' },
-                    2: { cellWidth: 50, halign: 'left' },
-                    3: { cellWidth: 70, halign: 'left' },
-                    4: { cellWidth: 25, halign: 'center' },
-                    5: { cellWidth: 35, halign: 'center' },
-                    6: { cellWidth: 30, halign: 'right' },
-                    7: { cellWidth: 50, halign: 'left' },
-                    8: { cellWidth: 35, halign: 'center' },
-                    9: { cellWidth: 30, halign: 'right' },
-                    10: { cellWidth: 30, halign: 'right' },
-                    11: { cellWidth: 50, halign: 'left' },
-                    12: { cellWidth: 35, halign: 'center' },
-                    13: { cellWidth: 30, halign: 'right' },
-                    14: { cellWidth: 30, halign: 'right' },
-                    15: { cellWidth: 50, halign: 'left' },
-                    16: { cellWidth: 35, halign: 'center' },
-                    17: { cellWidth: 30, halign: 'right' },
-                    18: { cellWidth: 30, halign: 'right' },
-                    19: { cellWidth: 30, halign: 'right' },
-                    20: { cellWidth: 30, halign: 'right' },
-                    21: { cellWidth: 60, halign: 'left' },
-                    22: { cellWidth: 30, halign: 'right' }
-                },
-                didDrawPage: function (data) {
-                    const pageSize = doc.internal.pageSize;
-                    const pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
-                    doc.setFontSize(9);
-                    doc.setFont('helvetica', 'italic');
-                    doc.setTextColor(100, 100, 100);
-                    doc.text(`Página ${doc.internal.getNumberOfPages() - 1}`, pageSize.width - 60, pageHeight - 20);
-                    doc.text('Ministério do Esporte - © 2025', 40, pageHeight - 20);
-                }
-            });
-
-            // Total Table
-            const totalRow = [
-                'TOTAL',
-                '',
-                '',
-                '',
-                carrinho.reduce((sum, item) => sum + (item.quantidade || 0), 0),
-                '',
-                formatarMoeda(carrinho.reduce((sum, item) => sum + (item.total || 0), 0)),
-                '',
-                '',
-                formatarMoeda(carrinho.reduce((sum, item) => sum + (item.empresas?.[0]?.unitario || 0), 0)),
-                formatarMoeda(carrinho.reduce((sum, item) => sum + (item.empresas?.[0]?.total || 0), 0)),
-                '',
-                '',
-                formatarMoeda(carrinho.reduce((sum, item) => sum + (item.empresas?.[1]?.unitario || 0), 0)),
-                formatarMoeda(carrinho.reduce((sum, item) => sum + (item.empresas?.[1]?.total || 0), 0)),
-                '',
-                '',
-                formatarMoeda(carrinho.reduce((sum, item) => sum + (item.empresas?.[2]?.unitario || 0), 0)),
-                formatarMoeda(carrinho.reduce((sum, item) => sum + (item.empresas?.[2]?.total || 0), 0)),
-                formatarMoeda(carrinho.reduce((sum, item) => sum + (item.empresaSelecionada?.unitario || 0), 0)),
-                formatarMoeda(carrinho.reduce((sum, item) => sum + (item.empresaSelecionada?.total || 0), 0)),
-                '',
-                formatarMoeda(carrinho.reduce((sum, item) => {
-                    const totals = (item.empresas || []).map(e => e?.total || 0).filter(t => t > 0 && !isNaN(t));
-                    return sum + (totals.length > 0 ? Math.min(...totals) : 0);
-                }, 0))
-            ];
-
-            doc.autoTable({
-                startY: doc.lastAutoTable.finalY + 20,
-                head: [],
-                body: [totalRow],
-                theme: 'grid',
-                styles: {
-                    font: 'helvetica',
-                    fontSize: 8,
-                    cellPadding: 8,
-                    overflow: 'linebreak',
-                    minCellHeight: 16,
-                    textColor: [40, 40, 40],
-                    lineColor: [180, 180, 180],
-                    lineWidth: 0.5
-                },
-                bodyStyles: {
-                    fillColor: [230, 230, 230],
-                    textColor: [50, 50, 50],
-                    halign: 'center',
-                    valign: 'middle',
-                    fontStyle: 'bold'
-                },
-                columnStyles: {
-                    0: { cellWidth: 20, halign: 'center' },
-                    1: { cellWidth: 40, halign: 'left' },
-                    2: { cellWidth: 50, halign: 'left' },
-                    3: { cellWidth: 70, halign: 'left' },
-                    4: { cellWidth: 25, halign: 'center' },
-                    5: { cellWidth: 35, halign: 'center' },
-                    6: { cellWidth: 30, halign: 'right' },
-                    7: { cellWidth: 50, halign: 'left' },
-                    8: { cellWidth: 35, halign: 'center' },
-                    9: { cellWidth: 30, halign: 'right' },
-                    10: { cellWidth: 30, halign: 'right' },
-                    11: { cellWidth: 50, halign: 'left' },
-                    12: { cellWidth: 35, halign: 'center' },
-                    13: { cellWidth: 30, halign: 'right' },
-                    14: { cellWidth: 30, halign: 'right' },
-                    15: { cellWidth: 50, halign: 'left' },
-                    16: { cellWidth: 35, halign: 'center' },
-                    17: { cellWidth: 30, halign: 'right' },
-                    18: { cellWidth: 30, halign: 'right' },
-                    19: { cellWidth: 30, halign: 'right' },
-                    20: { cellWidth: 30, halign: 'right' },
-                    21: { cellWidth: 60, halign: 'left' },
-                    22: { cellWidth: 30, halign: 'right' }
-                }
-            });
-
-            // Save PDF
-            const fileName = `Precificação_${numeroProposta || 'SemNúmero'}_${new Date().toISOString().slice(0, 10)}.pdf`;
-            doc.save(fileName);
-
-        } catch (error) {
-            console.error('Erro ao gerar PDF:', error);
-            alert(`Ocorreu um erro ao gerar o PDF: ${error.message}. Verifique o console para mais detalhes.`);
+            alert('O carrinho está vazio ou não foi carregado. Adicione itens antes de gerar o PDF.');
+            return;
         }
+
+        if (!numeroProposta || !nomeEntidade || !cnpj) {
+            alert('Preencha todos os campos obrigatórios: Número da Proposta, Entidade e CNPJ.');
+            return;
+        }
+
+        if (typeof formatarMoeda !== 'function') {
+            throw new Error('A função formatarMoeda não está definida.');
+        }
+
+        // Inicializar jsPDF
+        const { jsPDF } = window.jspdf;
+        if (!jsPDF) {
+            throw new Error('A biblioteca jsPDF não foi carregada corretamente.');
+        }
+        const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+
+        // Definir margens
+        const marginLeft = 40;
+        const marginRight = 40;
+        const marginTop = 40;
+        const marginBottom = 40;
+        const pageWidth = doc.internal.pageSize.width;
+        const pageHeight = doc.internal.pageSize.height;
+
+        // Página de Capa
+        doc.setFillColor(240, 240, 240);
+        doc.rect(0, 0, pageWidth, pageHeight, 'F');
+        doc.setFontSize(28);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(0, 51, 102);
+        doc.text('Proposta de Precificação', pageWidth / 2, 160, { align: 'center' });
+        doc.setFontSize(22);
+        doc.text('Ministério do Esporte', pageWidth / 2, 200, { align: 'center' });
+        doc.setFontSize(16);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(50, 50, 50);
+        doc.text(`Proposta: ${numeroProposta || 'N/A'}`, pageWidth / 2, 260, { align: 'center' });
+        doc.text(`Entidade: ${nomeEntidade || 'N/A'}`, pageWidth / 2, 280, { align: 'center' });
+        doc.text(`CNPJ: ${cnpj || 'N/A'}`, pageWidth / 2, 300, { align: 'center' });
+        doc.text(`Data: ${new Date().toLocaleDateString('pt-BR')}`, pageWidth / 2, 320, { align: 'center' });
+        doc.addPage();
+
+        // Cabeçalho da página principal
+        doc.setFontSize(20);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(0, 51, 102);
+        doc.text('Precificação - Ministério do Esporte', marginLeft, marginTop);
+        doc.setLineWidth(2);
+        doc.setDrawColor(0, 51, 102);
+        doc.line(marginLeft, marginTop + 8, pageWidth - marginRight, marginTop + 8);
+
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(50, 50, 50);
+        doc.text(`Proposta: ${numeroProposta || 'N/A'}`, marginLeft, marginTop + 25);
+        doc.text(`CNPJ: ${cnpj || 'N/A'}`, marginLeft, marginTop + 40);
+        doc.text(`Entidade: ${nomeEntidade || 'N/A'}`, marginLeft, marginTop + 55);
+        doc.text(`Data: ${new Date().toLocaleDateString('pt-BR')}`, marginLeft, marginTop + 70);
+
+        // Cabeçalhos da tabela (removida a coluna "Menor Valor")
+        const headers = [
+            'Nº', 'Tipo', 'Item', 'Especificação/Justificativa', 'Qt d', 'Diárias/Meses', 'Total',
+            'Razão/Link 1', 'CNPJ 1', 'Unitário 1', 'Total 1',
+            'Razão/Link 2', 'CNPJ 2', 'Unitário 2', 'Total 2',
+            'Razão/Link 3', 'CNPJ 3', 'Unitário 3', 'Total 3',
+            'Unitário Def.', 'Total Def.'
+        ];
+
+        const subHeaders = [
+            '', '', '', '', 'MEDIDAS', '', '', '1ª COTAÇÃO', '', '', '', '2ª COTAÇÃO', '', '', '', '3ª COTAÇÃO', '', '', '', 'COTAÇÃO DEFINIDA', ''
+        ];
+
+        // Dados da tabela (removida a coluna "Menor Valor")
+        const data = carrinho.map((item, index) => {
+            const totals = (item.empresas || []).map(e => e?.total || 0).filter(t => t > 0 && !isNaN(t));
+            const menorValor = totals.length > 0 ? Math.min(...totals) : 0;
+            const justificativa = (item.empresaSelecionada?.total || 0) > menorValor && menorValor !== 0 ? (item.justificativa || 'N/A') : '';
+            const tipo = item.categoria?.toUpperCase() === 'SERVICOS' ? 'SERVIÇOS/RECURSOS HUMANOS' : (item.categoria?.toUpperCase() || 'N/A');
+            const especificacaoJustificativa = `${item.descricao || 'N/A'}${justificativa ? '\nJustificativa: ' + justificativa : ''}`;
+            return [
+                item.id || index + 1,
+                tipo,
+                `${item.item || 'N/A'}${item.subitem ? ' - ' + item.subitem : ''}`,
+                especificacaoJustificativa,
+                item.quantidade || 0,
+                item.periodo === 'N/A' ? 'N/A' : (item.periodo === 'diarias' ? 'Diárias' : 'Meses'),
+                formatarMoeda(item.total || 0),
+                item.empresas?.[0]?.nome && item.empresas?.[0]?.link ? `${item.empresas[0].nome} - ${item.empresas[0].link}` : (item.empresas?.[0]?.nome || ''),
+                item.empresas?.[0]?.cnpj || '',
+                formatarMoeda(item.empresas?.[0]?.unitario || 0),
+                formatarMoeda(item.empresas?.[0]?.total || 0),
+                item.empresas?.[1]?.nome && item.empresas?.[1]?.link ? `${item.empresas[1].nome} - ${item.empresas[1].link}` : (item.empresas?.[1]?.nome || ''),
+                item.empresas?.[1]?.cnpj || '',
+                formatarMoeda(item.empresas?.[1]?.unitario || 0),
+                formatarMoeda(item.empresas?.[1]?.total || 0),
+                item.empresas?.[2]?.nome && item.empresas?.[2]?.link ? `${item.empresas[2].nome} - ${item.empresas[2].link}` : (item.empresas?.[2]?.nome || ''),
+                item.empresas?.[2]?.cnpj || '',
+                formatarMoeda(item.empresas?.[2]?.unitario || 0),
+                formatarMoeda(item.empresas?.[2]?.total || 0),
+                formatarMoeda(item.empresaSelecionada?.unitario || 0),
+                formatarMoeda(item.empresaSelecionada?.total || 0)
+            ];
+        });
+
+        // Tabela principal com larguras ajustadas
+        doc.autoTable({
+            startY: marginTop + 90,
+            head: [subHeaders, headers],
+            body: data,
+            theme: 'grid',
+            styles: {
+                font: 'helvetica',
+                fontSize: 7, // Reduzido para 7pt
+                cellPadding: 4, // Reduzido para 4pt
+                overflow: 'linebreak',
+                minCellHeight: 16,
+                textColor: [40, 40, 40],
+                lineColor: [180, 180, 180],
+                lineWidth: 0.5
+            },
+            headStyles: {
+                textColor: [255, 255, 255],
+                fontStyle: 'bold',
+                fontSize: 8, // Cabeçalho um pouco menor também
+                halign: 'center',
+                valign: 'middle',
+                lineColor: [0, 51, 102],
+                lineWidth: 0.5
+            },
+            columnStyles: {
+                0: { cellWidth: 18, halign: 'center' }, // Nº
+                1: { cellWidth: 35, halign: 'left' },   // Tipo
+                2: { cellWidth: 40, halign: 'left' },   // Item
+                3: { cellWidth: 70, halign: 'left' },   // Especificação/Justificativa
+                4: { cellWidth: 20, halign: 'center' }, // Qt d
+                5: { cellWidth: 35, halign: 'center' }, // Diárias/Meses
+                6: { cellWidth: 25, halign: 'right' },  // Total
+                7: { cellWidth: 40, halign: 'left', headFillColor: [135, 206, 250] },  // Razão/Link 1
+                8: { cellWidth: 35, halign: 'center', headFillColor: [135, 206, 250] }, // CNPJ 1
+                9: { cellWidth: 30, halign: 'right', headFillColor: [135, 206, 250] },  // Unitário 1
+                10: { cellWidth: 30, halign: 'right', headFillColor: [135, 206, 250] }, // Total 1
+                11: { cellWidth: 40, halign: 'left', headFillColor: [255, 255, 224] },  // Razão/Link 2
+                12: { cellWidth: 35, halign: 'center', headFillColor: [255, 255, 224] }, // CNPJ 2
+                13: { cellWidth: 30, halign: 'right', headFillColor: [255, 255, 224] },  // Unitário 2
+                14: { cellWidth: 30, halign: 'right', headFillColor: [255, 255, 224] },  // Total 2
+                15: { cellWidth: 40, halign: 'left', headFillColor: [144, 238, 144] },  // Razão/Link 3
+                16: { cellWidth: 35, halign: 'center', headFillColor: [144, 238, 144] }, // CNPJ 3
+                17: { cellWidth: 30, halign: 'right', headFillColor: [144, 238, 144] },  // Unitário 3
+                18: { cellWidth: 30, halign: 'right', headFillColor: [144, 238, 144] },  // Total 3
+                19: { cellWidth: 30, halign: 'right' },  // Unitário Def.
+                20: { cellWidth: 30, halign: 'right' }   // Total Def.
+            },
+            alternateRowStyles: {
+                fillColor: [245, 245, 245]
+            },
+            margin: { left: marginLeft, right: marginRight, bottom: marginBottom },
+            didDrawPage: function (data) {
+                doc.setFontSize(9);
+                doc.setFont('helvetica', 'italic');
+                doc.setTextColor(100, 100, 100);
+                doc.text(`Página ${doc.internal.getNumberOfPages() - 1}`, pageWidth - marginRight - 20, pageHeight - marginBottom + 10);
+                doc.text('Ministério do Esporte - © 2025', marginLeft, pageHeight - marginBottom + 10);
+            }
+        });
+
+        // Tabela de Totais
+        const totalRow = [
+            'TOTAL',
+            '',
+            '',
+            '',
+            carrinho.reduce((sum, item) => sum + (item.quantidade || 0), 0),
+            '',
+            formatarMoeda(carrinho.reduce((sum, item) => sum + (item.total || 0), 0)),
+            '',
+            '',
+            formatarMoeda(carrinho.reduce((sum, item) => sum + (item.empresas?.[0]?.unitario || 0), 0)),
+            formatarMoeda(carrinho.reduce((sum, item) => sum + (item.empresas?.[0]?.total || 0), 0)),
+            '',
+            '',
+            formatarMoeda(carrinho.reduce((sum, item) => sum + (item.empresas?.[1]?.unitario || 0), 0)),
+            formatarMoeda(carrinho.reduce((sum, item) => sum + (item.empresas?.[1]?.total || 0), 0)),
+            '',
+            '',
+            formatarMoeda(carrinho.reduce((sum, item) => sum + (item.empresas?.[2]?.unitario || 0), 0)),
+            formatarMoeda(carrinho.reduce((sum, item) => sum + (item.empresas?.[2]?.total || 0), 0)),
+            formatarMoeda(carrinho.reduce((sum, item) => sum + (item.empresaSelecionada?.unitario || 0), 0)),
+            formatarMoeda(carrinho.reduce((sum, item) => sum + (item.empresaSelecionada?.total || 0), 0))
+        ];
+
+        doc.autoTable({
+            startY: doc.lastAutoTable.finalY + 20,
+            head: [],
+            body: [totalRow],
+            theme: 'grid',
+            styles: {
+                font: 'helvetica',
+                fontSize: 7,
+                cellPadding: 4,
+                overflow: 'linebreak',
+                minCellHeight: 16,
+                textColor: [40, 40, 40],
+                lineColor: [180, 180, 180],
+                lineWidth: 0.5
+            },
+            bodyStyles: {
+                fillColor: [230, 230, 230],
+                textColor: [50, 50, 50],
+                halign: 'center',
+                valign: 'middle',
+                fontStyle: 'bold'
+            },
+            columnStyles: {
+                0: { cellWidth: 18, halign: 'center' },
+                1: { cellWidth: 35, halign: 'left' },
+                2: { cellWidth: 40, halign: 'left' },
+                3: { cellWidth: 70, halign: 'left' },
+                4: { cellWidth: 20, halign: 'center' },
+                5: { cellWidth: 35, halign: 'center' },
+                6: { cellWidth: 25, halign: 'right' },
+                7: { cellWidth: 40, halign: 'left' },
+                8: { cellWidth: 35, halign: 'center' },
+                9: { cellWidth: 30, halign: 'right' },
+                10: { cellWidth: 30, halign: 'right' },
+                11: { cellWidth: 40, halign: 'left' },
+                12: { cellWidth: 35, halign: 'center' },
+                13: { cellWidth: 30, halign: 'right' },
+                14: { cellWidth: 30, halign: 'right' },
+                15: { cellWidth: 40, halign: 'left' },
+                16: { cellWidth: 35, halign: 'center' },
+                17: { cellWidth: 30, halign: 'right' },
+                18: { cellWidth: 30, halign: 'right' },
+                19: { cellWidth: 30, halign: 'right' },
+                20: { cellWidth: 30, halign: 'right' }
+            },
+            margin: { left: marginLeft, right: marginRight, bottom: marginBottom }
+        });
+
+        // Salvar PDF
+        const fileName = `Precificação_${numeroProposta || 'SemNúmero'}_${new Date().toISOString().slice(0, 10)}.pdf`;
+        doc.save(fileName);
+
+    } catch (error) {
+        console.error('Erro ao gerar PDF:', error);
+        alert(`Ocorreu um erro ao gerar o PDF: ${error.message}. Verifique o console para mais detalhes.`);
     }
+}
 
 carregarPlanilha();
 });
