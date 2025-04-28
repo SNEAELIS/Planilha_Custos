@@ -6,6 +6,10 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+import ReactGA from 'react-ga';
+
+ReactGA.initialize('G-8KNVEWNZMM');
+ReactGA.pageview(window.location.pathname + window.location.search);
 // Configuração do CORS para permitir acesso público
 app.use(cors({
   origin: '*',
