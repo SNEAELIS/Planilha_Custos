@@ -4,8 +4,8 @@
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "ejs": "^3.1.10",
-    "express": "^5.1.0",
-    "exceljs": "^4.4.0"
+    "exceljs": "^4.4.0",
+    "express": "^5.1.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"

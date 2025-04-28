@@ -6,6 +6,13 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+import ReactGA from 'react-ga';
+
+// Inicialize o Google Analytics com seu ID de acompanhamento
+ReactGA.initialize('G-8KNVEWNZMM');
+
+// Rastreie a página atual
+ReactGA.pageview(window.location.pathname + window.location.search);
 
 
 // Configuração do CORS para permitir acesso público
