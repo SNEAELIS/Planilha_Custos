@@ -1329,11 +1329,26 @@
     };
 
     window.mostrarJustificativa = function(prefixo, empresaIndex) {
-        const menorValor = parseFloat(document.getElementById(`${prefixo}-menor-valor`).value.replace('R$ ', '').replace(/\./g, '').replace(',', '.')) || 0;
-        const valorSelecionado = parseFloat(document.getElementById(`${prefixo}-empresa${enterpriseIndex}-total`).value.replace('R$ ', '').replace(/\./g, '').replace(',', '.')) || 0;
-        const justificativaContainer = document.getElementById(`${prefixo}-justificativa-container`);
-        justificativaContainer.style.display = valorSelecionado > menorValor ? 'block' : 'none';
-    };
+    // Obter o menor valor cotado
+    const menorValorInput = document.getElementById(`${prefixo}-menor-valor`);
+    let menorValor = 0;
+    if (menorValorInput && menorValorInput.value) {
+        menorValor = parseValorMonetario(menorValorInput.value) || 0;
+    }
+
+    // Obter o valor total da empresa selecionada
+    const valorSelecionadoInput = document.getElementById(`${prefixo}-empresa${empresaIndex}-total`);
+    let valorSelecionado = 0;
+    if (valorSelecionadoInput && valorSelecionadoInput.value) {
+        valorSelecionado = parseValorMonetario(valorSelecionadoInput.value) || 0;
+    }
+
+    // Exibir ou ocultar o campo de justificativa
+    const justificativaContainer = document.getElementById(`${prefixo}-justificativa-container`);
+    if (justificativaContainer) {
+        justificativaContainer.style.display = (valorSelecionado > menorValor && menorValor > 0) ? 'block' : 'none';
+    }
+};
 
     // Carregar e limpar os dados do sessionStorage
 let numeroProposta = sessionStorage.getItem('numeroProposta') || 'sem-numero';
@@ -1407,28 +1422,29 @@ sessionStorage.removeItem('valorEmenda');
     }
 
     function calcularTotaisEmpresas(prefixo) {
-        const total = parseInt(document.getElementById(`${prefixo}-total`).value) || 0;
-        let menorValor = Infinity;
-        for (let i = 1; i <= 3; i++) {
-            const unitarioInput = document.getElementById(`${prefixo}-empresa${i}-unitario`);
-            if (!unitarioInput) continue;
-            const unitario = parseFloat(unitarioInput.getAttribute('data-value') || '0') || 0;
-            const valorTotal = unitario * total;
-            const valorTotalFormatado = formatarMoeda(valorTotal);
-            const totalInput = document.getElementById(`${prefixo}-empresa${i}-total`);
-            if (totalInput) {
-                totalInput.value = valorTotalFormatado;
-            }
-            if (valorTotal < menorValor && valorTotal > 0) {
-                menorValor = valorTotal;
-            }
+    const total = parseInt(document.getElementById(`${prefixo}-total`).value) || 0;
+    let menorValor = Infinity;
+    for (let i = 1; i <= 3; i++) {
+        const unitarioInput = document.getElementById(`${prefixo}-empresa${i}-unitario`);
+        if (!unitarioInput) continue;
+        const unitario = parseFloat(unitarioInput.getAttribute('data-value') || '0') || 0;
+        const valorTotal = unitario * total;
+        const valorTotalFormatado = formatarMoeda(valorTotal);
+        const totalInput = document.getElementById(`${prefixo}-empresa${i}-total`);
+        if (totalInput) {
+            totalInput.value = valorTotalFormatado;
         }
-        const menorValorInput = document.getElementById(`${prefixo}-menor-valor`);
-        if (menorValorInput) {
-            menorValorInput.value = menorValor !== Infinity ? formatarMoeda(menorValor) : 'R$ 0,00';
+        if (valorTotal < menorValor && valorTotal > 0) {
+            menorValor = valorTotal;
         }
-        return menorValor !== Infinity ? menorValor : 0;
     }
+    const menorValorInput = document.getElementById(`${prefixo}-menor-valor`);
+    if (menorValorInput) {
+        menorValorInput.value = menorValor !== Infinity ? formatarMoeda(menorValor) : 'R$ 0,00';
+    }
+    console.log(`[${prefixo}] Menor valor calculado: ${menorValor}`); // Log para depuração
+    return menorValor !== Infinity ? menorValor : 0;
+}
 
     const tabs = document.querySelectorAll('.tab');
     tabs.forEach(tab => {
