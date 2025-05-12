@@ -405,14 +405,13 @@
 
             // Função para consultar CNPJ via backend
             async function consultarCNPJ(cnpj) {
-                // Verificar cache local
                 const cacheKey = `cnpj_${cnpj}`;
                 const cachedData = localStorage.getItem(cacheKey);
                 if (cachedData) {
                     const data = JSON.parse(cachedData);
                     if (data.nome || data.fantasia) {
-                        nomeEntidadeInput.value = data.nome || data.fantasia;
-                        nomeEntidadeError.style.display = 'none';
+                    nomeEntidadeInput.value = data.nome || data.fantasia;
+                    nomeEntidadeError.style.display = 'none';
                     }
                     return;
                 }
@@ -421,25 +420,36 @@
                 nomeEntidadeInput.disabled = true;
                 apiError.style.display = 'none';
                 apiWarning.style.display = 'none';
-                
+
                 try {
                     const response = await fetch(`${API_URL}/api/consulta-cnpj/${cnpj}`);
                     
+                    const contentType = response.headers.get('content-type');
                     if (!response.ok) {
+                    if (contentType && contentType.includes('application/json')) {
                         const errorData = await response.json();
-                        throw new Error(errorData.error || 'Erro ao consultar CNPJ');
-                    }
-                    
-                    const data = await response.json();
-                    
-                    // Preenche o nome da entidade com os dados da API
-                    if (data.nome || data.fantasia) {
-                        nomeEntidadeInput.value = data.nome || data.fantasia;
-                        nomeEntidadeError.style.display = 'none';
-                        // Salvar no cache local
-                        localStorage.setItem(cacheKey, JSON.stringify(data));
+                        throw new Error(errorData.error || `Erro ${response.status}: ${response.statusText}`);
                     } else {
-                        throw new Error('Dados da empresa não encontrados');
+                        throw new Error(`Erro ${response.status}: Resposta não é JSON`);
+                    }
+                    }
+
+                    if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error('Resposta inválida: não é JSON');
+                    }
+
+                    const data = await response.json();
+
+                    if (!data.success) {
+                    throw new Error(data.error || 'Dados da empresa não encontrados');
+                    }
+
+                    if (data.nome || data.fantasia) {
+                    nomeEntidadeInput.value = data.nome || data.fantasia;
+                    nomeEntidadeError.style.display = 'none';
+                    localStorage.setItem(cacheKey, JSON.stringify(data));
+                    } else {
+                    throw new Error('Dados da empresa não encontrados');
                     }
                 } catch (error) {
                     console.error('Erro na consulta:', error);
@@ -449,7 +459,7 @@
                     loadingCnpj.style.display = 'none';
                     nomeEntidadeInput.disabled = false;
                 }
-            }
+                }
 
             // Validação em tempo real do nome da entidade
             nomeEntidadeInput.addEventListener('input', function() {

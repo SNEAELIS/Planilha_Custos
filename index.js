@@ -2,14 +2,15 @@ const express = require('express');
 const path = require('path');
 const axios = require('axios');
 const cors = require('cors');
+const NodeCache = require('node-cache');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const cache = new NodeCache({ stdTTL: 3600 }); // Cache for 1 hour
 
-
-// Configuração do CORS para permitir acesso público
+// Configuração do CORS
 app.use(cors({
-  origin: '*',
+  origin: '*', // Restrict to specific origins in production
   methods: ['GET']
 }));
 
@@ -26,8 +27,17 @@ app.get('/', (req, res) => {
   res.render('inicial');
 });
 
+app.get('/custos', (req, res) => {
+  res.render('custos'); // Assuming the HTML is converted to custos.ejs
+});
+
 app.get('/precificacao', (req, res) => {
   res.render('precificacao');
+});
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok' });
 });
 
 // Rota para consulta de CNPJ
@@ -35,62 +45,49 @@ app.get('/api/consulta-cnpj/:cnpj', async (req, res) => {
   try {
     const { cnpj } = req.params;
     
-    // Validação do CNPJ
     if (!validarCNPJ(cnpj)) {
-      return res.status(400).json({ 
-        success: false,
-        error: 'CNPJ inválido' 
-      });
+      return res.status(400).json({ success: false, error: 'CNPJ inválido' });
     }
 
-    // Consulta à API da ReceitaWS
+    const cacheKey = `cnpj_${cnpj}`;
+    const cachedData = cache.get(cacheKey);
+    if (cachedData) {
+      return res.json(cachedData);
+    }
+
     const response = await axios.get(`https://receitaws.com.br/v1/cnpj/${cnpj}`, {
       timeout: 5000
     });
     
     if (response.data.status === 'ERROR') {
-      return res.status(404).json({ 
-        success: false,
-        error: response.data.message || 'CNPJ não encontrado' 
-      });
+      return res.status(404).json({ success: false, error: response.data.message || 'CNPJ não encontrado' });
     }
 
-    // Retorna os dados da empresa
-    res.json({
+    const data = {
       success: true,
       nome: response.data.nome,
       fantasia: response.data.fantasia,
       cnpj: formatarCNPJ(response.data.cnpj),
       situacao: response.data.situacao
-    });
+    };
 
+    cache.set(cacheKey, data);
+    res.json(data);
   } catch (error) {
     console.error('Erro na consulta do CNPJ:', error.message);
-    
     if (error.response?.status === 429) {
-      return res.status(429).json({ 
-        success: false,
-        error: 'Limite de consultas excedido. Tente novamente mais tarde.' 
-      });
+      return res.status(429).json({ success: false, error: 'Limite de consultas excedido. Tente novamente mais tarde.' });
     }
-    
-    res.status(500).json({ 
-      success: false,
-      error: 'Erro ao consultar CNPJ. Tente novamente ou preencha manualmente.' 
-    });
+    res.status(500).json({ success: false, error: 'Erro ao consultar CNPJ. Tente novamente ou preencha manualmente.' });
   }
 });
 
 // Função para validar CNPJ
 function validarCNPJ(cnpj) {
-  cnpj = cnpj.replace(/[^\d]+/g,'');
-  
+  cnpj = cnpj.replace(/[^\d]+/g, '');
   if (cnpj === '' || cnpj.length !== 14) return false;
-  
-  // Elimina CNPJs inválidos conhecidos
   if (/^(\d)\1+$/.test(cnpj)) return false;
   
-  // Valida DVs
   let tamanho = cnpj.length - 2;
   let numeros = cnpj.substring(0, tamanho);
   let digitos = cnpj.substring(tamanho);
@@ -123,8 +120,8 @@ function validarCNPJ(cnpj) {
 
 // Função para formatar CNPJ
 function formatarCNPJ(cnpj) {
-  cnpj = cnpj.replace(/[^\d]+/g,'');
-  return cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5");
+  cnpj = cnpj.replace(/[^\d]+/g, '');
+  return cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
 }
 
 // Inicia o servidor
