@@ -2330,19 +2330,7 @@ function limparFormulario(prefixo) {
         atualizarCarrinho();
     });
 
-    try {
-      
-        sessionStorage.removeItem('numeroProposta');
-        sessionStorage.removeItem('cnpj');
-        sessionStorage.removeItem('nomeEntidade');
-        sessionStorage.removeItem('valorEmenda');
-
-    } catch (error) {
-        console.error('Erro ao gerar Excel:', error);
-        alert('Ocorreu um erro ao gerar o Excel. Verifique o console para mais detalhes.');
-    }
 });
-
     </script>
 </body>
 </html>
