@@ -1480,9 +1480,9 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     let numeroProposta = sessionStorage.getItem('numeroProposta') || 'sem-numero';
-    const cnpj = sessionStorage.getItem('cnpj') || '';
-    const nomeEntidade = sessionStorage.getItem('nomeEntidade') || '';
-    const valorEmenda = parseFloat(sessionStorage.getItem('valorEmenda')) || 1000000;
+        const cnpj = sessionStorage.getItem('cnpj') || '';
+        const nomeEntidade = sessionStorage.getItem('nomeEntidade') || '';
+        const valorEmenda = parseFloat(sessionStorage.getItem('valorEmenda')) || 1000000;
 
     sessionStorage.removeItem('numeroProposta');
     sessionStorage.removeItem('cnpj');
@@ -2329,7 +2329,20 @@ function limparFormulario(prefixo) {
     carregarPlanilha().then(() => {
         atualizarCarrinho();
     });
+
+    try {
+      
+        sessionStorage.removeItem('numeroProposta');
+        sessionStorage.removeItem('cnpj');
+        sessionStorage.removeItem('nomeEntidade');
+        sessionStorage.removeItem('valorEmenda');
+
+    } catch (error) {
+        console.error('Erro ao gerar Excel:', error);
+        alert('Ocorreu um erro ao gerar o Excel. Verifique o console para mais detalhes.');
+    }
 });
+
     </script>
 </body>
 </html>
