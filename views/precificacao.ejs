@@ -561,10 +561,6 @@ h2 {
                             <label for="srv-empresa1-total">Valor Total (R$)</label>
                             <input type="text" id="srv-empresa1-total" readonly>
                         </div>
-                        <div class="form-group">
-                            <label for="srv-empresa1-selecionada">Selecionar Empresa</label>
-                            <input type="radio" name="srv-empresa-selecionada" id="srv-empresa1-selecionada" value="1" onchange="mostrarJustificativa('srv', 1)">
-                        </div>
                     </div>
                     <div class="empresa">
                         <h4>Empresa 2</h4>
@@ -588,10 +584,6 @@ h2 {
                         <div class="form-group">
                             <label for="srv-empresa2-total">Valor Total (R$)</label>
                             <input type="text" id="srv-empresa2-total" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="srv-empresa2-selecionada">Selecionar Empresa</label>
-                            <input type="radio" name="srv-empresa-selecionada" id="srv-empresa2-selecionada" value="2" onchange="mostrarJustificativa('srv', 2)">
                         </div>
                     </div>
                     <div class="empresa">
@@ -617,19 +609,11 @@ h2 {
                             <label for="srv-empresa3-total">Valor Total (R$)</label>
                             <input type="text" id="srv-empresa3-total" readonly>
                         </div>
-                        <div class="form-group">
-                            <label for="srv-empresa3-selecionada">Selecionar Empresa</label>
-                            <input type="radio" name="srv-empresa-selecionada" id="srv-empresa3-selecionada" value="3" onchange="mostrarJustificativa('srv', 3)">
-                        </div>
                     </div>
                 </div>
                 <div class="form-group" style="margin-top: 20px;">
                     <label for="srv-menor-valor">Menor Valor Cotado (R$)</label>
                     <input type="text" id="srv-menor-valor" readonly>
-                </div>
-                <div class="form-group" id="srv-justificativa-container" style="display: none;">
-                    <label for="srv-justificativa">Justificativa</label>
-                    <textarea id="srv-justificativa" placeholder="Justifique a escolha de uma empresa com valor superior ao menor cotado"></textarea>
                 </div>
                 <button class="btn btn-success" id="srv-adicionar-carrinho">Adicionar ao Carrinho</button>
             </div>
@@ -712,10 +696,6 @@ h2 {
                             <label for="me-empresa1-total">Valor Total (R$)</label>
                             <input type="text" id="me-empresa1-total" readonly>
                         </div>
-                        <div class="form-group">
-                            <label for="me-empresa1-selecionada">Selecionar Empresa</label>
-                            <input type="radio" name="me-empresa-selecionada" id="me-empresa1-selecionada" value="1" onchange="mostrarJustificativa('me', 1)">
-                        </div>
                     </div>
                     <div class="empresa">
                         <h4>Empresa 2</h4>
@@ -739,10 +719,6 @@ h2 {
                         <div class="form-group">
                             <label for="me-empresa2-total">Valor Total (R$)</label>
                             <input type="text" id="me-empresa2-total" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="me-empresa2-selecionada">Selecionar Empresa</label>
-                            <input type="radio" name="me-empresa-selecionada" id="me-empresa2-selecionada" value="2" onchange="mostrarJustificativa('me', 2)">
                         </div>
                     </div>
                     <div class="empresa">
@@ -768,19 +744,11 @@ h2 {
                             <label for="me-empresa3-total">Valor Total (R$)</label>
                             <input type="text" id="me-empresa3-total" readonly>
                         </div>
-                        <div class="form-group">
-                            <label for="me-empresa3-selecionada">Selecionar Empresa</label>
-                            <input type="radio" name="me-empresa-selecionada" id="me-empresa3-selecionada" value="3" onchange="mostrarJustificativa('me', 3)">
-                        </div>
                     </div>
                 </div>
                 <div class="form-group" style="margin-top: 20px;">
                     <label for="me-menor-valor">Menor Valor Cotado (R$)</label>
                     <input type="text" id="me-menor-valor" readonly>
-                </div>
-                <div class="form-group" id="me-justificativa-container" style="display: none;">
-                    <label for="me-justificativa">Justificativa</label>
-                    <textarea id="me-justificativa" placeholder="Justifique a escolha de uma empresa com valor superior ao menor cotado"></textarea>
                 </div>
                 <button class="btn btn-success" id="me-adicionar-carrinho">Adicionar ao Carrinho</button>
             </div>
@@ -856,10 +824,6 @@ h2 {
                             <label for="uni-empresa1-total">Valor Total (R$)</label>
                             <input type="text" id="uni-empresa1-total" readonly>
                         </div>
-                        <div class="form-group">
-                            <label for="uni-empresa1-selecionada">Selecionar Empresa</label>
-                            <input type="radio" name="uni-empresa-selecionada" id="uni-empresa1-selecionada" value="1" onchange="mostrarJustificativa('uni', 1)">
-                        </div>
                     </div>
                     <div class="empresa">
                         <h4>Empresa 2</h4>
@@ -883,10 +847,6 @@ h2 {
                         <div class="form-group">
                             <label for="uni-empresa2-total">Valor Total (R$)</label>
                             <input type="text" id="uni-empresa2-total" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="uni-empresa2-selecionada">Selecionar Empresa</label>
-                            <input type="radio" name="uni-empresa-selecionada" id="uni-empresa2-selecionada" value="2" onchange="mostrarJustificativa('uni', 2)">
                         </div>
                     </div>
                     <div class="empresa">
@@ -912,19 +872,11 @@ h2 {
                             <label for="uni-empresa3-total">Valor Total (R$)</label>
                             <input type="text" id="uni-empresa3-total" readonly>
                         </div>
-                        <div class="form-group">
-                            <label for="uni-empresa3-selecionada">Selecionar Empresa</label>
-                            <input type="radio" name="uni-empresa-selecionada" id="uni-empresa3-selecionada" value="3" onchange="mostrarJustificativa('uni', 3)">
-                        </div>
                     </div>
                 </div>
                 <div class="form-group" style="margin-top: 20px;">
                     <label for="uni-menor-valor">Menor Valor Cotado (R$)</label>
                     <input type="text" id="uni-menor-valor" readonly>
-                </div>
-                <div class="form-group" id="uni-justificativa-container" style="display: none;">
-                    <label for="uni-justificativa">Justificativa</label>
-                    <textarea id="uni-justificativa" placeholder="Justifique a escolha de uma empresa com valor superior ao menor cotado"></textarea>
                 </div>
                 <button class="btn btn-success" id="uni-adicionar-carrinho">Adicionar ao Carrinho</button>
             </div>
@@ -1000,10 +952,6 @@ h2 {
                             <label for="idv-empresa1-total">Valor Total (R$)</label>
                             <input type="text" id="idv-empresa1-total" readonly>
                         </div>
-                        <div class="form-group">
-                            <label for="idv-empresa1-selecionada">Selecionar Empresa</label>
-                            <input type="radio" name="idv-empresa-selecionada" id="idv-empresa1-selecionada" value="1" onchange="mostrarJustificativa('idv', 1)">
-                        </div>
                     </div>
                     <div class="empresa">
                         <h4>Empresa 2</h4>
@@ -1027,10 +975,6 @@ h2 {
                         <div class="form-group">
                             <label for="idv-empresa2-total">Valor Total (R$)</label>
                             <input type="text" id="idv-empresa2-total" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="idv-empresa2-selecionada">Selecionar Empresa</label>
-                            <input type="radio" name="idv-empresa-selecionada" id="idv-empresa2-selecionada" value="2" onchange="mostrarJustificativa('idv', 2)">
                         </div>
                     </div>
                     <div class="empresa">
@@ -1056,19 +1000,11 @@ h2 {
                             <label for="idv-empresa3-total">Valor Total (R$)</label>
                             <input type="text" id="idv-empresa3-total" readonly>
                         </div>
-                        <div class="form-group">
-                            <label for="idv-empresa3-selecionada">Selecionar Empresa</label>
-                            <input type="radio" name="idv-empresa-selecionada" id="idv-empresa3-selecionada" value="3" onchange="mostrarJustificativa('idv', 3)">
-                        </div>
                     </div>
                 </div>
                 <div class="form-group" style="margin-top: 20px;">
                     <label for="idv-menor-valor">Menor Valor Cotado (R$)</label>
                     <input type="text" id="idv-menor-valor" readonly>
-                </div>
-                <div class="form-group" id="idv-justificativa-container" style="display: none;">
-                    <label for="idv-justificativa">Justificativa</label>
-                    <textarea id="idv-justificativa" placeholder="Justifique a escolha de uma empresa com valor superior ao menor cotado"></textarea>
                 </div>
                 <button class="btn btn-success" id="idv-adicionar-carrinho">Adicionar ao Carrinho</button>
             </div>
@@ -1144,10 +1080,6 @@ h2 {
                             <label for="ali-empresa1-total">Valor Total (R$)</label>
                             <input type="text" id="ali-empresa1-total" readonly>
                         </div>
-                        <div class="form-group">
-                            <label for="ali-empresa1-selecionada">Selecionar Empresa</label>
-                            <input type="radio" name="ali-empresa-selecionada" id="ali-empresa1-selecionada" value="1" onchange="mostrarJustificativa('ali', 1)">
-                        </div>
                     </div>
                     <div class="empresa">
                         <h4>Empresa 2</h4>
@@ -1171,10 +1103,6 @@ h2 {
                         <div class="form-group">
                             <label for="ali-empresa2-total">Valor Total (R$)</label>
                             <input type="text" id="ali-empresa2-total" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="ali-empresa2-selecionada">Selecionar Empresa</label>
-                            <input type="radio" name="ali-empresa-selecionada" id="ali-empresa2-selecionada" value="2" onchange="mostrarJustificativa('ali', 2)">
                         </div>
                     </div>
                     <div class="empresa">
@@ -1200,19 +1128,11 @@ h2 {
                             <label for="ali-empresa3-total">Valor Total (R$)</label>
                             <input type="text" id="ali-empresa3-total" readonly>
                         </div>
-                        <div class="form-group">
-                            <label for="ali-empresa3-selecionada">Selecionar Empresa</label>
-                            <input type="radio" name="ali-empresa-selecionada" id="ali-empresa3-selecionada" value="3" onchange="mostrarJustificativa('ali', 3)">
-                        </div>
                     </div>
                 </div>
                 <div class="form-group" style="margin-top: 20px;">
                     <label for="ali-menor-valor">Menor Valor Cotado (R$)</label>
                     <input type="text" id="ali-menor-valor" readonly>
-                </div>
-                <div class="form-group" id="ali-justificativa-container" style="display: none;">
-                    <label for="ali-justificativa">Justificativa</label>
-                    <textarea id="ali-justificativa" placeholder="Justifique a escolha de uma empresa com valor superior ao menor cotado"></textarea>
                 </div>
                 <button class="btn btn-success" id="ali-adicionar-carrinho">Adicionar ao Carrinho</button>
             </div>
@@ -1244,12 +1164,16 @@ h2 {
     </footer>
 
     <script>
-
+let numeroProposta = sessionStorage.getItem('numeroProposta') || '';
+let cnpj = sessionStorage.getItem('cnpj') || '';
+let nomeEntidade = sessionStorage.getItem('nomeEntidade') || '';
+let valorEmenda = parseFloat(sessionStorage.getItem('valorEmenda')) || 0;
 document.addEventListener('DOMContentLoaded', function() {
     if (typeof XLSX === 'undefined') {
         alert('Erro: A biblioteca SheetJS não foi carregada.');
         return;
     }
+    
 
     // Cache para armazenar dados das empresas entre adições
     let empresasCache = {
@@ -1460,26 +1384,8 @@ document.addEventListener('DOMContentLoaded', function() {
     calcularTotal('me');
 };
 
-    window.mostrarJustificativa = function(prefixo, empresaIndex) {
-        const menorValorInput = document.getElementById(`${prefixo}-menor-valor`);
-        let menorValor = 0;
-        if (menorValorInput && menorValorInput.value) {
-            menorValor = parseValorMonetario(menorValorInput.value) || 0;
-        }
 
-        const valorSelecionadoInput = document.getElementById(`${prefixo}-empresa${empresaIndex}-total`);
-        let valorSelecionado = 0;
-        if (valorSelecionadoInput && valorSelecionadoInput.value) {
-            valorSelecionado = parseValorMonetario(valorSelecionadoInput.value) || 0;
-        }
-
-        const justificativaContainer = document.getElementById(`${prefixo}-justificativa-container`);
-        if (justificativaContainer) {
-            justificativaContainer.style.display = (valorSelecionado > menorValor && menorValor > 0) ? 'block' : 'none';
-        }
-    };
-
-    let numeroProposta = sessionStorage.getItem('numeroProposta') || 'sem-numero';
+    let numeroProposta = sessionStorage.getItem('numeroProposta') || '';
         const cnpj = sessionStorage.getItem('cnpj') || '';
         const nomeEntidade = sessionStorage.getItem('nomeEntidade') || '';
         const valorEmenda = parseFloat(sessionStorage.getItem('valorEmenda')) || 1000000;
@@ -1729,128 +1635,129 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     prefixes.forEach(prefixo => {
-        const btnAdicionar = document.getElementById(`${prefixo}-adicionar-carrinho`);
-        if (!btnAdicionar) return;
-        btnAdicionar.addEventListener('click', function() {
-            const cargoOuItem = prefixo === 'srv'
-                ? (document.getElementById(`${prefixo}-cargo`).value === 'Outros'
-                    ? document.getElementById(`${prefixo}-outros`).value.trim()
-                    : document.getElementById(`${prefixo}-cargo`).value.trim())
-                : document.getElementById(`${prefixo}-item`).value.trim();
-            const subitem = prefixo !== 'srv'
-                ? (document.getElementById(`${prefixo}-item`).value === 'Outros'
-                    ? document.getElementById(`${prefixo}-outros`).value.trim()
-                    : document.getElementById(`${prefixo}-subitem`).value.trim())
-                : null;
-            const descricao = document.getElementById(`${prefixo}-descricao`).value.trim();
-            const quantidade = parseInt(document.getElementById(`${prefixo}-quantidade`).value) || 0;
-            const periodo = prefixo === 'me' && document.getElementById('me-tipo').value === 'aquisicao'
-                ? 'aquisicao'
-                : document.getElementById(`${prefixo}-periodo`)?.value || 'diarias';
-            const periodoValor = prefixo === 'me' && document.getElementById('me-tipo').value === 'aquisicao'
-                ? 1
-                : parseInt(document.getElementById(`${prefixo}-periodo-valor`)?.value) || 0;
-            const tipo = prefixo === 'me' ? document.getElementById('me-tipo').value : null;
-            const total = tipo === 'aquisicao' ? quantidade : quantidade * periodoValor;
+    const btnAdicionar = document.getElementById(`${prefixo}-adicionar-carrinho`);
+    if (!btnAdicionar) return;
+    btnAdicionar.addEventListener('click', function() {
+        const cargoOuItem = prefixo === 'srv'
+            ? (document.getElementById(`${prefixo}-cargo`).value === 'Outros'
+                ? document.getElementById(`${prefixo}-outros`).value.trim()
+                : document.getElementById(`${prefixo}-cargo`).value.trim())
+            : document.getElementById(`${prefixo}-item`).value.trim();
+        const subitem = prefixo !== 'srv'
+            ? (document.getElementById(`${prefixo}-item`).value === 'Outros'
+                ? document.getElementById(`${prefixo}-outros`).value.trim()
+                : document.getElementById(`${prefixo}-subitem`).value.trim())
+            : null;
+        const descricao = document.getElementById(`${prefixo}-descricao`).value.trim();
+        const quantidade = parseInt(document.getElementById(`${prefixo}-quantidade`).value) || 0;
+        const periodo = prefixo === 'me' && document.getElementById('me-tipo').value === 'aquisicao'
+            ? 'aquisicao'
+            : document.getElementById(`${prefixo}-periodo`)?.value || 'diarias';
+        const periodoValor = prefixo === 'me' && document.getElementById('me-tipo').value === 'aquisicao'
+            ? 1
+            : parseInt(document.getElementById(`${prefixo}-periodo-valor`)?.value) || 0;
+        const tipo = prefixo === 'me' ? document.getElementById('me-tipo').value : null;
+        const total = tipo === 'aquisicao' ? quantidade : quantidade * periodoValor;
 
-            if (!cargoOuItem || !descricao || quantidade <= 0 || (tipo !== 'aquisicao' && periodoValor <= 0)) {
-                alert('Preencha todos os campos obrigatórios (item/cargo, descrição, quantidade, período)!');
-                return;
-            }
+        if (!cargoOuItem || !descricao || quantidade <= 0 || (tipo !== 'aquisicao' && periodoValor <= 0)) {
+            alert('Preencha todos os campos obrigatórios (item/cargo, descrição, quantidade, período)!');
+            return;
+        }
 
-            if (prefixo !== 'srv' && !subitem && !descricao) {
-                alert('Preencha pelo menos o subitem ou a descrição do item!');
-                return;
-            }
+        if (prefixo !== 'srv' && !subitem && !descricao) {
+            alert('Preencha pelo menos o subitem ou a descrição do item!');
+            return;
+        }
 
-            const empresas = [];
-            let menorValor = Infinity;
-            let empresaSelecionada = null;
-            const selecionada = document.querySelector(`input[name="${prefixo}-empresa-selecionada"]:checked`);
+        const empresas = [];
+        let menorValor = Infinity;
+        let empresaSelecionada = null;
+        const empresasValidas = [];
 
-            for (let i = 1; i <= 3; i++) {
-                const nome = document.getElementById(`${prefixo}-empresa${i}-nome`).value.trim();
-                const cnpj = document.getElementById(`${prefixo}-empresa${i}-cnpj`).value.trim();
-                const link = document.getElementById(`${prefixo}-empresa${i}-link`).value.trim();
-                const unitarioInput = document.getElementById(`${prefixo}-empresa${i}-unitario`);
-                const unitario = parseFloat(unitarioInput.getAttribute('data-value') || '0') || 0;
-                const valorTotal = unitario * total;
+        for (let i = 1; i <= 3; i++) {
+            const nome = document.getElementById(`${prefixo}-empresa${i}-nome`).value.trim();
+            const cnpj = document.getElementById(`${prefixo}-empresa${i}-cnpj`).value.trim();
+            const link = document.getElementById(`${prefixo}-empresa${i}-link`).value.trim();
+            const unitarioInput = document.getElementById(`${prefixo}-empresa${i}-unitario`);
+            const unitario = parseFloat(unitarioInput.getAttribute('data-value') || '0') || 0;
+            const valorTotal = unitario * total;
 
-                empresasCache[prefixo][i-1] = { nome, cnpj, link };
+            empresasCache[prefixo][i-1] = { nome, cnpj, link };
 
-                if (nome && cnpj && unitario > 0) {
-                    if (!validarCNPJ(cnpj)) {
-                        alert(`CNPJ inválido para Empresa ${i} na seção ${prefixo.toUpperCase()}.`);
-                        return;
-                    }
-                    empresas.push({
+            if (nome && cnpj && unitario > 0) {
+                if (!validarCNPJ(cnpj)) {
+                    alert(`CNPJ inválido para Empresa ${i} na seção ${prefixo.toUpperCase()}.`);
+                    return;
+                }
+                // Verificar status do CNPJ
+                const statusSpan = document.getElementById(`${prefixo}-empresa${i}-status`);
+                if (statusSpan.textContent !== 'Ativa') {
+                    alert(`A Empresa ${i} (${nome}) possui CNPJ inativo ou não foi validada. Todas as 3 cotações devem ter CNPJ ativo.`);
+                    return;
+                }
+                empresas.push({
+                    nome,
+                    cnpj,
+                    link: link || '',
+                    unitario,
+                    total: valorTotal
+                });
+                empresasValidas.push({
+                    nome,
+                    cnpj,
+                    link: link || '',
+                    unitario,
+                    total: valorTotal
+                });
+
+                if (valorTotal < menorValor && valorTotal > 0) {
+                    menorValor = valorTotal;
+                    empresaSelecionada = {
                         nome,
                         cnpj,
                         link: link || '',
                         unitario,
                         total: valorTotal
-                    });
-
-                    if (valorTotal < menorValor && valorTotal > 0) {
-                        menorValor = valorTotal;
-                    }
-
-                    if (selecionada && parseInt(selecionada.value) === i) {
-                        empresaSelecionada = {
-                            nome,
-                            cnpj,
-                            link: link || '',
-                            unitario,
-                            total: valorTotal
-                        };
-                    }
-                } else {
-                    empresas.push({ nome: '', cnpj: '', link: '', unitario: 0, total: 0 });
+                    };
                 }
+            } else {
+                empresas.push({ nome: '', cnpj: '', link: '', unitario: 0, total: 0 });
             }
+        }
 
-            if (empresas.filter(e => e.nome && e.cnpj && e.unitario > 0).length < 1) {
-                alert('Preencha pelo menos uma empresa com nome, CNPJ e valor unitário válidos!');
-                return;
-            }
+        if (empresasValidas.length < 3) {
+            alert('É necessário preencher exatamente 3 cotações válidas com nome, CNPJ ativo e valor unitário.');
+            return;
+        }
 
-            if (!empresaSelecionada) {
-                alert('Selecione uma empresa antes de adicionar ao carrinho!');
-                return;
-            }
+        if (!empresaSelecionada) {
+            alert('Nenhuma empresa válida foi encontrada para seleção automática.');
+            return;
+        }
 
-            const justificativa = empresaSelecionada.total > menorValor && menorValor !== Infinity
-                ? document.getElementById(`${prefixo}-justificativa`).value.trim()
-                : '';
+        const itemCarrinho = {
+            id: itemIdCounter++,
+            categoria: prefixoToCategoria[prefixo],
+            item: cargoOuItem,
+            subitem: subitem || '',
+            descricao,
+            quantidade,
+            periodo: tipo === 'aquisicao' ? 'N/A' : periodo,
+            periodoValor: tipo === 'aquisicao' ? 1 : periodoValor,
+            tipo: tipo || 'N/A',
+            total,
+            empresas,
+            empresaSelecionada,
+            justificativa: '', // Não é mais necessário
+            dataAdicao: new Date().toISOString()
+        };
 
-            if (empresaSelecionada.total > menorValor && menorValor !== Infinity && !justificativa) {
-                alert('Por favor, forneça uma justificativa para a escolha de uma empresa com valor superior ao menor cotado.');
-                return;
-            }
-
-            const itemCarrinho = {
-                id: itemIdCounter++,
-                categoria: prefixoToCategoria[prefixo],
-                item: cargoOuItem,
-                subitem: subitem || '',
-                descricao,
-                quantidade,
-                periodo: tipo === 'aquisicao' ? 'N/A' : periodo,
-                periodoValor: tipo === 'aquisicao' ? 1 : periodoValor,
-                tipo: tipo || 'N/A',
-                total,
-                empresas,
-                empresaSelecionada,
-                justificativa,
-                dataAdicao: new Date().toISOString()
-            };
-
-            carrinho.push(itemCarrinho);
-            valorGasto += empresaSelecionada.total;
-            atualizarCarrinho();
-            limparFormulario(prefixo);
-        });
+        carrinho.push(itemCarrinho);
+        valorGasto += empresaSelecionada.total;
+        atualizarCarrinho();
+        limparFormulario(prefixo);
     });
+});
 
     function validarCNPJ(cnpj) {
         cnpj = cnpj.replace(/[^\d]/g, '');
@@ -1960,7 +1867,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Preencher os campos do formulário
     if (prefixo === 'srv') {
-        // Para serviços (cargo)
         if (item.item === 'Outros') {
             document.getElementById(`${prefixo}-cargo`).value = 'Outros';
             document.getElementById(`${prefixo}-outros`).value = item.subitem || '';
@@ -1971,7 +1877,6 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById(`${prefixo}-outros-container`).style.display = 'none';
         }
     } else {
-        // Para outras categorias (item/subitem)
         document.getElementById(`${prefixo}-item`).value = item.item;
         document.getElementById(`${prefixo}-subitem`).value = item.subitem || '';
         
@@ -1984,11 +1889,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Preencher campos comuns a todas as abas
     document.getElementById(`${prefixo}-descricao`).value = item.descricao || '';
     document.getElementById(`${prefixo}-quantidade`).value = item.quantidade || 1;
     
-    // Configurar período e tipo (especial para material esportivo)
     if (prefixo === 'me') {
         document.getElementById('me-tipo').value = item.tipo === 'aquisicao' ? 'aquisicao' : 'locacao';
         toggleLocacaoFields();
@@ -1998,7 +1901,6 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById(`${prefixo}-periodo-valor`).value = item.periodoValor;
         }
     } else if (prefixo !== 'srv') {
-        // Para outras abas (exceto serviços)
         if (item.periodo && item.periodo !== 'N/A') {
             document.getElementById(`${prefixo}-periodo`).value = item.periodo;
             document.getElementById(`${prefixo}-periodo-valor`).value = item.periodoValor;
@@ -2007,7 +1909,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById(`${prefixo}-total`).value = item.total || 0;
     
-    // Preencher informações das empresas
     for (let i = 0; i < 3; i++) {
         const empresa = item.empresas[i] || {};
         document.getElementById(`${prefixo}-empresa${i+1}-nome`).value = empresa.nome || '';
@@ -2021,11 +1922,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         document.getElementById(`${prefixo}-empresa${i+1}-total`).value = formatarMoeda(empresa.total || 0);
         
-        // Marcar a empresa selecionada
-        const isSelected = item.empresaSelecionada && item.empresaSelecionada.nome === empresa.nome;
-        document.getElementById(`${prefixo}-empresa${i+1}-selecionada`).checked = isSelected;
-        
-        // Atualizar status do CNPJ
         if (empresa.cnpj) {
             setTimeout(() => {
                 consultarCNPJ(prefixo, i+1);
@@ -2033,22 +1929,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Preencher justificativa se necessário
-    document.getElementById(`${prefixo}-justificativa`).value = item.justificativa || '';
-    document.getElementById(`${prefixo}-justificativa-container`).style.display = item.justificativa ? 'block' : 'none';
-    
-    // Atualizar cálculos
     calcularTotaisEmpresas(prefixo);
 
-    // Remover o item do carrinho (para evitar duplicação)
     valorGasto -= item.empresaSelecionada.total;
     carrinho = carrinho.filter(i => i.id !== id);
     atualizarCarrinho();
     
-    // Rolar para o topo do formulário
     window.scrollTo(0, 0);
     
-    // Reativar listeners de CNPJ
     inicializarEventosCNPJ();
 };
 
@@ -2078,8 +1966,6 @@ function limparFormulario(prefixo) {
     }
     
     document.getElementById(`${prefixo}-total`).value = '';
-    document.getElementById(`${prefixo}-justificativa`).value = '';
-    document.getElementById(`${prefixo}-justificativa-container`).style.display = 'none';
     document.getElementById(`${prefixo}-menor-valor`).value = '';
 
     // Não limpar os dados das empresas - eles são mantidos no cache
@@ -2089,7 +1975,6 @@ function limparFormulario(prefixo) {
         unitarioInput.value = '0,00';
         unitarioInput.setAttribute('data-value', '0');
         document.getElementById(`${prefixo}-empresa${i}-total`).value = 'R$ 0,00';
-        document.getElementById(`${prefixo}-empresa${i}-selecionada`).checked = false;
     }
 }
 
@@ -2112,219 +1997,217 @@ function limparFormulario(prefixo) {
     });
 
     async function gerarExcel() {
-        try {
-            if (carrinho.length === 0) {
-                alert('O carrinho está vazio. Adicione itens antes de exportar.');
-                return;
-            }
-
-            if (!declaracaoCheckbox.checked) {
-                alert('Você precisa marcar a declaração antes de exportar.');
-                return;
-            }
-
-            const workbook = new ExcelJS.Workbook();
-            workbook.creator = 'Ministério do Esporte';
-            workbook.lastModifiedBy = 'Sistema de Precificação';
-            workbook.created = new Date();
-            workbook.modified = new Date();
-
-            const worksheet = workbook.addWorksheet('Orçamento');
-
-            await worksheet.protect('Mesp@123456', {
-                selectLockedCells: true,
-                selectUnlockedCells: true,
-                formatCells: false,
-                formatColumns: false,
-                formatRows: false,
-                insertColumns: false,
-                insertRows: false,
-                insertHyperlinks: false,
-                deleteColumns: false,
-                deleteRows: false,
-                sort: false,
-                autoFilter: false,
-                pivotTables: false
-            });
-
-            worksheet.getCell('A2').value = 'PROPOSTA';
-            worksheet.getCell('B2').value = numeroProposta;
-            worksheet.getCell('A3').value = 'CNPJ';
-            worksheet.getCell('B3').value = cnpj;
-            worksheet.getCell('A4').value = 'ENTIDADE';
-            worksheet.getCell('B4').value = nomeEntidade;
-            worksheet.getCell('A5').value = 'DATA';
-            worksheet.getCell('B5').value = new Date().toLocaleDateString('pt-BR');
-
-            const subHeaderRow = worksheet.getRow(7);
-            subHeaderRow.getCell(5).value = 'MEDIDAS';
-            subHeaderRow.getCell(8).value = '1ª COTAÇÃO';
-            subHeaderRow.getCell(12).value = '2ª COTAÇÃO';
-            subHeaderRow.getCell(16).value = '3ª COTAÇÃO';
-            subHeaderRow.getCell(20).value = 'COTAÇÃO DEFINIDA';
-
-            const headerRow = worksheet.getRow(8);
-            headerRow.getCell(1).value = 'Nº';
-            headerRow.getCell(2).value = 'TIPO';
-            headerRow.getCell(3).value = 'ITEM';
-            headerRow.getCell(4).value = 'ESPECIFICAÇÃO DO ITEM';
-            headerRow.getCell(5).value = 'QTD';
-            headerRow.getCell(6).value = 'DIÁRIAS/MESES';
-            headerRow.getCell(7).value = 'TOTAL';
-            headerRow.getCell(8).value = 'RAZÃO ou LINK';
-            headerRow.getCell(9).value = 'CNPJ';
-            headerRow.getCell(10).value = 'VALOR UNITÁRIO';
-            headerRow.getCell(11).value = 'VALOR TOTAL';
-            headerRow.getCell(12).value = 'RAZÃO ou LINK';
-            headerRow.getCell(13).value = 'CNPJ';
-            headerRow.getCell(14).value = 'VALOR UNITÁRIO';
-            headerRow.getCell(15).value = 'VALOR TOTAL';
-            headerRow.getCell(16).value = 'RAZÃO ou LINK';
-            headerRow.getCell(17).value = 'CNPJ';
-            headerRow.getCell(18).value = 'VALOR UNITÁRIO';
-            headerRow.getCell(19).value = 'VALOR TOTAL';
-            headerRow.getCell(20).value = 'VALOR UNITÁRIO';
-            headerRow.getCell(21).value = 'VALOR TOTAL';
-            headerRow.getCell(22).value = 'JUSTIFICATIVA';
-            headerRow.getCell(23).value = 'MENOR VALOR DE COTAÇÃO';
-
-            worksheet.mergeCells('E7:G7');
-            worksheet.mergeCells('H7:K7');
-            worksheet.mergeCells('L7:O7');
-            worksheet.mergeCells('P7:S7');
-            worksheet.mergeCells('T7:U7');
-
-            headerRow.eachCell({ includeEmpty: false }, (cell) => {
-                cell.font = { bold: true, color: { argb: 'FF000000' } };
-                cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
-                cell.border = {
-                    top: { style: 'thin' },
-                    left: { style: 'thin' },
-                    bottom: { style: 'thin' },
-                    right: { style: 'thin' }
-                };
-            });
-
-            subHeaderRow.eachCell({ includeEmpty: false }, (cell) => {
-                cell.font = { bold: true, color: { argb: 'FF000000' } };
-                cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
-                cell.border = {
-                    top: { style: 'thin' },
-                    left: { style: 'thin' },
-                    bottom: { style: 'thin' },
-                    right: { style: 'thin' }
-                };
-            });
-
-            worksheet.columns = [
-                { width: 5 }, { width: 20 }, { width: 20 }, { width: 30 }, { width: 10 },
-                { width: 15 }, { width: 10 }, { width: 20 }, { width: 15 }, { width: 15 },
-                { width: 15 }, { width: 20 }, { width: 15 }, { width: 15 }, { width: 15 },
-                { width: 20 }, { width: 15 }, { width: 15 }, { width: 15 }, { width: 15 },
-                { width: 15 }, { width: 30 }, { width: 15 }
-            ];
-
-            subHeaderRow.getCell(5).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFB266' } };
-            subHeaderRow.getCell(8).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFCC99' } };
-            subHeaderRow.getCell(12).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'CCCCFF' } };
-            subHeaderRow.getCell(16).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '99CCFF' } };
-            subHeaderRow.getCell(20).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF9999' } };
-
-            let rowIndex = 9;
-            carrinho.forEach(item => {
-                const totals = [
-                    item.empresas[0]?.total || 0,
-                    item.empresas[1]?.total || 0,
-                    item.empresas[2]?.total || 0
-                ].filter(t => t > 0 && !isNaN(t));
-                const menorValor = totals.length > 0 ? Math.min(...totals) : 0;
-                const justificativa = item.empresaSelecionada.total > menorValor && menorValor !== 0 ? item.justificativa : '';
-                const menorValorCotado = menorValor !== 0 ? menorValor : 0;
-                const baseTipo = item.categoria.toUpperCase() === 'SERVICOS' ? 'SERVIÇOS/RECURSOS HUMANOS' : 
-                     item.categoria.toUpperCase() === 'MATERIAL' ? 'MATERIAL ESPORTIVO' : item.categoria.toUpperCase();
-                const tipo = baseTipo === 'MATERIAL ESPORTIVO' && item.tipo ? `${baseTipo} - ${item.tipo.toUpperCase() === 'AQUISICAO' ? 'AQUISIÇÃO' : 'LOCAÇÃO'}` : baseTipo;
-                const row = worksheet.getRow(rowIndex);
-                row.values = [
-                    item.id, tipo, `${item.item}${item.subitem ? ' - ' + item.subitem : ''}`, item.descricao,
-                    item.quantidade, item.periodo === 'N/A' ? 'N/A' : item.periodo === 'diarias' ? 'Diárias' :
-                        item.periodo === 'meses' ? 'Meses' :
-                        item.periodo === 'UN' ? 'UN' :
-                        item.periodo === 'Kit' ? 'Kit' : 'N/A',
-                    item.total,
-                    item.empresas[0]?.nome && item.empresas[0]?.link ? `${item.empresas[0].nome} - ${item.empresas[0].link}` : item.empresas[0]?.nome || '',
-                    item.empresas[0]?.cnpj || '', item.empresas[0]?.unitario || 0, item.empresas[0]?.total || 0,
-                    item.empresas[1]?.nome && item.empresas[1]?.link ? `${item.empresas[1].nome} - ${item.empresas[1].link}` : item.empresas[1]?.nome || '',
-                    item.empresas[1]?.cnpj || '', item.empresas[1]?.unitario || 0, item.empresas[1]?.total || 0,
-                    item.empresas[2]?.nome && item.empresas[2]?.link ? `${item.empresas[2].nome} - ${item.empresas[2].link}` : item.empresas[2]?.nome || '',
-                    item.empresas[2]?.cnpj || '', item.empresas[2]?.unitario || 0, item.empresas[2]?.total || 0,
-                    item.empresaSelecionada.unitario, item.empresaSelecionada.total,
-                    justificativa,
-                    menorValorCotado
-                ];
-                row.getCell(3).alignment = { wrapText: true };
-                row.getCell(4).alignment = { wrapText: true };
-                row.getCell(9).alignment = { wrapText: true };
-                row.getCell(13).alignment = { wrapText: true };
-                row.getCell(17).alignment = { wrapText: true };
-                row.getCell(10).numFmt = '"R$ "#,##0.00';
-                row.getCell(11).numFmt = '"R$ "#,##0.00';
-                row.getCell(14).numFmt = '"R$ "#,##0.00';
-                row.getCell(15).numFmt = '"R$ "#,##0.00';
-                row.getCell(18).numFmt = '"R$ "#,##0.00';
-                row.getCell(19).numFmt = '"R$ "#,##0.00';
-                row.getCell(20).numFmt = '"R$ "#,##0.00';
-                row.getCell(21).numFmt = '"R$ "#,##0.00';
-                row.getCell(23).numFmt = '"R$ "#,##0.00';
-                row.height = 60;
-                rowIndex++;
-            });
-
-            const totalRow = worksheet.getRow(rowIndex);
-            totalRow.getCell(1).value = 'TOTAL';
-            totalRow.getCell(5).value = { formula: `SUM(E9:E${rowIndex - 1})` };
-            totalRow.getCell(7).value = { formula: `SUM(G9:G${rowIndex - 1})` };
-            totalRow.getCell(10).value = { formula: `SUM(J9:J${rowIndex - 1})` };
-            totalRow.getCell(11).value = { formula: `SUM(K9:K${rowIndex - 1})` };
-            totalRow.getCell(14).value = { formula: `SUM(N9:N${rowIndex - 1})` };
-            totalRow.getCell(15).value = { formula: `SUM(O9:O${rowIndex - 1})` };
-            totalRow.getCell(18).value = { formula: `SUM(R9:R${rowIndex - 1})` };
-            totalRow.getCell(19).value = { formula: `SUM(S9:S${rowIndex - 1})` };
-            totalRow.getCell(20).value = { formula: `SUM(T9:T${rowIndex - 1})` };
-            totalRow.getCell(21).value = { formula: `SUM(U9:U${rowIndex - 1})` };
-            totalRow.getCell(23).value = { formula: `SUM(W9:W${rowIndex - 1})` };
-            totalRow.getCell(10).numFmt = '"R$ "#,##0.00';
-            totalRow.getCell(11).numFmt = '"R$ "#,##0.00';
-            totalRow.getCell(14).numFmt = '"R$ "#,##0.00';
-            totalRow.getCell(15).numFmt = '"R$ "#,##0.00';
-            totalRow.getCell(18).numFmt = '"R$ "#,##0.00';
-            totalRow.getCell(19).numFmt = '"R$ "#,##0.00';
-            totalRow.getCell(20).numFmt = '"R$ "#,##0.00';
-            totalRow.getCell(21).numFmt = '"R$ "#,##0.00';
-            totalRow.getCell(23).numFmt = '"R$ "#,##0.00';
-
-            totalRow.eachCell({ includeEmpty: true }, (cell) => {
-                cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'D3D3D3' } };
-            });
-
-            worksheet.pageSetup.orientation = 'landscape';
-
-            const buffer = await workbook.xlsx.writeBuffer();
-            const blobExcel = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-            const linkExcel = document.createElement('a');
-            linkExcel.href = URL.createObjectURL(blobExcel);
-            linkExcel.download = `Precificação_${numeroProposta}_${new Date().toISOString().slice(0, 10)}.xlsx`;
-            document.body.appendChild(linkExcel);
-            linkExcel.click();
-            document.body.removeChild(linkExcel);
-
-            await gerarPDF(carrinho);
-
-        } catch (error) {
-            console.error('Erro ao gerar Excel:', error);
-            alert('Ocorreu um erro ao gerar o Excel. Verifique o console para mais detalhes.');
+    try {
+        if (carrinho.length === 0) {
+            alert('O carrinho está vazio. Adicione itens antes de exportar.');
+            return;
         }
-    }
 
+        if (!declaracaoCheckbox.checked) {
+            alert('Você precisa marcar a declaração antes de exportar.');
+            return;
+        }
+
+        const workbook = new ExcelJS.Workbook();
+        workbook.creator = 'Ministério do Esporte';
+        workbook.lastModifiedBy = 'Sistema de Precificação';
+        workbook.created = new Date();
+        workbook.modified = new Date();
+
+        const worksheet = workbook.addWorksheet('Orçamento');
+
+        await worksheet.protect('Mesp@123456', {
+            selectLockedCells: true,
+            selectUnlockedCells: true,
+            formatCells: false,
+            formatColumns: false,
+            formatRows: false,
+            insertColumns: false,
+            insertRows: false,
+            insertHyperlinks: false,
+            deleteColumns: false,
+            deleteRows: false,
+            sort: false,
+            autoFilter: false,
+            pivotTables: false
+        });
+
+        worksheet.getCell('A2').value = 'PROPOSTA';
+        worksheet.getCell('B2').value = numeroProposta;
+        worksheet.getCell('A3').value = 'CNPJ';
+        worksheet.getCell('B3').value = cnpj;
+        worksheet.getCell('A4').value = 'ENTIDADE';
+        worksheet.getCell('B4').value = nomeEntidade;
+        worksheet.getCell('A5').value = 'DATA';
+        worksheet.getCell('B5').value = new Date().toLocaleDateString('pt-BR');
+
+        const subHeaderRow = worksheet.getRow(7);
+        subHeaderRow.getCell(5).value = 'MEDIDAS';
+        subHeaderRow.getCell(8).value = '1ª COTAÇÃO';
+        subHeaderRow.getCell(12).value = '2ª COTAÇÃO';
+        subHeaderRow.getCell(16).value = '3ª COTAÇÃO';
+        subHeaderRow.getCell(20).value = 'COTAÇÃO SELECIONADA'; // Alterado para refletir seleção automática
+
+        const headerRow = worksheet.getRow(8);
+        headerRow.getCell(1).value = 'Nº';
+        headerRow.getCell(2).value = 'TIPO';
+        headerRow.getCell(3).value = 'ITEM';
+        headerRow.getCell(4).value = 'ESPECIFICAÇÃO DO ITEM';
+        headerRow.getCell(5).value = 'QTD';
+        headerRow.getCell(6).value = 'DIÁRIAS/MESES';
+        headerRow.getCell(7).value = 'TOTAL';
+        headerRow.getCell(8).value = 'RAZÃO ou LINK';
+        headerRow.getCell(9).value = 'CNPJ';
+        headerRow.getCell(10).value = 'VALOR UNITÁRIO';
+        headerRow.getCell(11).value = 'VALOR TOTAL';
+        headerRow.getCell(12).value = 'RAZÃO ou LINK';
+        headerRow.getCell(13).value = 'CNPJ';
+        headerRow.getCell(14).value = 'VALOR UNITÁRIO';
+        headerRow.getCell(15).value = 'VALOR TOTAL';
+        headerRow.getCell(16).value = 'RAZÃO ou LINK';
+        headerRow.getCell(17).value = 'CNPJ';
+        headerRow.getCell(18).value = 'VALOR UNITÁRIO';
+        headerRow.getCell(19).value = 'VALOR TOTAL';
+        headerRow.getCell(20).value = 'VALOR UNITÁRIO';
+        headerRow.getCell(21).value = 'VALOR TOTAL';
+
+        worksheet.mergeCells('E7:G7');
+        worksheet.mergeCells('H7:K7');
+        worksheet.mergeCells('L7:O7');
+        worksheet.mergeCells('P7:S7');
+        worksheet.mergeCells('T7:U7');
+
+        headerRow.eachCell({ includeEmpty: false }, (cell) => {
+            cell.font = { bold: true, color: { argb: 'FF000000' } };
+            cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+            cell.border = {
+                top: { style: 'thin' },
+                left: { style: 'thin' },
+                bottom: { style: 'thin' },
+                right: { style: 'thin' }
+            };
+        });
+
+        subHeaderRow.eachCell({ includeEmpty: false }, (cell) => {
+            cell.font = { bold: true, color: { argb: 'FF000000' } };
+            cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+            cell.border = {
+                top: { style: 'thin' },
+                left: { style: 'thin' },
+                bottom: { style: 'thin' },
+                right: { style: 'thin' }
+            };
+        });
+
+        worksheet.columns = [
+            { width: 5 }, { width: 20 }, { width: 20 }, { width: 30 }, { width: 10 },
+            { width: 15 }, { width: 10 }, { width: 30 }, { width: 22 }, { width: 15 },
+            { width: 15 }, { width: 30 }, { width: 22 }, { width: 15 }, { width: 15 },
+            { width: 30 }, { width:  22}, { width: 15 }, { width: 15 }, { width: 15 },
+            { width: 15 }
+        ];
+
+        subHeaderRow.getCell(5).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFB266' } };
+        subHeaderRow.getCell(8).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFCC99' } };
+        subHeaderRow.getCell(12).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'CCCCFF' } };
+        subHeaderRow.getCell(16).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '99CCFF' } };
+        subHeaderRow.getCell(20).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF9999' } };
+
+        let rowIndex = 9;
+        carrinho.forEach(item => {
+            const baseTipo = item.categoria.toUpperCase() === 'SERVICOS' ? 'SERVIÇOS/RECURSOS HUMANOS' :
+                item.categoria.toUpperCase() === 'MATERIAL' ? 'MATERIAL ESPORTIVO' : item.categoria.toUpperCase();
+            const tipo = baseTipo === 'MATERIAL ESPORTIVO' && item.tipo ? `${baseTipo} - ${item.tipo.toUpperCase() === 'AQUISICAO' ? 'AQUISIÇÃO' : 'LOCAÇÃO'}` : baseTipo;
+            const row = worksheet.getRow(rowIndex);
+            row.values = [
+                item.id, tipo, `${item.item}${item.subitem ? ' - ' + item.subitem : ''}`, item.descricao,
+                item.quantidade, item.periodo === 'N/A' ? 'N/A' :
+                    item.periodo === 'diarias' ? 'Diárias' :
+                    item.periodo === 'meses' ? 'Meses' :
+                    item.periodo === 'UN' ? 'UN' :
+                    item.periodo === 'Kit' ? 'Kit' : 'N/A',
+                item.total,
+                item.empresas[0]?.nome && item.empresas[0]?.link ? `${item.empresas[0].nome} - ${item.empresas[0].link}` : item.empresas[0]?.nome || '',
+                item.empresas[0]?.cnpj || '', item.empresas[0]?.unitario || 0, item.empresas[0]?.total || 0,
+                item.empresas[1]?.nome && item.empresas[1]?.link ? `${item.empresas[1].nome} - ${item.empresas[1].link}` : item.empresas[1]?.nome || '',
+                item.empresas[1]?.cnpj || '', item.empresas[1]?.unitario || 0, item.empresas[1]?.total || 0,
+                item.empresas[2]?.nome && item.empresas[2]?.link ? `${item.empresas[2].nome} - ${item.empresas[2].link}` : item.empresas[2]?.nome || '',
+                item.empresas[2]?.cnpj || '', item.empresas[2]?.unitario || 0, item.empresas[2]?.total || 0,
+                item.empresaSelecionada.unitario, item.empresaSelecionada.total
+            ];
+            row.getCell(3).alignment = { wrapText: true };
+            row.getCell(4).alignment = { wrapText: true };
+            row.getCell(8).alignment = { wrapText: true };
+            row.getCell(9).alignment = { wrapText: true };
+            row.getCell(12).alignment = { wrapText: true };
+            row.getCell(13).alignment = { wrapText: true };
+            row.getCell(16).alignment = { wrapText: true };
+            row.getCell(17).alignment = { wrapText: true };
+
+            // Aplicar fundo cinza às colunas RAZÃO ou LINK e CNPJ
+            [8, 9, 12, 13, 16, 17].forEach(col => {
+                row.getCell(col).fill = {
+                    type: 'pattern',
+                    pattern: 'solid',
+                    fgColor: { argb: 'D3D3D3' } // Cinza claro
+                };
+            });
+
+            row.getCell(10).numFmt = '"R$ "#,##0.00';
+            row.getCell(11).numFmt = '"R$ "#,##0.00';
+            row.getCell(14).numFmt = '"R$ "#,##0.00';
+            row.getCell(15).numFmt = '"R$ "#,##0.00';
+            row.getCell(18).numFmt = '"R$ "#,##0.00';
+            row.getCell(19).numFmt = '"R$ "#,##0.00';
+            row.getCell(20).numFmt = '"R$ "#,##0.00';
+            row.getCell(21).numFmt = '"R$ "#,##0.00';
+            row.height = 60;
+            rowIndex++;
+        });
+
+        const totalRow = worksheet.getRow(rowIndex);
+        totalRow.getCell(1).value = 'TOTAL';
+        totalRow.getCell(5).value = { formula: `SUM(E9:E${rowIndex - 1})` };
+        totalRow.getCell(7).value = { formula: `SUM(G9:G${rowIndex - 1})` };
+        totalRow.getCell(10).value = { formula: `SUM(J9:J${rowIndex - 1})` };
+        totalRow.getCell(11).value = { formula: `SUM(K9:K${rowIndex - 1})` };
+        totalRow.getCell(14).value = { formula: `SUM(N9:N${rowIndex - 1})` };
+        totalRow.getCell(15).value = { formula: `SUM(O9:O${rowIndex - 1})` };
+        totalRow.getCell(18).value = { formula: `SUM(R9:R${rowIndex - 1})` };
+        totalRow.getCell(19).value = { formula: `SUM(S9:S${rowIndex - 1})` };
+        totalRow.getCell(20).value = { formula: `SUM(T9:T${rowIndex - 1})` };
+        totalRow.getCell(21).value = { formula: `SUM(U9:U${rowIndex - 1})` };
+        totalRow.getCell(10).numFmt = '"R$ "#,##0.00';
+        totalRow.getCell(11).numFmt = '"R$ "#,##0.00';
+        totalRow.getCell(14).numFmt = '"R$ "#,##0.00';
+        totalRow.getCell(15).numFmt = '"R$ "#,##0.00';
+        totalRow.getCell(18).numFmt = '"R$ "#,##0.00';
+        totalRow.getCell(19).numFmt = '"R$ "#,##0.00';
+        totalRow.getCell(20).numFmt = '"R$ "#,##0.00';
+        totalRow.getCell(21).numFmt = '"R$ "#,##0.00';
+
+        totalRow.eachCell({ includeEmpty: true }, (cell) => {
+            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'D3D3D3' } };
+        });
+
+        worksheet.pageSetup.orientation = 'landscape';
+
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blobExcel = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const linkExcel = document.createElement('a');
+        linkExcel.href = URL.createObjectURL(blobExcel);
+        linkExcel.download = `Precificação_${numeroProposta}_${new Date().toISOString().slice(0, 10)}.xlsx`;
+        document.body.appendChild(linkExcel);
+        linkExcel.click();
+        document.body.removeChild(linkExcel);
+
+        await gerarPDF(carrinho);
+
+    } catch (error) {
+        console.error('Erro ao gerar Excel:', error);
+        alert('Ocorreu um erro ao gerar o Excel. Verifique o console para mais detalhes.');
+    }
+}
     inicializarEventosCNPJ();
     carregarPlanilha().then(() => {
         atualizarCarrinho();
