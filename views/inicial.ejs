@@ -293,7 +293,7 @@
             </div>
 
             <div class="input-group">
-                <label for="valor-total">Valor Total</label>
+                <label for="valor-total">Valor Total da Emenda</label>
                 <div class="input-icon">
                     <i class="fas fa-dollar-sign"></i>
                     <input type="text" id="valor-total" placeholder="0,00" inputmode="numeric" aria-describedby="valor-total-error">
@@ -329,8 +329,10 @@
             // Configuração da API
             const API_URL = window.location.hostname === 'localhost' 
                 ? 'http://localhost:3000' 
-                : window.location.origin;
-
+                //: window.location.origin;
+                : window.location.href;
+            //console.log(window.location.href);
+            //console.log(window.location.origin + '/sneaelis/custos/');
             // Elementos do formulário
             const numeroPropostaInput = document.getElementById('numero-proposta');
             const cnpjInput = document.getElementById('cnpj');
