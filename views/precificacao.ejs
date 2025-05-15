@@ -1491,55 +1491,51 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     async function consultarCNPJ(prefixo, empresaIndex) {
-        const cnpjInput = document.getElementById(`${prefixo}-empresa${empresaIndex}-cnpj`);
-        const statusSpan = document.getElementById(`${prefixo}-empresa${empresaIndex}-status`);
-        const nomeInput = document.getElementById(`${prefixo}-empresa${empresaIndex}-nome`);
-        const cnpj = cnpjInput.value.replace(/[^\d]/g, '');
+  const cnpjInput = document.getElementById(`${prefixo}-empresa${empresaIndex}-cnpj`);
+  const statusSpan = document.getElementById(`${prefixo}-empresa${empresaIndex}-status`);
+  const nomeInput = document.getElementById(`${prefixo}-empresa${empresaIndex}-nome`);
+  const cnpj = cnpjInput.value.replace(/[^\d]/g, '');
 
-        // Limpar status e nome se o CNPJ estiver vazio ou inválido
-        if (!cnpj || cnpj.length !== 14 || !validarCNPJ(cnpj)) {
-            statusSpan.textContent = cnpj ? 'CNPJ inválido' : 'CNPJ vazio';
-            statusSpan.className = 'status-cnpj erro';
-            nomeInput.value = ''; // Limpar o campo de nome
-            return;
-        }
+  if (!cnpj || cnpj.length !== 14 || !validarCNPJ(cnpj)) {
+    statusSpan.textContent = cnpj ? 'CNPJ inválido' : 'CNPJ vazio';
+    statusSpan.className = 'status-cnpj erro';
+    nomeInput.value = '';
+    return;
+  }
 
-        try {
-            statusSpan.textContent = 'Consultando...';
-            statusSpan.className = 'status-cnpj';
+  try {
+    statusSpan.textContent = 'Consultando...';
+    statusSpan.className = 'status-cnpj';
 
-            const response = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cnpj}`);
-            if (!response.ok) {
-                throw new Error(`Erro na API: ${response.statusText}`);
-            }
-
-            const data = await response.json();
-
-            console.log('Full API Response:', data);
-
-            const situacao = data.situacao_cadastral ? String(data.situacao_cadastral).toLowerCase() : '';
-            const descricaoSituacao = data.descricao_situacao_cadastral ? String(data.descricao_situacao_cadastral).toLowerCase() : '';
-
-            if (situacao.includes('ativa') || 
-                descricaoSituacao.includes('ativa') || 
-                descricaoSituacao.includes('habilitado') || 
-                descricaoSituacao.includes('regular')) {
-                statusSpan.textContent = 'Ativa';
-                statusSpan.className = 'status-cnpj ativa';
-                // Sempre atualizar o nome com o retornado pela API
-                nomeInput.value = data.razao_social || data.nome_fantasia || '';
-            } else {
-                statusSpan.textContent = 'Inativa';
-                statusSpan.className = 'status-cnpj inativa';
-                nomeInput.value = ''; // Limpar o nome se a empresa estiver inativa
-            }
-        } catch (error) {
-            console.error('Erro ao consultar CNPJ:', error);
-            statusSpan.textContent = 'Erro na consulta';
-            statusSpan.className = 'status-cnpj erro';
-            nomeInput.value = ''; // Limpar o nome em caso de erro
-        }
+    const response = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cnpj}`);
+    if (!response.ok) {
+      throw new Error(`Erro na API: ${response.statusText}`);
     }
+
+    const data = await response.json();
+
+    const situacao = data.situacao_cadastral ? String(data.situacao_cadastral).toLowerCase() : '';
+    const descricaoSituacao = data.descricao_situacao_cadastral ? String(data.descricao_situacao_cadastral).toLowerCase() : '';
+
+    if (situacao.includes('ativa') || 
+        descricaoSituacao.includes('ativa') || 
+        descricaoSituacao.includes('habilitado') || 
+        descricaoSituacao.includes('regular')) {
+      statusSpan.textContent = 'Ativa';
+      statusSpan.className = 'status-cnpj ativa';
+      nomeInput.value = data.razao_social || data.nome_fantasia || '';
+    } else {
+      statusSpan.textContent = 'Inativa';
+      statusSpan.className = 'status-cnpj inativa';
+      nomeInput.value = '';
+    }
+  } catch (error) {
+    console.error('Erro ao consultar CNPJ:', error);
+    statusSpan.textContent = 'Erro na consulta';
+    statusSpan.className = 'status-cnpj erro';
+    nomeInput.value = '';
+  }
+}
 
     function debounce(func, wait) {
         let timeout;

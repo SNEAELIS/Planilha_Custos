@@ -405,7 +405,6 @@
                 }
             });
 
-            // Função para consultar CNPJ via backend
             async function consultarCNPJ(cnpj) {
                 const cacheKey = `cnpj_${cnpj}`;
                 const cachedData = localStorage.getItem(cacheKey);
@@ -462,15 +461,6 @@
                     nomeEntidadeInput.disabled = false;
                 }
                 }
-
-            // Validação em tempo real do nome da entidade
-            nomeEntidadeInput.addEventListener('input', function() {
-                if (nomeEntidadeInput.value.trim().length >= 3) {
-                    nomeEntidadeError.style.display = 'none';
-                } else {
-                    nomeEntidadeError.style.display = 'block';
-                }
-            });
 
             // Formatação monetária
             valorTotalInput.addEventListener('input', function(e) {

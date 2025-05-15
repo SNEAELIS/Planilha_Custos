@@ -44,7 +44,7 @@ app.get('/health', (req, res) => {
 app.get('/api/consulta-cnpj/:cnpj', async (req, res) => {
   try {
     const { cnpj } = req.params;
-    
+
     if (!validarCNPJ(cnpj)) {
       return res.status(400).json({ success: false, error: 'CNPJ inválido' });
     }
@@ -55,20 +55,20 @@ app.get('/api/consulta-cnpj/:cnpj', async (req, res) => {
       return res.json(cachedData);
     }
 
-    const response = await axios.get(`https://receitaws.com.br/v1/cnpj/${cnpj}`, {
+    const response = await axios.get(`https://brasilapi.com.br/api/cnpj/v1/${cnpj}`, {
       timeout: 5000
     });
-    
-    if (response.data.status === 'ERROR') {
+
+    if (response.data.status === 'ERROR' || !response.data.razao_social) {
       return res.status(404).json({ success: false, error: response.data.message || 'CNPJ não encontrado' });
     }
 
     const data = {
       success: true,
-      nome: response.data.nome,
-      fantasia: response.data.fantasia,
+      nome: response.data.razao_social,
+      fantasia: response.data.nome_fantasia || '',
       cnpj: formatarCNPJ(response.data.cnpj),
-      situacao: response.data.situacao
+      situacao: response.data.descricao_situacao_cadastral || 'Desconhecida'
     };
 
     cache.set(cacheKey, data);
@@ -81,7 +81,6 @@ app.get('/api/consulta-cnpj/:cnpj', async (req, res) => {
     res.status(500).json({ success: false, error: 'Erro ao consultar CNPJ. Tente novamente ou preencha manualmente.' });
   }
 });
-
 // Função para validar CNPJ
 function validarCNPJ(cnpj) {
   cnpj = cnpj.replace(/[^\d]+/g, '');
