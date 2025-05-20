@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Precificação de Emendas - Ministério do Esporte</title>
+    <title>Precificação - Ministério do Esporte</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -71,6 +71,16 @@ h1 {
 
 h2 {
     font-size: 1.5rem;
+}
+
+.char-counter {
+    display: block;
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+}
+.char-counter.exceeded {
+    color: #dc2626; /* Vermelho para indicar que o limite foi excedido */
 }
 
 .resumo-valores {
@@ -475,14 +485,14 @@ h2 {
 <body>
     <header class="header">
         <img src="/images/ASSINATURAS_ESPORTE__PRINCIPAL.png" alt="Ministério do Esporte" class="logo">
-        <h2>Sistema de Precificação de Emendas</h2>
+        <h2>Sistema de Planilha de custos</h2>
     </header>
 
     <div class="container">
         <h1>Precificação de Itens</h1>
 
         <div class="resumo-valores">
-            <p><span>Valor Total da Emenda:</span> <strong id="valor-total">R$ 0,00</strong></p>
+            <p><span>Valor Global:</span> <strong id="valor-total">R$ 0,00</strong></p>
             <p><span>Valor Gasto:</span> <strong id="valor-gasto">R$ 0,00</strong></p>
             <p><span>Valor Restante:</span> <strong id="valor-restante">R$ 0,00</strong></p>
         </div>
@@ -512,6 +522,7 @@ h2 {
                 <div class="form-group">
                     <label for="srv-descricao">Descrição do Serviço/Método de Cálculo</label>
                     <textarea id="srv-descricao" placeholder="Ex: PROFESSOR - Responsável pela preparação e execução das aulas"></textarea>
+                    <span id="srv-descricao-contador" class="char-counter">0/200</span>
                 </div>
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
                     <div class="form-group">
@@ -521,10 +532,31 @@ h2 {
                     <div class="form-group">
                         <label for="srv-periodo">Diárias/Meses</label>
                         <select id="srv-periodo">
-                            <option value="diarias">Diárias</option>
                             <option value="meses">Meses</option>
+                            <option value="hora">Hora</option>
+                            <option value="minuto">Minuto</option>
+                            <option value="dia">Dia</option>
+                            <option value="semana">Semana</option>
+                            <option value="ano">Ano</option>
+                            <option value="pacote">Pacote</option>
+                            <option value="caixa">Caixa</option>
+                            <option value="litro">Litro</option>
+                            <option value="ml">Mililitro</option>
+                            <option value="kg">Quilograma</option>
+                            <option value="g">Grama</option>
+                            <option value="m">Metro</option>
+                            <option value="cm">Centímetro</option>
+                            <option value="m2">Metro Quadrado</option>
+                            <option value="m3">Metro Cúbico</option>
+                            <option value="par">Par</option>
+                            <option value="jogo">Jogo</option>
+                            <option value="conjunto">Conjunto</option>
+                            <option value="servico">Serviço</option>
+                            <option value="viagem">Viagem</option>
+                            <option value="evento">Evento</option>
+                            <option value="sessao">Sessão</option>
                             <option value="UN">UN</option>
-                            <option value="Kit">Kit</option>
+                            <option value="Kit">KIT</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -647,6 +679,7 @@ h2 {
                 <div class="form-group">
                     <label for="me-descricao">Descrição do Item</label>
                     <textarea id="me-descricao" placeholder="Descreva o item"></textarea>
+                    <span id="me-descricao-contador" class="char-counter">0/200</span>
                 </div>
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
                     <div class="form-group">
@@ -656,10 +689,31 @@ h2 {
                     <div class="form-group" id="me-periodo-container">
                         <label for="me-periodo">Diárias/Meses</label>
                         <select id="me-periodo">
-                            <option value="diarias">Diárias</option>
                             <option value="meses">Meses</option>
+                            <option value="hora">Hora</option>
+                            <option value="minuto">Minuto</option>
+                            <option value="dia">Dia</option>
+                            <option value="semana">Semana</option>
+                            <option value="ano">Ano</option>
+                            <option value="pacote">Pacote</option>
+                            <option value="caixa">Caixa</option>
+                            <option value="litro">Litro</option>
+                            <option value="ml">Mililitro</option>
+                            <option value="kg">Quilograma</option>
+                            <option value="g">Grama</option>
+                            <option value="m">Metro</option>
+                            <option value="cm">Centímetro</option>
+                            <option value="m2">Metro Quadrado</option>
+                            <option value="m3">Metro Cúbico</option>
+                            <option value="par">Par</option>
+                            <option value="jogo">Jogo</option>
+                            <option value="conjunto">Conjunto</option>
+                            <option value="servico">Serviço</option>
+                            <option value="viagem">Viagem</option>
+                            <option value="evento">Evento</option>
+                            <option value="sessao">Sessão</option>
                             <option value="UN">UN</option>
-                            <option value="Kit">Kit</option>
+                            <option value="Kit">KIT</option>
                         </select>
                     </div>
                     <div class="form-group" id="me-periodo-valor-container">
@@ -775,6 +829,7 @@ h2 {
                 <div class="form-group">
                     <label for="uni-descricao">Descrição do Item</label>
                     <textarea id="uni-descricao" placeholder="Descreva o item"></textarea>
+                    <span id="uni-descricao-contador" class="char-counter">0/200</span>
                 </div>
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
                     <div class="form-group">
@@ -784,10 +839,31 @@ h2 {
                     <div class="form-group">
                         <label for="uni-periodo">Diárias/Meses</label>
                         <select id="uni-periodo">
-                            <option value="diarias">Diárias</option>
                             <option value="meses">Meses</option>
+                            <option value="hora">Hora</option>
+                            <option value="minuto">Minuto</option>
+                            <option value="dia">Dia</option>
+                            <option value="semana">Semana</option>
+                            <option value="ano">Ano</option>
+                            <option value="pacote">Pacote</option>
+                            <option value="caixa">Caixa</option>
+                            <option value="litro">Litro</option>
+                            <option value="ml">Mililitro</option>
+                            <option value="kg">Quilograma</option>
+                            <option value="g">Grama</option>
+                            <option value="m">Metro</option>
+                            <option value="cm">Centímetro</option>
+                            <option value="m2">Metro Quadrado</option>
+                            <option value="m3">Metro Cúbico</option>
+                            <option value="par">Par</option>
+                            <option value="jogo">Jogo</option>
+                            <option value="conjunto">Conjunto</option>
+                            <option value="servico">Serviço</option>
+                            <option value="viagem">Viagem</option>
+                            <option value="evento">Evento</option>
+                            <option value="sessao">Sessão</option>
                             <option value="UN">UN</option>
-                            <option value="Kit">Kit</option>
+                            <option value="Kit">KIT</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -903,6 +979,7 @@ h2 {
                 <div class="form-group">
                     <label for="idv-descricao">Descrição do Item</label>
                     <textarea id="idv-descricao" placeholder="Descreva o item"></textarea>
+                    <span id="idv-descricao-contador" class="char-counter">0/200</span>
                 </div>
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
                     <div class="form-group">
@@ -912,10 +989,31 @@ h2 {
                     <div class="form-group">
                         <label for="idv-periodo">Diárias/Meses</label>
                         <select id="idv-periodo">
-                            <option value="diarias">Diárias</option>
                             <option value="meses">Meses</option>
+                            <option value="hora">Hora</option>
+                            <option value="minuto">Minuto</option>
+                            <option value="dia">Dia</option>
+                            <option value="semana">Semana</option>
+                            <option value="ano">Ano</option>
+                            <option value="pacote">Pacote</option>
+                            <option value="caixa">Caixa</option>
+                            <option value="litro">Litro</option>
+                            <option value="ml">Mililitro</option>
+                            <option value="kg">Quilograma</option>
+                            <option value="g">Grama</option>
+                            <option value="m">Metro</option>
+                            <option value="cm">Centímetro</option>
+                            <option value="m2">Metro Quadrado</option>
+                            <option value="m3">Metro Cúbico</option>
+                            <option value="par">Par</option>
+                            <option value="jogo">Jogo</option>
+                            <option value="conjunto">Conjunto</option>
+                            <option value="servico">Serviço</option>
+                            <option value="viagem">Viagem</option>
+                            <option value="evento">Evento</option>
+                            <option value="sessao">Sessão</option>
                             <option value="UN">UN</option>
-                            <option value="Kit">Kit</option>
+                            <option value="Kit">KIT</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -1031,6 +1129,7 @@ h2 {
                 <div class="form-group">
                     <label for="ali-descricao">Descrição do Item</label>
                     <textarea id="ali-descricao" placeholder="Descreva o item"></textarea>
+                    <span id="ali-descricao-contador" class="char-counter">0/200</span>
                 </div>
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
                     <div class="form-group">
@@ -1040,10 +1139,31 @@ h2 {
                     <div class="form-group">
                         <label for="ali-periodo">Diárias/Meses</label>
                         <select id="ali-periodo">
-                            <option value="diarias">Diárias</option>
                             <option value="meses">Meses</option>
+                            <option value="hora">Hora</option>
+                            <option value="minuto">Minuto</option>
+                            <option value="dia">Dia</option>
+                            <option value="semana">Semana</option>
+                            <option value="ano">Ano</option>
+                            <option value="pacote">Pacote</option>
+                            <option value="caixa">Caixa</option>
+                            <option value="litro">Litro</option>
+                            <option value="ml">Mililitro</option>
+                            <option value="kg">Quilograma</option>
+                            <option value="g">Grama</option>
+                            <option value="m">Metro</option>
+                            <option value="cm">Centímetro</option>
+                            <option value="m2">Metro Quadrado</option>
+                            <option value="m3">Metro Cúbico</option>
+                            <option value="par">Par</option>
+                            <option value="jogo">Jogo</option>
+                            <option value="conjunto">Conjunto</option>
+                            <option value="servico">Serviço</option>
+                            <option value="viagem">Viagem</option>
+                            <option value="evento">Evento</option>
+                            <option value="sessao">Sessão</option>
                             <option value="UN">UN</option>
-                            <option value="Kit">Kit</option>
+                            <option value="Kit">KIT</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -1173,6 +1293,42 @@ document.addEventListener('DOMContentLoaded', function() {
         alert('Erro: A biblioteca SheetJS não foi carregada.');
         return;
     }
+
+    // Limitar caracteres e atualizar contador
+function limitarCaracteres(textareaId, contadorId, maxLength) {
+    const textarea = document.getElementById(textareaId);
+    const contador = document.getElementById(contadorId);
+
+    if (!textarea || !contador) return;
+
+    function atualizarContador() {
+        const length = textarea.value.length;
+        contador.textContent = `${length}/${maxLength}`;
+        if (length > maxLength) {
+            contador.classList.add('exceeded');
+            textarea.value = textarea.value.substring(0, maxLength);
+            contador.textContent = `${maxLength}/${maxLength}`;
+        } else {
+            contador.classList.remove('exceeded');
+        }
+    }
+
+    textarea.addEventListener('input', atualizarContador);
+    atualizarContador(); // Atualizar o contador ao carregar
+}
+
+// Aplicar limite de caracteres para cada campo de descrição
+const descricoes = [
+    { textareaId: 'srv-descricao', contadorId: 'srv-descricao-contador' },
+    { textareaId: 'me-descricao', contadorId: 'me-descricao-contador' },
+    { textareaId: 'uni-descricao', contadorId: 'uni-descricao-contador' },
+    { textareaId: 'idv-descricao', contadorId: 'idv-descricao-contador' },
+    { textareaId: 'ali-descricao', contadorId: 'ali-descricao-contador' }
+];
+
+descricoes.forEach(({ textareaId, contadorId }) => {
+    limitarCaracteres(textareaId, contadorId, 200);
+});
     
 
     // Cache para armazenar dados das empresas entre adições
@@ -1352,7 +1508,7 @@ document.addEventListener('DOMContentLoaded', function() {
         outrosContainer.style.display = cargoSelect.value === 'Outros' ? 'block' : 'none';
     };
 
-    window.toggleLocacaoFields = function() {
+window.toggleLocacaoFields = function() {
     const tipo = document.getElementById('me-tipo').value;
     const periodoContainer = document.getElementById('me-periodo-container');
     const periodoValorContainer = document.getElementById('me-periodo-valor-container');
@@ -1365,15 +1521,43 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (tipo === 'aquisicao') {
         // Para aquisição, definir valores padrão
-        periodoSelect.innerHTML = '<option value="UN">UN</option>';
+        periodoSelect.innerHTML = `
+            <option value="UN">UN</option>
+            <option value="Kit">Kit</option>
+            <option value="par">Par</option>
+            <option value="jogo">Jogo</option>
+            <option value="conjunto">Conjunto</option>
+        `;
         periodoSelect.value = 'UN';
         periodoValorInput.value = '1';
         periodoValorInput.disabled = true;
     } else {
-        // Para locação, preencher as opções normais
+        // Para locação, preencher todas as opções
         periodoSelect.innerHTML = `
             <option value="diarias">Diárias</option>
             <option value="meses">Meses</option>
+            <option value="hora">Hora</option>
+            <option value="minuto">Minuto</option>
+            <option value="dia">Dia</option>
+            <option value="semana">Semana</option>
+            <option value="ano">Ano</option>
+            <option value="pacote">Pacote</option>
+            <option value="caixa">Caixa</option>
+            <option value="litro">Litro</option>
+            <option value="ml">Mililitro</option>
+            <option value="kg">Quilograma</option>
+            <option value="g">Grama</option>
+            <option value="m">Metro</option>
+            <option value="cm">Centímetro</option>
+            <option value="m2">Metro Quadrado</option>
+            <option value="m3">Metro Cúbico</option>
+            <option value="par">Par</option>
+            <option value="jogo">Jogo</option>
+            <option value="conjunto">Conjunto</option>
+            <option value="servico">Serviço</option>
+            <option value="viagem">Viagem</option>
+            <option value="evento">Evento</option>
+            <option value="sessao">Sessão</option>
             <option value="UN">UN</option>
             <option value="Kit">Kit</option>
         `;
@@ -1885,7 +2069,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    document.getElementById(`${prefixo}-descricao`).value = item.descricao || '';
+    const descricaoTextarea = document.getElementById(`${prefixo}-descricao`);
+    const contadorSpan = document.getElementById(`${prefixo}-descricao-contador`);
+    descricaoTextarea.value = item.descricao || '';
+    contadorSpan.textContent = `${Math.min(item.descricao.length, 200)}/200`; // Atualizar contador
+    contadorSpan.classList.toggle('exceeded', item.descricao.length > 200);
+
     document.getElementById(`${prefixo}-quantidade`).value = item.quantidade || 1;
     
     if (prefixo === 'me') {
@@ -1949,10 +2138,14 @@ function limparFormulario(prefixo) {
         document.getElementById(`${prefixo}-outros-container`).style.display = 'none';
     }
 
-    document.getElementById(`${prefixo}-descricao`).value = '';
+    const descricaoTextarea = document.getElementById(`${prefixo}-descricao`);
+    const contadorSpan = document.getElementById(`${prefixo}-descricao-contador`);
+    descricaoTextarea.value = '';
+    contadorSpan.textContent = '0/200'; // Reiniciar contador
+    contadorSpan.classList.remove('exceeded');
+
     document.getElementById(`${prefixo}-quantidade`).value = '1';
     
-    // Manter os valores de período/tipo
     if (prefixo === 'me') {
         document.getElementById('me-tipo').value = 'aquisicao';
         toggleLocacaoFields();
@@ -1964,8 +2157,6 @@ function limparFormulario(prefixo) {
     document.getElementById(`${prefixo}-total`).value = '';
     document.getElementById(`${prefixo}-menor-valor`).value = '';
 
-    // Não limpar os dados das empresas - eles são mantidos no cache
-    // Apenas limpar os valores unitários e totais
     for (let i = 1; i <= 3; i++) {
         const unitarioInput = document.getElementById(`${prefixo}-empresa${i}-unitario`);
         unitarioInput.value = '0,00';
